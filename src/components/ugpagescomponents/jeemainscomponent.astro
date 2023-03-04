@@ -5,6 +5,20 @@ const today = new Date();
 <footer class="footer"></footer>
 <body>
   <script>
+    const fullscreenButton = document.getElementById("fullscreen-button");
+    const exitButton = document.getElementById("exit-button");
+    const timer = document.getElementById("timer");
+
+    fullscreenButton.addEventListener("click", () => {
+      timer.classList.add("fullscreen");
+      exitButton.style.display = "block";
+    });
+
+    exitButton.addEventListener("click", () => {
+      timer.classList.remove("fullscreen");
+      exitButton.style.display = "none";
+    });
+
     var events = [
       { name: "Day 1", date: new Date("Apr 06, 2023 00:00:00").getTime() },
       { name: "Day 2", date: new Date("Apr 07, 2023 00:00:00").getTime() },
