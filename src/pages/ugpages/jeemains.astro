@@ -1,0 +1,191 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/ugpagescomponents/jeemainscomponent.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../config";
+import Menu from "../../components/menu.astro";
+
+const date1 = "Apr 06";
+const date2 = "7th April";
+const date3 = "8th April";
+const date4 = "9th April";
+const date5 = "10th April";
+const date6 = "11th April";
+const date7 = "12th April";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <select id="event-select">
+      <option value="0">{date1}</option>
+      <option value="1">{date2}</option>
+      <option value="2">{date3}</option>
+      <option value="3">{date4}</option>
+      <option value="4">{date5}</option>
+      <option value="5">{date6}</option>
+      <option value="6">{date7}</option>
+    </select>
+    <Header title="{SITE_TITLE}" />
+    <div id="timer"></div>
+    <main>
+      <div id="todo">
+        <section class="container">
+          <div>
+            <form action="" id="form">
+              <input type="text" id="input-name" />
+              <button type="submit" id="btn-add">Add</button>
+            </form>
+          </div>
+          <br />
+          <ul id="to-do-list"></ul>
+        </section>
+      </div>
+      <div id="name">
+        <h1 class="jeemains2023">JEE Mains 2023</h1>
+      </div>
+      <div id="livecount"></div>
+    </main>
+    <Footer />
+    <style>
+      body {
+        font-family: Ubuntu;
+
+        background-color: #1f2029;
+        background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg");
+        background-position: center;
+        background-repeat: repeat;
+        background-size: 4%;
+      }
+
+      #timer {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        padding: 0;
+        background: #849292;
+        border-radius: 45px;
+        font-size: 16vw;
+        color: aliceblue;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 290px;
+      }
+
+      #todo {
+        position: relative;
+        width: 35%;
+        height: 281px;
+        border-radius: 45px;
+        margin: 20px;
+        float: left;
+
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+      }
+      #name {
+        position: relative;
+        width: 35%;
+        height: 281px;
+        background: #e9c438;
+        border-radius: 45px;
+        margin: 20px;
+        float: right;
+        text-align: center;
+
+        /* add these properties */
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .jeemains2023 {
+        font-size: 48px;
+        padding-left: 40px;
+      }
+      #livecount {
+        position: relative;
+        width: 100%;
+        height: 281px;
+        background: hsl(263, 34%, 64%);
+        border-radius: 45px;
+        float: left;
+      }
+
+      :root {
+        --primary-color: hsl(263, 34%, 64%);
+        --primary-color-darker: rgb(4, 20, 24);
+        --secondary-color: rgb(139, 23, 23);
+        --secondary-color-darker: rgb(24, 4, 4);
+      }
+
+      .container {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      form {
+        padding-top: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        display: flex;
+      }
+
+      form input,
+      form label,
+      form button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      form input {
+        font-size: 24px;
+        height: 45px;
+        padding: 0 20px;
+        flex: 5;
+      }
+
+      form input:focus {
+        outline: 1px solid var(--primary-color);
+      }
+
+      button {
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        height: 50px;
+        cursor: pointer;
+      }
+      form button {
+        background: var(--primary-color);
+
+        flex: 1;
+      }
+
+      form button:hover {
+        background: var(--primary-color-darker);
+      }
+
+      ul {
+        list-style-type: none;
+        display: flex;
+        padding: 0;
+        flex-direction: column;
+      }
+
+      #to-do-list {
+        margin: 0 !important;
+        font-family: ubuntu;
+        font-size: 30px;
+        padding: 10px;
+      }
+    </style>
+  </body>
+</html>

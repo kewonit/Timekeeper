@@ -1,0 +1,31 @@
+{
+    "short_name": "JEE Mains 2023 Countdown",
+    "name": "Joint Entrance Examination Mains 2023 Countdown for session 1",
+    "icons": [
+        {
+            "src": "./public/favicon.svg",
+            "type": "image/svg+xml",
+            "sizes": "512x512"
+        }
+    ],
+    "id": "/?source=pwa",
+    "start_url": "/?source=pwa",
+    "background_color": "#F2F5F1",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#F2F5F1",
+    "shortcuts": [
+        {
+            "name": "Joint Entrance Examination Mains 2023 Countdown for session 1",
+            "short_name": "JEE Mains 2023 Countdown",
+            "description": "JEE Mains 2023 Countdown",
+            "url": "/today?source=pwa",
+            "icons": [
+                {
+                    "src": "./public/favicon.svg",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}

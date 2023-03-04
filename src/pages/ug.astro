@@ -1,0 +1,25 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <button class="btn-toggle">Toggle Dark-Mode</button>
+
+    <Header title="{SITE_TITLE}" />
+    <main>
+      <div id="timer"></div>
+      <a href="../ugpages/jeemains">Text</a>
+      <hr />
+      <h2>Padhle vai / Best of luck</h2>
+    </main>
+    <Footer />
+  </body>
+</html>

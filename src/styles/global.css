@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu");
+
+button.delete {
+  background-color: hsl(263, 34%, 64%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-left: 20px;
+  cursor: pointer;
+}
