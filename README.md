@@ -1,3 +1,5 @@
+![Picture](https://preview.redd.it/w87tglqf7wla1.png?width=1920&format=png&auto=webp&v=enabled&s=b4efcb0ad240ed807e7367530f20430c7d2efd7c)  
+
 ## 🚀 The unexpected problem
 
 The story starts a few weeks before the JEEMains Session 1, when I was looking for something to keep on my screen while I solved some practice questions. Instead of just solving the pyqs, I decided to build a basic static website with a countdown timer and a title. When I posted it on Reddit, it received about 70 upvotes. Over the next few months, the site had 10,000 pageviews and 40 daily users.
