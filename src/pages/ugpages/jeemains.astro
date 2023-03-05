@@ -37,6 +37,13 @@ const date7 = "12th April";
         alt="Fullscreen"
       />
     </button>
+    <button id="goback" onclick="history.back()"
+      ><img
+        class="fullscreensvg"
+        src="../../public/back.svg"
+        alt="Fullscreen"
+      />
+    </button>
     <div id="timer"></div>
     <button id="exit-button"
       ><img
@@ -45,7 +52,6 @@ const date7 = "12th April";
         alt="Fullscreen"
       />
     </button>
-
     <main>
       <div id="todo">
         <section class="container">
@@ -87,10 +93,28 @@ const date7 = "12th April";
         padding-left: 20px;
         padding-right: 20px;
       }
+      #btn-add,
+      #input-name {
+        font-size: 17px;
+        margin-left: 10px;
+        border-radius: 1vh;
+
+        cursor: pointer;
+      }
+      #goback {
+        font-size: 17px;
+        margin: 0px;
+        border-radius: 1vh;
+        width: 60px;
+
+        cursor: pointer;
+        padding-left: 0px;
+        padding-top: 0px;
+      }
       body {
         font-family: Ubuntu;
 
-        background-color: #1f2029;
+        background-color: #101011;
         background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg");
         background-position: center;
         background-repeat: repeat;
