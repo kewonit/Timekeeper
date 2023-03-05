@@ -9,3 +9,14 @@ button.delete {
   margin-left: 20px;
   cursor: pointer;
 }
+@media only screen and (max-width: 750px) {
+  button.delete {
+    background-color: hsl(263, 34%, 64%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-left: 0px;
+    cursor: pointer;
+  }
+}

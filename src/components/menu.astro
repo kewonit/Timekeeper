@@ -1,39 +1,49 @@
-
-
-<div class="sec-center"> 	
-    <input class="dropdown" type="checkbox" id="dropdown" name="dropdown"/>
-    <label class="for-dropdown" for="dropdown">Begin your Journey <i class="uil uil-arrow-down"></i></label>
-    <div class="section-dropdown"> 
-        <input class="dropdown-sub" type="checkbox" id="dropdown-sub" name="dropdown-sub"/>
-        <label class="for-dropdown-sub" for="dropdown-sub">Under Graduation<i class="uil uil-plus"></i></label>
-        <div class="section-dropdown-sub"> 
-            <a href="../ugpages/jeemains">Jee Mains<i class="uil uil-arrow-right"></i></a>
-            <a href="#">Jee Advanced<i class="uil uil-arrow-right"></i></a>
-            <a href="#">Neet<i class="uil uil-arrow-right"></i></a>
-            <a href="#">CUET<i class="uil uil-arrow-right"></i></a>
-        </div>
-        <a href="#">Create your own<i class="uil uil-arrow-right"></i></a>
+<div class="sec-center">
+  <input class="dropdown" type="checkbox" id="dropdown" name="dropdown" />
+  <label class="for-dropdown" for="dropdown"
+    >Begin your Journey <i class="uil uil-arrow-down"></i>
+  </label>
+  <div class="section-dropdown">
+    <input
+      class="dropdown-sub"
+      type="checkbox"
+      id="dropdown-sub"
+      name="dropdown-sub"
+    />
+    <label class="for-dropdown-sub" for="dropdown-sub"
+      >Under Graduation<i class="uil uil-plus"></i>
+    </label>
+    <div class="section-dropdown-sub">
+      <a href="../ugpages/jeemains"
+        >Jee Mains<i class="uil uil-arrow-right"></i>
+      </a>
+      <a href="#">Jee Advanced<i class="uil uil-arrow-right"></i></a>
+      <a href="#">Neet<i class="uil uil-arrow-right"></i></a>
+      <a href="#">CUET<i class="uil uil-arrow-right"></i></a>
     </div>
+    <a href="../ugpages/custom"
+      >Create your own [Coming Soon]<i class="uil uil-arrow-right"></i>
+    </a>
+  </div>
 </div>
- <!-- Complete credits to https://codepen.io/ig_design/pen/MWKVrNR for the navbar-->
+<!-- Complete credits to https://codepen.io/ig_design/pen/MWKVrNR for the navbar-->
 <style>
+  @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-body{
-	font-family: 'Roboto', sans-serif;
-	font-weight: 500;
-	font-size: 15px;
-	line-height: 1.4;
-	color: #fff;
-	background-color: #1f2029;
-	overflow-x: hidden;
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg');
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #fff;
+    background-color: #1f2029;
+    overflow-x: hidden;
+    background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg");
     background-position: center;
     background-repeat: repeat;
     background-size: 4%;
@@ -45,255 +55,253 @@ body{
     -ms-flex-pack: center;
     justify-content: center;
     padding-top: 70px;
-}
-.sec-center {
-  position: fixed;
-  max-width: 100%;
-  text-align: center;
-  z-index: 200;
-}
-[type="checkbox"]:checked,
-[type="checkbox"]:not(:checked){
-  position: fixed;
-  left: -9999px;
-  opacity: 0;
-  pointer-events: none;
-}
+  }
+  .sec-center {
+    position: fixed;
+    max-width: 100%;
+    text-align: center;
+    z-index: 200;
+  }
+  [type="checkbox"]:checked,
+  [type="checkbox"]:not(:checked) {
+    position: fixed;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
 
-.dropdown:checked + label,
-.dropdown:not(:checked) + label{
-  position: relative;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 2;
-  height: 50px;
-  transition: all 200ms linear;
-  border-radius: 4px;
-  width:650px;
-  letter-spacing: 1px;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  justify-content: center;
-  -ms-flex-pack: center;
-  text-align: center;
-  border: none;
-  background-color: #ffeba7;
-  cursor: pointer;
-  color: #102770;
-  box-shadow: 0 12px 35px 0 rgba(255,235,167,.15);
-}
+  .dropdown:checked + label,
+  .dropdown:not(:checked) + label {
+    position: relative;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 2;
+    height: 50px;
+    transition: all 200ms linear;
+    border-radius: 4px;
+    width: 650px;
+    letter-spacing: 1px;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    justify-content: center;
+    -ms-flex-pack: center;
+    text-align: center;
+    border: none;
+    background-color: #ffeba7;
+    cursor: pointer;
+    color: #102770;
+    box-shadow: 0 12px 35px 0 rgba(255, 235, 167, 0.15);
+  }
 
-.dropdown:checked + label:before,
-.dropdown:not(:checked) + label:before{
-  position: fixed;
-  top: 0;
-  left: 0;
-  content: '';
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  cursor: auto;
-  pointer-events: none;
-}
-.dropdown:checked + label:before{
-  pointer-events: auto;
-}
-.dropdown:not(:checked) + label .uil {
-  font-size: 24px;
-  margin-left: 10px;
-  transition: transform 200ms linear;
-}
-.dropdown:checked + label .uil {
-  transform: rotate(180deg);
-  font-size: 24px;
-  margin-left: 10px;
-  transition: transform 200ms linear;
-}
-.section-dropdown {
-  position: absolute;
-  padding: 5px;
-  background-color: #111;
-  top: 70px;
-  left: 0;
-  width: 100%;
-  border-radius: 4px;
-  display: block;
-  box-shadow: 0 14px 35px 0 rgba(9,9,12,0.4);
-  z-index: 2;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(20px);
-  transition: all 200ms linear;
-}
+  .dropdown:checked + label:before,
+  .dropdown:not(:checked) + label:before {
+    position: fixed;
+    top: 0;
+    left: 0;
+    content: "";
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    cursor: auto;
+    pointer-events: none;
+  }
+  .dropdown:checked + label:before {
+    pointer-events: auto;
+  }
+  .dropdown:not(:checked) + label .uil {
+    font-size: 24px;
+    margin-left: 10px;
+    transition: transform 200ms linear;
+  }
+  .dropdown:checked + label .uil {
+    transform: rotate(180deg);
+    font-size: 24px;
+    margin-left: 10px;
+    transition: transform 200ms linear;
+  }
+  .section-dropdown {
+    position: absolute;
+    padding: 5px;
+    background-color: #111;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    border-radius: 4px;
+    display: block;
+    box-shadow: 0 14px 35px 0 rgba(9, 9, 12, 0.4);
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 200ms linear;
+  }
 
-.dropdown:checked ~ .section-dropdown{
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-.section-dropdown:before {
-  position: absolute;
-  top: -20px;
-  left: 0;
-  width: 100%;
-  height: 20px;
-  content: '';
-  display: block;
-  z-index: 1;
-}
-.section-dropdown:after {
-  position: absolute;
-  top: -7px;
-  left: 30px;
-  width: 0; 
-  height: 0; 
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent; 
-  border-bottom: 8px solid #111;
-  content: '';
-  display: block;
-  z-index: 2;
-  transition: all 200ms linear;
-}
+  .dropdown:checked ~ .section-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .section-dropdown:before {
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    content: "";
+    display: block;
+    z-index: 1;
+  }
+  .section-dropdown:after {
+    position: absolute;
+    top: -7px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #111;
+    content: "";
+    display: block;
+    z-index: 2;
+    transition: all 200ms linear;
+  }
 
-
-a {
-  position: relative;
-  color: #fff;
-  transition: all 200ms linear;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  border-radius: 2px;
-  padding: 5px 0;
-  padding-left: 20px;
-  padding-right: 15px;
-  margin: 2px 0;
-  text-align: left;
-  text-decoration: none;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  justify-content: space-between;
+  a {
+    position: relative;
+    color: #fff;
+    transition: all 200ms linear;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    border-radius: 2px;
+    padding: 5px 0;
+    padding-left: 20px;
+    padding-right: 15px;
+    margin: 2px 0;
+    text-align: left;
+    text-decoration: none;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    justify-content: space-between;
     -ms-flex-pack: distribute;
-}
+  }
 
-a:hover {
-  color: #102770;
-  background-color: #ffeba7;
-}
+  a:hover {
+    color: #102770;
+    background-color: #ffeba7;
+  }
 
-a .uil {
-  font-size: 22px;
-}
-.dropdown-sub:checked + label,
-.dropdown-sub:not(:checked) + label{
-  position: relative;
-  color: #fff;
-  transition: all 200ms linear;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  border-radius: 2px;
-  padding: 5px 0;
-  padding-left: 20px;
-  padding-right: 15px;
-  text-align: left;
-  text-decoration: none;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  justify-content: space-between;
+  a .uil {
+    font-size: 22px;
+  }
+  .dropdown-sub:checked + label,
+  .dropdown-sub:not(:checked) + label {
+    position: relative;
+    color: #fff;
+    transition: all 200ms linear;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    border-radius: 2px;
+    padding: 5px 0;
+    padding-left: 20px;
+    padding-right: 15px;
+    text-align: left;
+    text-decoration: none;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    justify-content: space-between;
     -ms-flex-pack: distribute;
     cursor: pointer;
-}
-.dropdown-sub:checked + label .uil,
-.dropdown-sub:not(:checked) + label .uil{
-  font-size: 22px;
-}
-.dropdown-sub:not(:checked) + label .uil {
-  transition: transform 200ms linear;
-}
-.dropdown-sub:checked + label .uil {
-  transform: rotate(135deg);
-  transition: transform 200ms linear;
-}
-.dropdown-sub:checked + label:hover,
-.dropdown-sub:not(:checked) + label:hover{
-  color: #102770;
-  background-color: #ffeba7;
-}
+  }
+  .dropdown-sub:checked + label .uil,
+  .dropdown-sub:not(:checked) + label .uil {
+    font-size: 22px;
+  }
+  .dropdown-sub:not(:checked) + label .uil {
+    transition: transform 200ms linear;
+  }
+  .dropdown-sub:checked + label .uil {
+    transform: rotate(135deg);
+    transition: transform 200ms linear;
+  }
+  .dropdown-sub:checked + label:hover,
+  .dropdown-sub:not(:checked) + label:hover {
+    color: #102770;
+    background-color: #ffeba7;
+  }
 
-.section-dropdown-sub {
-  position: relative;
-  display: block;
-  width: 100%;
-  pointer-events: none;
-  opacity: 0;
-  max-height: 0;
-  padding-left: 10px;
-  padding-right: 3px;
-  overflow: hidden;
-  transition: all 200ms linear;
-}
-.dropdown-sub:checked ~ .section-dropdown-sub{
-  pointer-events: auto;
-  opacity: 1;
-  max-height: 999px;
-}
-.section-dropdown-sub a {
-  font-size: 14px;
-}
-.section-dropdown-sub a .uil {
-  font-size: 20px;
-}
-@media only screen and (max-width: 700px) {
-    .dropdown:checked + label,
-.dropdown:not(:checked) + label{
+  .section-dropdown-sub {
     position: relative;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 2;
-  height: 50px;
-  transition: all 200ms linear;
-  border-radius: 4px;
-  width:350px;
-  letter-spacing: 1px;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  justify-content: center;
-  -ms-flex-pack: center;
-  text-align: center;
-  border: none;
-  background-color: #ffeba7;
-  cursor: pointer;
-  color: #102770;
-  box-shadow: 0 12px 35px 0 rgba(255,235,167,.15);
-
-}
-}
-  </style>
+    display: block;
+    width: 100%;
+    pointer-events: none;
+    opacity: 0;
+    max-height: 0;
+    padding-left: 10px;
+    padding-right: 3px;
+    overflow: hidden;
+    transition: all 200ms linear;
+  }
+  .dropdown-sub:checked ~ .section-dropdown-sub {
+    pointer-events: auto;
+    opacity: 1;
+    max-height: 999px;
+  }
+  .section-dropdown-sub a {
+    font-size: 14px;
+  }
+  .section-dropdown-sub a .uil {
+    font-size: 20px;
+  }
+  @media only screen and (max-width: 700px) {
+    .dropdown:checked + label,
+    .dropdown:not(:checked) + label {
+      position: relative;
+      font-family: "Roboto", sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 2;
+      height: 50px;
+      transition: all 200ms linear;
+      border-radius: 4px;
+      width: 350px;
+      letter-spacing: 1px;
+      display: -webkit-inline-flex;
+      display: -ms-inline-flexbox;
+      display: inline-flex;
+      -webkit-align-items: center;
+      -moz-align-items: center;
+      -ms-align-items: center;
+      align-items: center;
+      -webkit-justify-content: center;
+      -moz-justify-content: center;
+      -ms-justify-content: center;
+      justify-content: center;
+      -ms-flex-pack: center;
+      text-align: center;
+      border: none;
+      background-color: #ffeba7;
+      cursor: pointer;
+      color: #102770;
+      box-shadow: 0 12px 35px 0 rgba(255, 235, 167, 0.15);
+    }
+  }
+</style>

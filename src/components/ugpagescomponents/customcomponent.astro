@@ -5,18 +5,6 @@ const today = new Date();
 <footer class="footer"></footer>
 <body>
   <script>
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const title = decodeURIComponent(urlParams.get("title"));
-    const countdownTo = decodeURIComponent(
-      urlParams.get("date").replace(/\+/g, " ")
-    );
-    console.log(countdownTo);
-    console.log(new Date(countdownTo));
-
-    // Set title
-    document.getElementById("title").textContent = title;
-
     // Create countdown timer
     function startCountdownTimer(countdownTo) {
       const countdown = setInterval(() => {
@@ -35,27 +23,6 @@ const today = new Date();
           document.getElementById("countdown").innerHTML = "EXPIRED";
         }
       }, 1000);
-    }
-
-    // Handle form submission
-    document.querySelector("form").addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      // Get form values
-      const title = document.getElementById("title-input").value;
-      const date = document.getElementById("date-input").value;
-
-      // Encode values for URL parameters
-      const encodedTitle = encodeURIComponent(title);
-      const encodedDate = encodeURIComponent(date);
-
-      // Redirect to countdown timer page with URL parameters
-      window.location.href = `countdown.html?title=${encodedTitle}&date=${encodedDate}`;
-    });
-
-    // Start countdown timer if URL parameters are present
-    if (countdownTo) {
-      startCountdownTimer(countdownTo);
     }
   </script>
 </body>
