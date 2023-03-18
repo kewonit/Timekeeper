@@ -21,3 +21,122 @@
     margin-top: auto;
   }
 </style>
+<footer class="footer"></footer>
+<body>
+  <script>
+    var events = [
+      // JEE Adv Date [timer1]
+      { name: "Event 1", date: new Date("Jun 04, 2023 00:00:00").getTime() },
+      // NEET [timer2]
+      { name: "Event 2", date: new Date("May 07, 2023 00:00:00").getTime() },
+      // BITSAT [timer3]
+      { name: "Event 3", date: new Date("May 21, 2023 00:00:00").getTime() },
+      // MHTCET [timer4]
+      { name: "Event 4", date: new Date("May 09, 2023 00:00:00").getTime() },
+      // JEE Mains [timer5]
+      { name: "Event 5", date: new Date("Apr 06, 2023 00:00:00").getTime() },
+    ];
+
+    var countdowns = [];
+
+    // create countdowns
+    for (var i = 0; i < events.length; i++) {
+      var countDownDate = events[i].date;
+      var timerId = "timer" + (i + 1);
+      var x;
+
+      function startCountdown(id, date) {
+        x = setInterval(function () {
+          var now = new Date().getTime();
+          var distance = date - now;
+          if (distance > 0) {
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor(
+              (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            var minutes = Math.floor(
+              (distance % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            var countdownHtml =
+              '<div class="grid grid-flow-col gap-5 text-center auto-cols-max">' +
+              '<div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">' +
+              '<span class="countdown font-mono text-9xl">' +
+              '<span style="--value:' +
+              (days < 10 ? "0" : "") +
+              days +
+              ';">' +
+              (days < 10 ? "0" : "") +
+              days +
+              "</span>" +
+              "</span>" +
+              "days" +
+              "</div>" +
+              '<div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">' +
+              '<span class="countdown font-mono text-9xl">' +
+              '<span style="--value:' +
+              (hours < 10 ? "0" : "") +
+              hours +
+              ';">' +
+              (hours < 10 ? "0" : "") +
+              hours +
+              "</span>" +
+              "</span>" +
+              "hours" +
+              "</div>" +
+              '<div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">' +
+              '<span class="countdown font-mono text-9xl">' +
+              '<span style="--value:' +
+              (minutes < 10 ? "0" : "") +
+              minutes +
+              ';">' +
+              (minutes < 10 ? "0" : "") +
+              minutes +
+              "</span>" +
+              "</span>" +
+              "min" +
+              "</div>" +
+              '<div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">' +
+              '<span class="countdown font-mono text-9xl">' +
+              '<span style="--value:' +
+              (seconds < 10 ? "0" : "") +
+              seconds +
+              ';">' +
+              (seconds < 10 ? "0" : "") +
+              seconds +
+              "</span>" +
+              "</span>" +
+              "sec" +
+              "</div>" +
+              "</div>";
+
+            document.getElementById(id).innerHTML = countdownHtml;
+          } else {
+            clearInterval(x);
+            document.getElementById(id).innerHTML = "Best of Luck";
+          }
+        }, 1000);
+      }
+
+      countdowns.push({ id: timerId, date: countDownDate });
+
+      startCountdown(timerId, countDownDate);
+    }
+
+    // handle event selection change
+    function toggleEvent() {
+      var currentEvent = document.getElementById("event-select").value;
+      var countDownDate = events[currentEvent].date;
+      var timerId = "timer" + (currentEvent + 1);
+      var x;
+
+      clearInterval(countdowns[currentEvent].x);
+
+      startCountdown(timerId, countDownDate);
+    }
+
+    document
+      .getElementById("event-select")
+      .addEventListener("change", toggleEvent);
+  </script>
+</body>
