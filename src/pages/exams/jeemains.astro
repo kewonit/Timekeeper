@@ -6,7 +6,7 @@ import "../../../src/global.css";
 import Minibar from "../../layouts/minibar.astro";
 ---
 
-<Head />
+<Head client:load />
 <hr />
 <section>
   <main>
@@ -17,7 +17,7 @@ import Minibar from "../../layouts/minibar.astro";
   </main>
 </section>
 <hr />
-<Timer />
+<Timer client:load />
 <!----- Second Line ----->
 <hr />
 <div class="stats flex shadow">
