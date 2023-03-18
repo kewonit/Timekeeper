@@ -36,24 +36,24 @@ import "../../src/global.css";
           var nowx = new Date().getTime();
           var distancex = datex - nowx;
           if (distancex > 0) {
-            var days = Math.floor(distancex / (1000 * 60 * 60 * 24));
-            var hours = Math.floor(
+            var daysx = Math.floor(distancex / (1000 * 60 * 60 * 24));
+            var hoursx = Math.floor(
               (distancex % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
             );
-            var minutes = Math.floor(
+            var minutesx = Math.floor(
               (distancex % (1000 * 60 * 60)) / (1000 * 60)
             );
-            var seconds = Math.floor((distancex % (1000 * 60)) / 1000);
+            var secondsx = Math.floor((distancex % (1000 * 60)) / 1000);
             var countdownHtml =
               '<div class="grid grid-flow-col gap-5 text-center auto-cols-max">' +
               '<div class="flex flex-col">' +
               '<span class="countdown font-mono text-4xl">' +
               '<span style="--value:' +
-              (days < 10 ? "0" : "") +
-              days +
+              (daysx < 10 ? "0" : "") +
+              daysx +
               ';">' +
-              (days < 10 ? "0" : "") +
-              days +
+              (daysx < 10 ? "0" : "") +
+              daysx +
               "</span>" +
               "</span>" +
               "days" +
@@ -61,11 +61,11 @@ import "../../src/global.css";
               '<div class="flex flex-col">' +
               '<span class="countdown font-mono text-4xl">' +
               '<span style="--value:' +
-              (hours < 10 ? "0" : "") +
-              hours +
+              (hoursx < 10 ? "0" : "") +
+              hoursx +
               ';">' +
-              (hours < 10 ? "0" : "") +
-              hours +
+              (hoursx < 10 ? "0" : "") +
+              hoursx +
               "</span>" +
               "</span>" +
               "hours" +
@@ -73,11 +73,11 @@ import "../../src/global.css";
               '<div class="flex flex-col">' +
               '<span class="countdown font-mono text-4xl">' +
               '<span style="--value:' +
-              (minutes < 10 ? "0" : "") +
-              minutes +
+              (minutesx < 10 ? "0" : "") +
+              minutesx +
               ';">' +
-              (minutes < 10 ? "0" : "") +
-              minutes +
+              (minutesx < 10 ? "0" : "") +
+              minutesx +
               "</span>" +
               "</span>" +
               "min" +
@@ -85,11 +85,11 @@ import "../../src/global.css";
               '<div class="flex flex-col">' +
               '<span class="countdown font-mono text-4xl">' +
               '<span style="--value:' +
-              (seconds < 10 ? "0" : "") +
-              seconds +
+              (secondsx < 10 ? "0" : "") +
+              secondsx +
               ';">' +
-              (seconds < 10 ? "0" : "") +
-              seconds +
+              (secondsx < 10 ? "0" : "") +
+              secondsx +
               "</span>" +
               "</span>" +
               "sec" +
