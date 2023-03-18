@@ -24,6 +24,15 @@ import "../../src/global.css";
     ];
 
     var countdowns = [];
+    var idCounter = 1; // counter for generating unique ids
+
+    // create countdowns
+    for (var i = 0; i < events.length; i++) {
+      var countDownDate = events[i].date;
+      var timerId = "xtimer" + idCounter++; // generate unique id
+
+      // ...
+    }
 
     // create countdowns
     for (var i = 0; i < events.length; i++) {
