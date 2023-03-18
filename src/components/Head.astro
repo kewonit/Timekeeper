@@ -21,7 +21,7 @@
     // create countdownsx
     for (var i = 0; i < eventsx.length; i++) {
       var countDownDatex = eventsx[i].datex;
-      var timerIdx = "xtimer" + (i + 2);
+      var timerIdx = "xtimer" + (i + 1);
       var x;
 
       function startCountdownx(idx, datex) {
@@ -104,12 +104,12 @@
 
     // handle event selection change
     function toggleEvent() {
-      var currentEvent = document.getElementById("xevent-select").value;
-      var countDownDatex = eventsx[currentEvent].datex;
-      var timerIdx = " xtimer" + (currentEvent + 1);
+      var currentEventx = document.getElementById("xevent-select").value;
+      var countDownDatex = eventsx[currentEventx].datex;
+      var timerIdx = " xtimer" + (currentEventx + 1);
       var x;
 
-      xclearInterval(countdownsx[currentEvent].x);
+      xclearInterval(countdownsx[currentEventx].x);
 
       startCountdownx(timerIdx, countDownDatex);
     }
