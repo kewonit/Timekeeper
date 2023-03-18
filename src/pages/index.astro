@@ -1,204 +1,62 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
+import Layout from "../layouts/Layout.astro";
+import Head from "../components/Head.astro";
 import Footer from "../components/Footer.astro";
-import Menu from "../components/menu.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
+import Cardx from "../components/cardx.astro";
+import "../global.css";
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <Menu />
+<Head />
+<Layout title="Time Keeper">
+  <main>
+    <h1>Welcome to <span class="text-gradient">TimeKeeper</span></h1>
+  </main>
+  <Cardx />
+</Layout>
+<Footer />
 
-  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-
-  <body>
-    <h1>
-      The Time
-      <span class="magic">
-        <span class="magic-star">
-          <svg viewBox="0 0 512 512">
-            <path
-              d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
-            ></path>
-          </svg>
-        </span>
-        <span class="magic-star">
-          <svg viewBox="0 0 512 512">
-            <path
-              d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
-            ></path>
-          </svg>
-        </span>
-        <span class="magic-star">
-          <svg viewBox="0 0 512 512">
-            <path
-              d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
-            ></path>
-          </svg>
-        </span>
-        <span class="magic-text">Keeper.</span>
-      </span>
-      <br />
-    </h1>
-    <h2>visualize time remaining until your next exam like never before</h2>
-    <Footer />
-    <style>
-      :root {
-        --purple: rgb(123, 31, 162);
-        --violet: rgb(103, 58, 183);
-        --pink: rgb(244, 143, 177);
-      }
-
-      @keyframes background-pan {
-        from {
-          background-position: 0% center;
-        }
-
-        to {
-          background-position: -200% center;
-        }
-      }
-
-      @keyframes scale {
-        from,
-        to {
-          transform: scale(0);
-        }
-
-        50% {
-          transform: scale(1);
-        }
-      }
-
-      @keyframes rotate {
-        from {
-          transform: rotate(0deg);
-        }
-
-        to {
-          transform: rotate(180deg);
-        }
-      }
-
-      body {
-        background-color: rgb(10, 10, 10);
-        display: grid;
-        margin: 0px;
-        height: 0vh;
-        place-items: center;
-        align-content: center;
-      }
-      h1 {
-        color: white;
-        font-family: "Rubik", sans-serif;
-        font-size: clamp(6em, 6vw, 8em);
-        font-weight: 400;
-        margin: 0px;
-        padding-top: 400px;
-        text-align: center;
-        height: 15vh;
-      }
-
-      h1 > .magic {
-        display: inline-block;
-        position: relative;
-      }
-
-      h1 > .magic > .magic-star {
-        --size: clamp(20px, 1.5vw, 30px);
-
-        animation: scale 700ms ease forwards;
-        display: block;
-        height: var(--size);
-        left: var(--star-left);
-        position: absolute;
-        top: var(--star-top);
-        width: var(--size);
-      }
-
-      h1 > .magic > .magic-star > svg {
-        animation: rotate 1000ms linear infinite;
-        display: block;
-        opacity: 0.7;
-      }
-
-      h1 > .magic > .magic-star > svg > path {
-        fill: var(--violet);
-      }
-
-      h1 > .magic > .magic-text {
-        animation: background-pan 3s linear infinite;
-        background: linear-gradient(
-          to right,
-          var(--purple),
-          var(--violet),
-          var(--pink),
-          var(--purple)
-        );
-        background-size: 200%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        white-space: nowrap;
-      }
-      h2 {
-        color: white;
-        font-family: "Rubik", sans-serif;
-        font-size: clamp(1.5em, 1.5vw, 3em);
-        font-weight: 400;
-        margin: 0px;
-        padding: 0px;
-        text-align: center;
-      }
-      @media only screen and (max-width: 750px) {
-        h2 {
-          color: white;
-          font-family: "Rubik", sans-serif;
-          font-size: clamp(1.5em, 1.5vw, 3em);
-          font-weight: 400;
-          margin: 0px;
-          padding: 0px;
-          text-align: center;
-          position: relative;
-          padding: 20px;
-          padding-top: 130px;
-        }
-        h1 {
-          color: white;
-          font-family: "Rubik", sans-serif;
-          font-size: clamp(5em, 5vw, 6em);
-          font-weight: 400;
-          margin: 0px;
-          padding-top: 600px;
-          text-align: center;
-          height: 15vh;
-        }
-      }
-    </style>
-    <script>
-      let index = 0,
-        interval = 1000;
-      const rand = (min: number, max: number): number =>
-        Math.floor(Math.random() * (max - min + 1)) + min;
-
-      const animate = (star: HTMLElement) => {
-        star.style.setProperty("--star-left", `${rand(-10, 100)}%`);
-        star.style.setProperty("--star-top", `${rand(-40, 80)}%`);
-
-        star.style.animation = "none";
-        star.offsetHeight;
-        star.style.animation = "";
-      };
-
-      for (const element of document.getElementsByClassName("magic-star")) {
-        if (element instanceof HTMLElement) {
-          setTimeout(() => {
-            animate(element);
-
-            setInterval(() => animate(element), 1000);
-          }, index++ * (interval / 3));
-        }
-      }
-    </script>
-  </body>
-</html>
+<style>
+  main {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 80ch;
+  }
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0;
+    text-align: center;
+  }
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  .instructions {
+    line-height: 1.6;
+    margin: 1rem 0;
+    border: 1px solid rgba(var(--accent), 25%);
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.4rem;
+  }
+  .instructions code {
+    font-size: 0.875em;
+    font-weight: bold;
+    background: rgba(var(--accent), 12%);
+    color: rgb(var(--accent));
+    border-radius: 4px;
+    padding: 0.3em 0.45em;
+  }
+  .instructions strong {
+    color: rgb(var(--accent));
+  }
+  .link-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+    gap: 1rem;
+    padding: 0;
+  }
+</style>

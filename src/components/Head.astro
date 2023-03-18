@@ -1,0 +1,125 @@
+<link rel="icon" type="image/x-icon" href="../public/favicon.ico" />
+<div class="navbar bg-base-100">
+  <div class="flex-1">
+    <a class="btn btn-ghost normal-case text-xl" href="http://127.0.0.1:3000/"
+      >TimeKeeper</a
+    >
+  </div>
+  <div class="flex-none">
+    <ul class="menu menu-horizontal px-1">
+      <li tabindex="0">
+        <a>
+          Exams
+          <svg
+            class="fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            ><path
+              d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+            ></path></svg
+          >
+        </a>
+        <ul class="p-2 bg-base-100">
+          <li><a href="../exams/jeemains">Jee Mains</a></li>
+          <li><a href="../exams/jeeadvanced">Jee Adv</a></li>
+          <li><a href="../exams/neet">NEET</a></li>
+          <li><a href="../exams/bitsat">BITSAT</a></li>
+          <li><a href="../exams/mhtcet">MHT-CET</a></li>
+          <li>
+            <a target="_blank" href="https://www.reddit.com/r/mht_cet/"
+              >SubReddit <br />for MHTCET</a
+            >
+          </li>
+        </ul>
+      </li>
+      <li><a id="popup-button">vation</a></li>
+    </ul>
+  </div>
+</div>
+<div id="popup-container">
+  <div id="popup-content">
+    <h1>"insert motivation quote" Best of Luck</h1>
+  </div>
+</div>
+<style>
+  #popup-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+  }
+
+  #popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    color: white;
+  }
+
+  #popup-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  #popup-content p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+
+  .fade-in {
+    animation-name: fade-in;
+    animation-duration: 1s;
+  }
+
+  .fade-out {
+    animation-name: fade-out;
+    animation-duration: 1s;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+</style>
+<script>
+  const button = document.getElementById("popup-button");
+  const container = document.getElementById("popup-container");
+
+  button.addEventListener("click", () => {
+    container.classList.add("fade-in");
+    container.style.display = "flex";
+
+    setTimeout(() => {
+      container.classList.remove("fade-in");
+      container.classList.add("fade-out");
+
+      setTimeout(() => {
+        container.classList.remove("fade-out");
+        container.style.display = "none";
+      }, 1000);
+    }, 3000);
+  });
+</script>

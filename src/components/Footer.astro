@@ -1,36 +1,23 @@
----
-const today = new Date();
----
-
-<footer class="footer">
-  <a> &copy; {today.getFullYear()} JeeTard here. No rights reserved.</a>
-  <br />
-  <a href="https://github.com/MeowthyVoyager/Exam-Timekeeper">
-    It's GNU, feel free to leave a star
-  </a>
+<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+  <div>
+    <p>Built by u/KewKartik (meowww#1628)</p>
+    <p></p>
+    <p class="max-w-screen-lg">
+      It is strongly recommended to double-check the information provided on
+      this website with official sources to ensure its accuracy. This website
+      holds no responsibility for any damages, losses, or inconveniences arising
+      from the use of its services.
+    </p>
+  </div>
 </footer>
-<body
-  ><!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PF9S037SJQ"
-  ></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
 
-    gtag("config", "G-PF9S037SJQ");
-  </script>
-  <style>
-    .footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #101011;
-      text-align: center;
-      padding: 10px;
-    }
-  </style>
-</body>
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  footer {
+    margin-top: auto;
+  }
+</style>

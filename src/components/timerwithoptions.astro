@@ -5,22 +5,15 @@ const today = new Date();
 <footer class="footer"></footer>
 <body>
   <script>
-    const fullscreenButton = document.getElementById("fullscreen-button");
-    const exitButton = document.getElementById("exit-button");
-    const timer = document.getElementById("timer");
-
-    fullscreenButton.addEventListener("click", () => {
-      timer.classList.add("fullscreen");
-      exitButton.style.display = "block";
-    });
-
-    exitButton.addEventListener("click", () => {
-      timer.classList.remove("fullscreen");
-      exitButton.style.display = "none";
-    });
-
     var events = [
-      { name: "Day 1", date: new Date("May 21, 2023 00:00:00").getTime() },
+      { name: "Day 1", date: new Date("Apr 06, 2023 00:00:00").getTime() },
+      { name: "Day 2", date: new Date("Apr 07, 2023 00:00:00").getTime() },
+      { name: "Day 3", date: new Date("Apr 08, 2023 00:00:00").getTime() },
+      { name: "Day 4", date: new Date("Apr 09, 2023 00:00:00").getTime() },
+      { name: "Day 5", date: new Date("Apr 10, 2023 00:00:00").getTime() },
+      { name: "Day 6", date: new Date("Apr 11, 2023 00:00:00").getTime() },
+      { name: "Day 7", date: new Date("Apr 12, 2023 00:00:00").getTime() },
+      { name: "Day 8", date: new Date("Jun 4, 2023 00:00:00").getTime() },
     ];
     //06, 07, 08, 09, 10, 11 and 12 April 2023.
     // Check if there is a saved event in localStorage
@@ -31,7 +24,6 @@ const today = new Date();
     } else {
       currentEvent = 0;
     }
-
     var countDownDate = events[currentEvent].date;
     document.getElementById("event-select").value = currentEvent;
     var x;
@@ -42,7 +34,6 @@ const today = new Date();
         var now = new Date().getTime();
         // Find the distance between now and the count down date
         var distance = countDownDate - now;
-
         // Time calculations for days, hours, minutes and seconds
         if (distance > 0) {
           var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -51,7 +42,6 @@ const today = new Date();
           );
           var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
           var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
           // Display the result in the element with id="timer"
           document.getElementById("timer").innerHTML =
             '<span style="font-family: monospace">' +
@@ -83,78 +73,8 @@ const today = new Date();
       clearInterval(x);
       startCountdown();
     }
-
     document
       .getElementById("event-select")
       .addEventListener("change", toggleEvent);
-
-    //Todo list
-    const inputElem = document.querySelector("#input-name");
-    const form = document.querySelector("#form");
-    const listElem = document.querySelector("#to-do-list");
-    const buttonElem = document.querySelector("#to-do-list button");
-
-    const toDoArray = JSON.parse(localStorage.getItem("to-do-list")) || [];
-
-    function updateList() {
-      listElem.innerHTML = "";
-
-      for (const key in toDoArray) {
-        const li = document.createElement("li");
-
-        const span = document.createElement("span");
-        span.innerText = toDoArray[key];
-
-        const button = document.createElement("button");
-        button.innerText = "Delete";
-        button.setAttribute("key", key);
-        button.classList.add("delete");
-
-        li.appendChild(span);
-        li.appendChild(button);
-        listElem.appendChild(li);
-      }
-
-      localStorage.setItem("to-do-list", JSON.stringify(toDoArray));
-    }
-
-    function addToList(value) {
-      if (value === "") return;
-
-      if (toDoArray.length >= 1) {
-        toDoArray.splice(0, 1, value);
-      } else {
-        toDoArray.push(value);
-      }
-
-      updateList();
-      inputElem.value = "";
-      inputElem.focus();
-    }
-
-    function deleteFromList(key) {
-      toDoArray.splice(Number(key), 1);
-
-      updateList();
-      inputElem.value = "";
-      inputElem.focus();
-    }
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      addToList(inputElem.value);
-    });
-
-    document.addEventListener("click", (e) => {
-      const el = e.target;
-      if (el.classList.contains("delete")) {
-        deleteFromList(el.getAttribute("key"));
-      }
-    });
-
-    updateList();
   </script>
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Ubuntu");
-  </style>
 </body>

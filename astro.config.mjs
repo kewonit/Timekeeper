@@ -1,12 +1,8 @@
 import { defineConfig } from 'astro/config';
-import mdx from '@astrojs/mdx';
-import cloudflare from '@astrojs/cloudflare';
-import sitemap from '@astrojs/sitemap';
+
+import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://examkeeper.pages.dev/',
-  integrations: [mdx(), sitemap()],
-  output: 'server',
-  adapter: cloudflare()
+  integrations: [tailwind()]
 });
