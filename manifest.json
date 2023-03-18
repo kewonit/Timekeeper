@@ -3,7 +3,7 @@
     "name": "JEE NEET JEE ADV BITSAT MHT-CET 2023 Countdown ",
     "icons": [
         {
-            "src": "./public/favicon.ico",
+            "src": "./favicon.ico",
             "type": "image/svg+xml",
             "sizes": "512x512"
         }
@@ -22,7 +22,7 @@
             "url": "/today?source=pwa",
             "icons": [
                 {
-                    "src": "./public/favicon.ico",
+                    "src": "./favicon.ico",
                     "sizes": "192x192"
                 }
             ]
