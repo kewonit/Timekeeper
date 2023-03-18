@@ -24,23 +24,14 @@ import "../../src/global.css";
     ];
 
     var countdowns = [];
-    var idCounter = 1; // counter for generating unique ids
 
     // create countdowns
     for (var i = 0; i < events.length; i++) {
-      var countDownDate = events[i].date;
-      var timerId = "xtimer" + idCounter++; // generate unique id
-
-      // ...
-    }
-
-    // create countdowns
-    for (var i = 0; i < events.length; i++) {
-      var countDownDate = events[i].date;
-      var timerId = "xtimer" + (i + 1);
+      var countDownDatex = events[i].date;
+      var timerIdx = "xtimer" + (i + 1);
       var x;
 
-      function startCountdown(id, date) {
+      function startCountdown(idx, date) {
         x = setInterval(function () {
           var now = new Date().getTime();
           var distance = date - now;
@@ -105,29 +96,29 @@ import "../../src/global.css";
               "</div>" +
               "</div>";
 
-            document.getElementById(id).innerHTML = countdownHtml;
+            document.getElementById(idx).innerHTML = countdownHtml;
           } else {
             clearInterval(x);
-            document.getElementById(id).innerHTML = "Best of Luck";
+            document.getElementById(idx).innerHTML = "Best of Luck";
           }
         }, 1000);
       }
 
-      countdowns.push({ id: timerId, date: countDownDate });
+      countdowns.push({ idx: timerIdx, date: countDownDatex });
 
-      startCountdown(timerId, countDownDate);
+      startCountdown(timerIdx, countDownDatex);
     }
 
     // handle event selection change
     function toggleEvent() {
       var currentEvent = document.getElementById("xevent-select").value;
-      var countDownDate = events[currentEvent].date;
-      var timerId = " xtimer" + (currentEvent + 1);
+      var countDownDatex = events[currentEvent].date;
+      var timerIdx = " xtimer" + (currentEvent + 1);
       var x;
 
       clearInterval(countdowns[currentEvent].x);
 
-      startCountdown(timerId, countDownDate);
+      startCountdown(timerIdx, countDownDatex);
     }
 
     document
