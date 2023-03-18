@@ -8,42 +8,42 @@ import "../../src/global.css";
 <!----- TODO: Take the data stored in localstorage from the jeemains.astro page and use it here ----->
 <body>
   <script>
-    var events = [
+    var eventsx = [
       // JEE Mains Date [xtimer1]
-      { name: "Event x1", date: new Date("Apr 06, 2023 00:00:00").getTime() },
+      { name: "Event x1", datex: new Date("Apr 06, 2023 00:00:00").getTime() },
       // JEE Adv Date [xtimer1]
-      { name: "Event x2", date: new Date("Jun 04, 2023 00:00:00").getTime() },
+      { name: "Event x2", datex: new Date("Jun 04, 2023 00:00:00").getTime() },
       // NEET [xtimer2]
-      { name: "Event x3", date: new Date("May 07, 2023 00:00:00").getTime() },
+      { name: "Event x3", datex: new Date("May 07, 2023 00:00:00").getTime() },
       // BITSAT [xtimer3]
-      { name: "Event x4", date: new Date("May 21, 2023 00:00:00").getTime() },
+      { name: "Event x4", datex: new Date("May 21, 2023 00:00:00").getTime() },
       // MHTCET [xtimer4]
-      { name: "Event x5", date: new Date("May 09, 2023 00:00:00").getTime() },
+      { name: "Event x5", datex: new Date("May 09, 2023 00:00:00").getTime() },
       // WBJEE [xtimer5]
-      { name: "Event x6", date: new Date("Apr 30, 2023 00:00:00").getTime() },
+      { name: "Event x6", datex: new Date("Apr 30, 2023 00:00:00").getTime() },
     ];
 
     var countdowns = [];
 
     // create countdowns
-    for (var i = 0; i < events.length; i++) {
-      var countDownDatex = events[i].date;
+    for (var i = 0; i < eventsx.length; i++) {
+      var countDownDatex = eventsx[i].datex;
       var timerIdx = "xtimer" + (i + 1);
       var x;
 
-      function startCountdown(idx, date) {
+      function startCountdown(idx, datex) {
         x = setInterval(function () {
-          var now = new Date().getTime();
-          var distance = date - now;
-          if (distance > 0) {
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var nowx = new Date().getTime();
+          var distancex = datex - nowx;
+          if (distancex > 0) {
+            var days = Math.floor(distancex / (1000 * 60 * 60 * 24));
             var hours = Math.floor(
-              (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+              (distancex % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
             );
             var minutes = Math.floor(
-              (distance % (1000 * 60 * 60)) / (1000 * 60)
+              (distancex % (1000 * 60 * 60)) / (1000 * 60)
             );
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            var seconds = Math.floor((distancex % (1000 * 60)) / 1000);
             var countdownHtml =
               '<div class="grid grid-flow-col gap-5 text-center auto-cols-max">' +
               '<div class="flex flex-col">' +
@@ -104,7 +104,7 @@ import "../../src/global.css";
         }, 1000);
       }
 
-      countdowns.push({ idx: timerIdx, date: countDownDatex });
+      countdowns.push({ idx: timerIdx, datex: countDownDatex });
 
       startCountdown(timerIdx, countDownDatex);
     }
@@ -112,7 +112,7 @@ import "../../src/global.css";
     // handle event selection change
     function toggleEvent() {
       var currentEvent = document.getElementById("xevent-select").value;
-      var countDownDatex = events[currentEvent].date;
+      var countDownDatex = eventsx[currentEvent].datex;
       var timerIdx = " xtimer" + (currentEvent + 1);
       var x;
 
