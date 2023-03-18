@@ -23,9 +23,9 @@ import "../../src/global.css";
       { name: "Event x6", datex: new Date("Apr 30, 2023 00:00:00").getTime() },
     ];
 
-    var countdowns = [];
+    var countdownsx = [];
 
-    // create countdowns
+    // create countdownsx
     for (var i = 0; i < eventsx.length; i++) {
       var countDownDatex = eventsx[i].datex;
       var timerIdx = "xtimer" + (i + 1);
@@ -104,7 +104,7 @@ import "../../src/global.css";
         }, 1000);
       }
 
-      countdowns.push({ idx: timerIdx, datex: countDownDatex });
+      countdownsx.push({ idx: timerIdx, datex: countDownDatex });
 
       startCountdown(timerIdx, countDownDatex);
     }
@@ -116,7 +116,7 @@ import "../../src/global.css";
       var timerIdx = " xtimer" + (currentEvent + 1);
       var x;
 
-      clearInterval(countdowns[currentEvent].x);
+      clearInterval(countdownsx[currentEvent].x);
 
       startCountdown(timerIdx, countDownDatex);
     }
