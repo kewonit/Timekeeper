@@ -1,22 +1,148 @@
-<footer class="footer"></footer>
+<!----- Second Line ----->
+<hr />
+<div class="stats flex shadow">
+  <div class="stat block">
+    <div class="stat-figure text-rose-300">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block w-8 h-8 stroke-current"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        /></svg
+      >
+    </div>
+    <div class="stat-title">
+      <a href="../exams/jeemains">Jee Mains (6th Apr)</a>
+    </div>
+    <div id="xtimer1" class="" />
+  </div>
+
+  <div class="stat block">
+    <div class="stat-figure text-teal-300">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block w-8 h-8 stroke-current"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        /></svg
+      >
+    </div>
+    <div class="stat-title">
+      <a href="../exams/jeeadvanced">Jee Adv</a>
+    </div>
+    <div id="xtimer2" class="" />
+  </div>
+
+  <div class="stat block">
+    <div class="stat-figure text-orange-400">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block w-8 h-8 stroke-current"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        /></svg
+      >
+    </div>
+    <div class="stat-title"><a href="../exams/neet">NEET</a></div>
+    <div id="xtimer3" class="" />
+  </div>
+</div>
+<hr />
+<!----- Second Line ----->
+<div class="stats flex shadow">
+  <div class="stat block">
+    <div class="stat-figure text-orange-300">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block w-8 h-8 stroke-current"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        /></svg
+      >
+    </div>
+    <div class="stat-title"><a href="../exams/bitsat">BITSAT (S1)</a></div>
+    <div id="xtimer4" class="" />
+  </div>
+
+  <div class="stat block">
+    <div class="stat-figure text-amber-300">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block w-8 h-8 stroke-current"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        /></svg
+      >
+    </div>
+    <div class="stat-title"><a href="../exams/mhtcet">MHT-CET</a></div>
+    <div id="xtimer5" class="" />
+  </div>
+
+  <div class="stat block">
+    <div class="stat-figure text-lime-400">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block w-8 h-8 stroke-current"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        /></svg
+      >
+    </div>
+    <div class="stat-title">WBJEE</div>
+    <div id="xtimer6" class="" />
+  </div>
+</div>
+<hr />
+
+<footer class="footer" />
 <!----- TODO: Instead of calculating dates twice, try and use it from timer.astro ----->
 <!----- TODO: Take the data stored in localstorage from the jeemains.astro page and use it here ----->
 <body>
   <script>
-  const today = new Date();
+    const today = new Date();
 
     var eventsx = [
-      // JEE Mains Date [xtimer1]
+      // JEE Mains [xtimer1]
       { name: "Event x1", datex: new Date("Apr 06, 2023 00:00:00").getTime() },
-      // JEE Adv Date [xtimer1]
+      // JEE Adv [xtimer2]
       { name: "Event x2", datex: new Date("Jun 04, 2023 00:00:00").getTime() },
-      // NEET [xtimer2]
+      // NEET [xtimer3]
       { name: "Event x3", datex: new Date("May 07, 2023 00:00:00").getTime() },
-      // BITSAT [xtimer3]
+      // BITSAT [xtimer4]
       { name: "Event x4", datex: new Date("May 21, 2023 00:00:00").getTime() },
-      // MHTCET [xtimer4]
+      // MHTCET [xtimer5]
       { name: "Event x5", datex: new Date("May 09, 2023 00:00:00").getTime() },
-      // WBJEE [xtimer5]
+      // WBJEE [xtimer6]
       { name: "Event x6", datex: new Date("Apr 30, 2023 00:00:00").getTime() },
     ];
 
