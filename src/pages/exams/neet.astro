@@ -9,22 +9,6 @@ import Layout from "../../layouts/Layout.astro";
 
 <head>
   <title>NEET</title>
-  <script>
-    // Set the original title of the webpage
-    var originalTitle = document.title;
-
-    // Add an event listener for changes in page visibility
-    document.addEventListener("visibilitychange", function () {
-      // If the page is hidden, append "(Away)" to the title
-      if (document.hidden) {
-        document.title = "PADHLE BSDK";
-      }
-      // If the page is visible, remove "(Away)" from the title
-      else {
-        document.title = originalTitle;
-      }
-    });
-  </script>
 </head>
 <Head />
 <hr />
