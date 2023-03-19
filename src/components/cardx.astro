@@ -223,33 +223,16 @@
   }
 
   @media (max-width: 500px) {
-    .card {
-      height: 180px;
-    }
-
-    .card-image {
-      height: 80px;
-    }
-
-    .card-image > i {
-      font-size: 3em;
-    }
-
-    .card-info-wrapper {
-      padding: 0px 10px;
-    }
-
-    .card-info > i {
-      font-size: 0.8em;
-    }
-
-    .card-info-title > a {
-      font-size: 0.9em;
-    }
-
-    .card-info-title > h4 {
-      font-size: 0.8em;
-      margin-top: 4px;
+    .card > .card-content {
+      background-color: var(--card-color);
+      border-radius: inherit;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      inset: 1px;
+      padding: 0px;
+      position: absolute;
+      z-index: 2;
     }
   }
 
@@ -262,7 +245,7 @@
   @media only screen and (max-width: 600px) {
     #cards {
       max-width: 1000px;
-      padding: 0px 0px;
+      padding-bottom: 45px;
     }
   }
   main {

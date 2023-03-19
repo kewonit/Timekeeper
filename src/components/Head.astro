@@ -38,7 +38,7 @@
 </div>
 <div id="popup-container">
   <div id="popup-content">
-    <h1>"insert motivation quote" Best of Luck</h1>
+    <h1 id="quote-display">Motivation Quote Here</h1>
   </div>
 </div>
 <style>
@@ -64,7 +64,7 @@
     color: white;
   }
 
-  #popup-content h2 {
+  #popup-content h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
   }
@@ -105,8 +105,23 @@
 <script>
   const button = document.getElementById("popup-button");
   const container = document.getElementById("popup-container");
+  const quoteDisplay = document.getElementById("quote-display");
+
+  const motivationQuotes = [
+    "Believe you can and you're halfway there. -Theodore Roosevelt",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts. -Winston Churchill",
+    "The only way to do great work is to love what you do. -Steve Jobs",
+    "The best way to predict the future is to create it. -Abraham Lincoln",
+    "You miss 100% of the shots you don't take. -Wayne Gretzky",
+  ];
 
   button.addEventListener("click", () => {
+    const randomQuoteIndex = Math.floor(
+      Math.random() * motivationQuotes.length
+    );
+    const randomQuote = motivationQuotes[randomQuoteIndex];
+    quoteDisplay.innerHTML = randomQuote;
+
     container.classList.add("fade-in");
     container.style.display = "flex";
 
@@ -118,6 +133,6 @@
         container.classList.remove("fade-out");
         container.style.display = "none";
       }, 1000);
-    }, 3000);
+    }, 4000);
   });
 </script>
