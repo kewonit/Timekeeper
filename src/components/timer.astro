@@ -92,7 +92,10 @@ import "../../src/global.css";
               "</div>" +
               "</div>";
 
-            document.getElementById(id).innerHTML = countdownHtml;
+            var element = document.getElementById(id);
+            if (element) {
+              element.innerHTML = countdownHtml;
+            }
           } else {
             clearInterval(x);
             document.getElementById(id).innerHTML = "Best of Luck";
