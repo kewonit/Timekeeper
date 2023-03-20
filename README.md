@@ -8,7 +8,7 @@ Active: https://exam-timekeeper.pages.dev/
 
 <hr />
 
-![Picture](https://preview.redd.it/w87tglqf7wla1.png?width=1920&format=png&auto=webp&v=enabled&s=b4efcb0ad240ed807e7367530f20430c7d2efd7c)
+![Picture](https://preview.redd.it/f24b9k2rluoa1.png?width=2679&format=png&auto=webp&v=enabled&s=cd3738c4758b45698fe70cf4bd03a3e9a0946557)
 
 ## 🚀 The unexpected problem
 
@@ -37,11 +37,8 @@ Building the project amidst board examinations was a challenging task, but also 
 ├── public/
 ├── src/
 │   ├── components/
-│   │   └──ugpagescomponents/
 │   ├── layouts/
 │   ├── pages/
-│   │   └──ugpages/
-│   └── styles/
 └── package.json
 ```
 
@@ -56,4 +53,3 @@ All commands are run from the root of the project, from a terminal:
 | `npm run build`   | Build your production site to `./dist/`      |
 | `npm run preview` | Preview your build locally, before deploying |
 
-<hr/>
