@@ -1,10 +1,10 @@
-<hr />
+
 
 Active: https://exam-timekeeper.pages.dev/
 
-<hr />
 
-5th March Prod: https://4fb6d276.exam-timekeeper.pages.dev/
+
+5th March Version: https://4fb6d276.exam-timekeeper.pages.dev/
 
 <hr />
 
@@ -18,7 +18,7 @@ It was quite absurd, this was just a countdown timer, yet so many peeps used it.
 
 Despite its simplicity, it seemed that many people found the countdown timer helpful. I received DMs on Discord and Reddit, asking me to add more examinations to the website. So, I decided to expand this project to help even more students.
 
-<hr/>
+
 
 ## 🚀 Making it work
 
@@ -27,6 +27,12 @@ Despite its simplicity, it seemed that many people found the countdown timer hel
 The project is complete as its main feature is working, but adding smaller features would be the cherry on top.
 
 Building the project amidst board examinations was a challenging task, but also a fun and insightful experience.
+
+
+
+## 🌻 Ensuring the importance of FOSS
+
+It was great interacting and just watching the FOSSHack community, it was a great way to step into FOSS development
 
 <hr/>
 
