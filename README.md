@@ -20,7 +20,7 @@ Despite its simplicity, it seemed that many people found the countdown timer hel
 
 
 
-## 🚀 Making it work
+## 🎢 Making it work
 
 "I initially started the project using Svelte, but quickly realized my mistake and switched to Astro within a few hours of the hackathon starting. The development process with Astro was smooth, except for the usual CSS
 
