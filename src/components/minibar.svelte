@@ -17,7 +17,7 @@
       >
     </div>
     <div class="stat-title">
-      <a href="../exams/jeemains">Jee Mains (6th Apr)</a>
+      <a href="../exams/jeemains">Jee Mains (8th Apr)</a>
     </div>
     <div id="xtimer1" class="" />
   </div>
@@ -133,7 +133,7 @@
 
     var eventsx = [
       // JEE Mains [xtimer1]
-      { name: "Event x1", datex: new Date("Apr 06, 2023 00:00:00").getTime() },
+      { name: "Event x1", datex: new Date("Apr 08, 2023 00:00:00").getTime() },
       // JEE Adv [xtimer2]
       { name: "Event x2", datex: new Date("Jun 04, 2023 00:00:00").getTime() },
       // NEET [xtimer3]
