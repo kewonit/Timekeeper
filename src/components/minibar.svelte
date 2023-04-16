@@ -17,7 +17,7 @@
       >
     </div>
     <div class="stat-title">
-      <a href="../exams/jeemains">Jee Mains (15th Apr)</a>
+      <a href="../exams/jeemains">Jee Mains 2024</a>
     </div>
     <div id="xtimer1" class="" />
   </div>
@@ -133,7 +133,7 @@
 
     var eventsx = [
       // JEE Mains [xtimer1]
-      { name: "Event x1", datex: new Date("Apr 15, 2023 00:00:00").getTime() },
+      { name: "Event x1", datex: new Date("Jan 08, 2024 00:00:00").getTime() },
       // JEE Adv [xtimer2]
       { name: "Event x2", datex: new Date("Jun 04, 2023 00:00:00").getTime() },
       // NEET [xtimer3]
@@ -166,11 +166,12 @@
             var minutesx = Math.floor(
               (distancex % (1000 * 60 * 60)) / (1000 * 60)
             );
+
             var secondsx = Math.floor((distancex % (1000 * 60)) / 1000);
             var countdownHtml =
               '<div class="grid grid-flow-col gap-5 text-center auto-cols-max">' +
               '<div class="flex flex-col">' +
-              '<span class="countdown font-mono text-4xl">' +
+              '<span class="font-mono text-4xl ">' +
               '<span style="--value:' +
               (daysx < 10 ? "0" : "") +
               daysx +
