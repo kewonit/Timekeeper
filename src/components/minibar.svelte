@@ -58,7 +58,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/neet">NEET</a></div>
+    <div class="stat-title"><a href="../exams/neet">NEET 24</a></div>
     <div id="xtimer3" class="" />
   </div>
 </div>
@@ -99,7 +99,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/mhtcet">MHT-CET</a></div>
+    <div class="stat-title"><a href="../exams/mhtcet">MHT-CET 24</a></div>
     <div id="xtimer5" class="" />
   </div>
 
@@ -118,7 +118,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title">WBJEE</div>
+    <div class="stat-title">WBJEE 24</div>
     <div id="xtimer6" class="" />
   </div>
 </div>
@@ -137,13 +137,13 @@
       // JEE Adv [xtimer2]
       { name: "Event x2", datex: new Date("Jun 04, 2023 00:00:00").getTime() },
       // NEET [xtimer3]
-      { name: "Event x3", datex: new Date("May 07, 2023 00:00:00").getTime() },
+      { name: "Event x3", datex: new Date("May 07, 2024 00:00:00").getTime() },
       // BITSAT [xtimer4]
       { name: "Event x4", datex: new Date("May 21, 2023 00:00:00").getTime() },
       // MHTCET [xtimer5]
-      { name: "Event x5", datex: new Date("May 09, 2023 00:00:00").getTime() },
+      { name: "Event x5", datex: new Date("May 09, 2024 00:00:00").getTime() },
       // WBJEE [xtimer6]
-      { name: "Event x6", datex: new Date("Apr 30, 2023 00:00:00").getTime() },
+      { name: "Event x6", datex: new Date("Apr 30, 2024 00:00:00").getTime() },
     ];
 
     var countdownsx = [];
