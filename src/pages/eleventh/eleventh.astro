@@ -4,17 +4,21 @@ import Elevenfooter from "../../components/elevenfooter.astro";
 import Eleventimer from "../../components/eleventimer.astro";
 import Elevenminibar from "../../components/elevenminibar.svelte";
 import "../../../src/global.css";
+import Layout from "../../layouts/Layout.astro";
 ---
 
 <head>
   <title>JEE Mains 2024</title>
 </head>
 <Head />
+<Layout title="Time Keeper" />
 <hr />
 <section>
   <main>
     <div class="flex flex-col items-center m-16" id="timerbase">
-      <h1 class="text-5xl font-bold text-center p-8">JEE Mains 2024</h1>
+      <h1 class="text-5xl md:text-3xl font-bold text-center pb-8">
+        JEE Mains 2024
+      </h1>
       <div class="pb-8" id="timer1"></div>
     </div>
   </main>

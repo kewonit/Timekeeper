@@ -2,7 +2,6 @@
 import Head from "../../components/Head.astro";
 import Timer from "../../components/timer.astro";
 import Layout from "../../layouts/Layout.astro";
-
 import "../../../src/global.css";
 import Minibar from "../../components/minibar.svelte";
 import Footer from "../../components/Footer.astro";
@@ -11,22 +10,21 @@ import Footer from "../../components/Footer.astro";
 <head>
   <title>JEE Mains</title>
 </head>
-<Head />
-<hr />
-<section>
-  <main>
-    <div class="flex flex-col items-center m-16" id="timerbase">
-      <h1 class="text-5xl font-bold text-center p-8">Jee Mains 2024</h1>
-      <div class="pb-8" id="timer1"></div>
-    </div>
-  </main>
-</section>
-<hr />
-<Timer />
-<Minibar />
-<Footer />
-<p class="flex flex-col items-center m-6">
-  Date options coming soon, visit <a href="https://jeemainstimer.pages.dev/"
-    >jeemainstimer.pages.dev</a
-  > for timer with options, sorry for the inconvenience
-</p>
+<Layout title="Time Keeper">
+  <Head />
+  <hr />
+  <section>
+    <main>
+      <div class="flex flex-col items-center m-16" id="timerbase">
+        <h1 class="text-5xl md:text-3xl font-bold text-center pb-8">
+          Jee Mains 2024
+        </h1>
+        <div class="pb-8" id="timer1"></div>
+      </div>
+    </main>
+  </section>
+  <hr />
+  <Timer />
+  <Minibar />
+  <Footer />
+</Layout>
