@@ -147,7 +147,7 @@
       // NEET [xtimer3]
       { name: "Event x3", datex: new Date("May 07, 2024 00:00:00").getTime() },
       // BITSAT [xtimer4]
-      { name: "Event x4", datex: new Date("May 21, 2024 00:00:00").getTime() },
+      { name: "Event x4", datex: new Date("Jun 18, 2024 00:00:00").getTime() },
       // MHTCET [xtimer5]
       { name: "Event x5", datex: new Date("May 09, 2024 00:00:00").getTime() },
       // WBJEE [xtimer6]
@@ -241,27 +241,20 @@
       startCountdown(timerIdx, countDownDatex);
     }
 
-    // Wrap the code inside a window.onload event handler
-    window.onload = function () {
-      // Rest of the code goes here...
+    // handle event selection change
+    function toggleEvent() {
+      var currentEvent = document.getElementById("xevent-select").value;
+      var countDownDatex = eventsx[currentEvent].datex;
+      var timerIdx = " xtimer" + (currentEvent + 1);
+      var x;
 
-      // handle event selection change
-      function toggleEvent() {
-        var currentEvent = document.getElementById("xevent-select").value;
-        var countDownDatex = eventsx[currentEvent].datex;
-        var timerIdx = "xtimer" + (currentEvent + 1);
-        var x;
+      clearInterval(countdownsx[currentEvent].x);
 
-        clearInterval(countdownsx[currentEvent].x);
+      startCountdown(timerIdx, countDownDatex);
+    }
 
-        startCountdown(timerIdx, countDownDatex);
-      }
-
-      // Check if the element exists before adding the event listener
-      var xEventSelect = document.getElementById("xevent-select");
-      if (xEventSelect) {
-        xEventSelect.addEventListener("change", toggleEvent);
-      }
-    };
+    document
+      .getElementById("xevent-select")
+      .addEventListener("change", toggleEvent);
   </script>
 </body>
