@@ -241,27 +241,20 @@
       startCountdown(timerIdx, countDownDatex);
     }
 
-    // Wrap the code inside a window.onload event handler
-    window.onload = function () {
-      // Rest of the code goes here...
+    // handle event selection change
+    function toggleEvent() {
+      var currentEvent = document.getElementById("xevent-select").value;
+      var countDownDatex = eventsx[currentEvent].datex;
+      var timerIdx = " xtimer" + (currentEvent + 1);
+      var x;
 
-      // handle event selection change
-      function toggleEvent() {
-        var currentEvent = document.getElementById("xevent-select").value;
-        var countDownDatex = eventsx[currentEvent].datex;
-        var timerIdx = "xtimer" + (currentEvent + 1);
-        var x;
+      clearInterval(countdownsx[currentEvent].x);
 
-        clearInterval(countdownsx[currentEvent].x);
+      startCountdown(timerIdx, countDownDatex);
+    }
 
-        startCountdown(timerIdx, countDownDatex);
-      }
-
-      // Check if the element exists before adding the event listener
-      var xEventSelect = document.getElementById("xevent-select");
-      if (xEventSelect) {
-        xEventSelect.addEventListener("change", toggleEvent);
-      }
-    };
+    document
+      .getElementById("xevent-select")
+      .addEventListener("change", toggleEvent);
   </script>
 </body>
