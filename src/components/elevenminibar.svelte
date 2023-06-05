@@ -1,4 +1,3 @@
-<!----- Second Line ----->
 <hr />
 <div class="stats flex shadow">
   <div class="stat block">

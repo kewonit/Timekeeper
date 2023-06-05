@@ -38,7 +38,7 @@
       >
     </div>
     <div class="stat-title">
-      <a href="../exams/jeeadvanced">Jee Adv</a>
+      <a href="../exams/jeeadvanced">Jee Adv 24</a>
     </div>
     <div id="xtimer2" class="" />
   </div>
@@ -135,7 +135,7 @@
       // JEE Mains [xtimer1]
       { name: "Event x1", datex: new Date("Jan 08, 2024 00:00:00").getTime() },
       // JEE Adv [xtimer2]
-      { name: "Event x2", datex: new Date("Jun 04, 2023 00:00:00").getTime() },
+      { name: "Event x2", datex: new Date("Jun 04, 2024 00:00:00").getTime() },
       // NEET [xtimer3]
       { name: "Event x3", datex: new Date("May 07, 2024 00:00:00").getTime() },
       // BITSAT [xtimer4]
