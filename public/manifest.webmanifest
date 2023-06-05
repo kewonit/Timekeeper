@@ -1,0 +1,21 @@
+{
+	"name": "Exam TimeKeeper for exams like JEE, NEET, BITSAT, MHT-CET",
+	"short_name": "Exam TimeKeeper",
+	"description": "Exam TimeKeeper for exams like JEE, NEET, BITSAT, MHT-CET, made for r/jeeneetards",
+	"icons": [
+		{
+			"src": "/1-min.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+        {
+			"src": "/1-min.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"start_url": "/",
+	"background_color": "#1d1f21",
+	"theme_color": "#2bbc8a",
+	"display": "standalone"
+}
