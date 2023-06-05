@@ -108,20 +108,27 @@ import "../../src/global.css";
       startCountdown(timerId, countDownDate);
     }
 
-    // handle event selection change
-    function toggleEvent() {
-      var currentEvent = document.getElementById("event-select").value;
-      var countDownDate = events[currentEvent].date;
-      var timerId = "timer" + (currentEvent + 1);
-      var x;
+    // Wrap the code inside a window.onload event handler
+    window.onload = function () {
+      // Rest of the code goes here...
 
-      clearInterval(countdowns[currentEvent].x);
+      // handle event selection change
+      function toggleEvent() {
+        var currentEvent = document.getElementById("xevent-select").value;
+        var countDownDatex = eventsx[currentEvent].datex;
+        var timerIdx = "xtimer" + (currentEvent + 1);
+        var x;
 
-      startCountdown(timerId, countDownDate);
-    }
+        clearInterval(countdownsx[currentEvent].x);
 
-    document
-      .getElementById("event-select")
-      .addEventListener("change", toggleEvent);
+        startCountdown(timerIdx, countDownDatex);
+      }
+
+      // Check if the element exists before adding the event listener
+      var xEventSelect = document.getElementById("xevent-select");
+      if (xEventSelect) {
+        xEventSelect.addEventListener("change", toggleEvent);
+      }
+    };
   </script>
 </body>

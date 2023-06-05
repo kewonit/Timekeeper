@@ -1,3 +1,12 @@
+<script>
+  let jeeMainsYear = "Jee Mains (Jan 2024)";
+  let jeeadvanced = "Jee Adv 24";
+  let neet = "NEET 24";
+  let bitsat = "BITSAT 24";
+  let mhtcet = "MHT-CET 24";
+  let wbjee = "WBJEE 24";
+</script>
+
 <hr />
 <div class="stats flex shadow">
   <div class="stat block">
@@ -16,7 +25,7 @@
       >
     </div>
     <div class="stat-title">
-      <a href="../exams/jeemains">Jee Mains (Jan 2024)</a>
+      <a href="../exams/jeemains">{jeeMainsYear}</a>
     </div>
     <div id="xtimer1" class="" />
   </div>
@@ -37,7 +46,7 @@
       >
     </div>
     <div class="stat-title">
-      <a href="../exams/jeeadvanced">Jee Adv 2024</a>
+      <a href="../exams/jeeadvanced">{jeeadvanced}</a>
     </div>
     <div id="xtimer2" class="" />
   </div>
@@ -57,7 +66,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/neet">NEET 2024</a></div>
+    <div class="stat-title"><a href="../exams/neet">{neet}</a></div>
     <div id="xtimer3" class="" />
   </div>
 </div>
@@ -79,7 +88,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/bitsat">BITSAT 2024</a></div>
+    <div class="stat-title"><a href="../exams/bitsat">{bitsat}</a></div>
     <div id="xtimer4" class="" />
   </div>
 
@@ -98,7 +107,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/mhtcet">MHT-CET 2024</a></div>
+    <div class="stat-title"><a href="../exams/mhtcet">{mhtcet}</a></div>
     <div id="xtimer5" class="" />
   </div>
 
@@ -117,7 +126,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title">WBJEE 2024</div>
+    <div class="stat-title">{wbjee}</div>
     <div id="xtimer6" class="" />
   </div>
 </div>
@@ -128,6 +137,9 @@
 <!----- TODO: Take the data stored in localstorage from the jeemains.astro page and use it here ----->
 <body>
   <script>
+    import { onMount } from "svelte";
+
+    onMount(() => {
     const today = new Date();
 
     var eventsx = [
@@ -232,20 +244,28 @@
       startCountdown(timerIdx, countDownDatex);
     }
 
-    // handle event selection change
-    function toggleEvent() {
-      var currentEvent = document.getElementById("xevent-select").value;
-      var countDownDatex = eventsx[currentEvent].datex;
-      var timerIdx = " xtimer" + (currentEvent + 1);
-      var x;
+// Wrap the code inside a window.onload event handler
+window.onload = function() {
+  // Rest of the code goes here...
 
-      clearInterval(countdownsx[currentEvent].x);
+  // handle event selection change
+  function toggleEvent() {
+    var currentEvent = document.getElementById("xevent-select").value;
+    var countDownDatex = eventsx[currentEvent].datex;
+    var timerIdx = "xtimer" + (currentEvent + 1);
+    var x;
 
-      startCountdown(timerIdx, countDownDatex);
-    }
+    clearInterval(countdownsx[currentEvent].x);
 
-    document
-      .getElementById("xevent-select")
-      .addEventListener("change", toggleEvent);
+    startCountdown(timerIdx, countDownDatex);
+  }
+
+  // Check if the element exists before adding the event listener
+  var xEventSelect = document.getElementById("xevent-select");
+  if (xEventSelect) {
+    xEventSelect.addEventListener("change", toggleEvent);
+  }
+};
+
   </script>
 </body>
