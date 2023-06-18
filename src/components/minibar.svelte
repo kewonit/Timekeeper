@@ -2,7 +2,7 @@
   let jeeMainsYear = "Jee Mains 24";
   let jeeadvanced = "Jee Adv 24";
   let neet = "NEET 24";
-  let bitsat = "BITSAT (S2)";
+  let bitsat = "BITSAT 24";
   let mhtcet = "MHT-CET 24";
   let wbjee = "WBJEE 24";
 </script>
@@ -147,7 +147,7 @@
       // NEET [xtimer3]
       { name: "Event x3", datex: new Date("May 07, 2024 00:00:00").getTime() },
       // BITSAT [xtimer4]
-      { name: "Event x4", datex: new Date("Jun 18, 2023 00:00:00").getTime() },
+      { name: "Event x4", datex: new Date("May 21, 2024 00:00:00").getTime() },
       // MHTCET [xtimer5]
       { name: "Event x5", datex: new Date("May 09, 2024 00:00:00").getTime() },
       // WBJEE [xtimer6]

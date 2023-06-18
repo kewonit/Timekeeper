@@ -1,10 +1,10 @@
 <script>
-  let jeeMainsYear = "Jee Mains (Jan 2024)";
-  let jeeadvanced = "Jee Adv 24";
-  let neet = "NEET 24";
-  let bitsat = "BITSAT 24";
-  let mhtcet = "MHT-CET 24";
-  let wbjee = "WBJEE 24";
+  let jeeMainsYear = "Jee Mains (Jan 2025)";
+  let jeeadvanced = "Jee Adv 25";
+  let neet = "NEET 25";
+  let bitsat = "BITSAT 25";
+  let mhtcet = "MHT-CET 25";
+  let wbjee = "WBJEE 25";
 </script>
 
 <hr />
@@ -141,17 +141,17 @@
 
     var eventsx = [
       // JEE Mains [xtimer1]
-      { name: "Event x1", datex: new Date("Jan 08, 2024 00:00:00").getTime() },
+      { name: "Event x1", datex: new Date("Jan 08, 2025 00:00:00").getTime() },
       // JEE Adv [xtimer2]
-      { name: "Event x2", datex: new Date("Jun 04, 2024 00:00:00").getTime() },
+      { name: "Event x2", datex: new Date("Jun 04, 2025 00:00:00").getTime() },
       // NEET [xtimer3]
-      { name: "Event x3", datex: new Date("May 07, 2024 00:00:00").getTime() },
+      { name: "Event x3", datex: new Date("May 07, 2025 00:00:00").getTime() },
       // BITSAT [xtimer4]
-      { name: "Event x4", datex: new Date("Jun 18, 2024 00:00:00").getTime() },
+      { name: "Event x4", datex: new Date("May 21, 2025 00:00:00").getTime() },
       // MHTCET [xtimer5]
-      { name: "Event x5", datex: new Date("May 09, 2024 00:00:00").getTime() },
+      { name: "Event x5", datex: new Date("May 09, 2025 00:00:00").getTime() },
       // WBJEE [xtimer6]
-      { name: "Event x6", datex: new Date("Apr 30, 2024 00:00:00").getTime() },
+      { name: "Event x6", datex: new Date("Apr 30, 2025 00:00:00").getTime() },
     ];
 
     var countdownsx = [];
