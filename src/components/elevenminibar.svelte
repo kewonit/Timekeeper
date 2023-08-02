@@ -25,7 +25,7 @@
       >
     </div>
     <div class="stat-title">
-      <a href="../exams/jeemains">{jeeMainsYear}</a>
+      <p>{jeeMainsYear}</p>
     </div>
     <div id="xtimer1" class="" />
   </div>
@@ -46,7 +46,7 @@
       >
     </div>
     <div class="stat-title">
-      <a href="../exams/jeeadvanced">{jeeadvanced}</a>
+      <p>{jeeadvanced}</p>
     </div>
     <div id="xtimer2" class="" />
   </div>
@@ -66,7 +66,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/neet">{neet}</a></div>
+    <div class="stat-title"><p>{neet}</p></div>
     <div id="xtimer3" class="" />
   </div>
 </div>
@@ -88,7 +88,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/bitsat">{bitsat}</a></div>
+    <div class="stat-title"><p>{bitsat}</p></div>
     <div id="xtimer4" class="" />
   </div>
 
@@ -107,7 +107,7 @@
         /></svg
       >
     </div>
-    <div class="stat-title"><a href="../exams/mhtcet">{mhtcet}</a></div>
+    <div class="stat-title"><p>{mhtcet}</p></div>
     <div id="xtimer5" class="" />
   </div>
 
@@ -127,7 +127,7 @@
       >
     </div>
     <div class="stat-title">{wbjee}</div>
-    <div id="xtimer6" class="" />
+    <div id="xtimer6" />
   </div>
 </div>
 <hr />
@@ -253,8 +253,6 @@
       startCountdown(timerIdx, countDownDatex);
     }
 
-    document
-      .getElementById("xevent-select")
-      .addEventListener("change", toggleEvent);
+    document.getElementById("xevent-select");
   </script>
 </body>

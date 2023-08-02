@@ -94,26 +94,9 @@ import "../../src/global.css";
           }
         }, 1000);
       }
-
-      countdowns.push({ id: timerId, date: countDownDate });
-
       startCountdown(timerId, countDownDate);
     }
-
-    // handle event selection change
-    function toggleEvent() {
-      var currentEvent = document.getElementById("event-select").value;
-      var countDownDate = events[currentEvent].date;
-      var timerId = "timer" + (currentEvent + 1);
-      var x;
-
-      clearInterval(countdowns[currentEvent].x);
-
-      startCountdown(timerId, countDownDate);
-    }
-
     document
       .getElementById("event-select")
-      .addEventListener("change", toggleEvent);
   </script>
 </body>
