@@ -253,8 +253,6 @@
       startCountdown(timerIdx, countDownDatex);
     }
 
-    document
-      .getElementById("xevent-select")
-      .addEventListener("change", toggleEvent);
+    document.getElementById("xevent-select");
   </script>
 </body>

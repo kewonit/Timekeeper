@@ -1,0 +1,65 @@
+---
+import Head from "../../components/Head.astro";
+import Layout from "../../layouts/Layout.astro";
+import Logic from "../../components/customcountdown.svelte";
+import Footer from "../../components/Footer.astro";
+import Minibar from "../../components/minibar.svelte";
+---
+<head>
+    <title>Custom Countdown</title>
+  </head>
+  <Head />
+  <hr />
+  <Layout title="Time Keeper | Custom Countdown" /> 
+    
+     <div class="card">
+        <h1 contenteditable id="title" class="text-5xl md:text-5xl font-black text-center py-12">Editable</h1>
+        <script> 
+            const editables = document.querySelectorAll("[contenteditable]");
+            editables.forEach(el => {
+                el.addEventListener("blur", () => {
+                    localStorage.setItem("dataStorage-" + el.id, el.innerHTML);
+                })
+            });
+            for (var key in localStorage) {
+                if (key.includes("dataStorage-")) {
+                    const id = key.replace("dataStorage-","");
+                    document.querySelector("#" + id).innerHTML = localStorage.getItem(key);
+                }
+            }
+        </script>
+    </div>
+    <Logic client:only/>
+    <div class="countdown-content mx-auto flex flex-wrap justify-center gap-5 md:gap-2 text-center pb-16">
+        <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <span class="font-mono text-3xl md:text-9xl lg:text-7xl xl:text-9xl" id="day"></span>Days
+        </div>
+    
+        <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <span class="font-mono text-3xl md:text-9xl lg:text-7xl xl:text-9xl" id="hour"></span>Hours
+        </div>
+    
+        <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <span class="font-mono text-3xl md:text-9xl lg:text-7xl xl:text-9xl" id="minute"></span>Minutes
+        </div>
+    
+        <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <span class="font-mono text-3xl md:text-9xl lg:text-7xl xl:text-9xl" id="second"></span>Seconds
+        </div>
+    </div>
+    <Minibar />
+    <div class="inline-block font-medium align-middle text-xl">
+        <hr class="pb-4"/>
+        <div class="mx-auto max-w-md py-4 px-10">
+            <label
+                for="Date"
+                class="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+            >
+                <span class="text-xs font-medium text-gray-700">YYYY-MM-DD</span>
+                <input class="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm" type="text" placeholder="2016-09-11 13:14:00" id="endtime" value=""> 
+            </label>  
+        <div class="py-2">
+            <a class="mx-auto text-center w-full inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500" id="start-count">Start</a>
+        </div>
+    </div>
+<Footer />
