@@ -2,7 +2,7 @@
   var timer = null;
   var end;
   var toZero;
-  var btn = document.getElementById("btn");
+  var btn = document.getElementById("btn"); // The element ID should be "start-count" not "btn"
   var oDay = document.getElementById("day");
   var oHour = document.getElementById("hour");
   var oMinute = document.getElementById("minute");
@@ -61,10 +61,11 @@
       oMinute.innerHTML = toDou(minute);
       oSecond.innerHTML = toDou(second);
     } else {
-      btn.className = "";
-      btn.className = "btn";
-      btn.onclick = function () {
-        alert("oops");
+      // You should use "start-count" instead of "btn"
+      startBtn.className = "";
+      startBtn.className = "btn";
+      startBtn.onclick = function () {
+        alert("Error, Please refresh the page");
       };
       endtime.value = "";
       clearInterval(timer);
