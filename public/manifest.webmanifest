@@ -1,7 +1,7 @@
 {
-	"name": "Exam TimeKeeper for exams like JEE, NEET, BITSAT, MHT-CET",
-	"short_name": "Exam TimeKeeper",
-	"description": "Exam TimeKeeper for exams like JEE, NEET, BITSAT, MHT-CET, made for r/jeeneetards",
+	"name": "JeeNeeTards TimeKeeper for exams like JEE, NEET, BITSAT, MHT-CET",
+	"short_name": "JeeNeeTards TimeKeeper",
+	"description": "JeeNeeTards TimeKeeper for exams like JEE, NEET, BITSAT, MHT-CET, made for r/jeeneetards",
 	"icons": [
 		{
 			"src": "/1-min.webp",

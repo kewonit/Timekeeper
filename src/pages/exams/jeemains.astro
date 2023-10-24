@@ -1,18 +1,14 @@
 ---
-import Head from "../../components/Head.astro";
 import Timer from "../../components/timer.astro";
 import Layout from "../../layouts/Layout.astro";
 import "../../../src/global.css";
 import Minibar from "../../components/minibar.svelte";
-import Footer from "../../components/Footer.astro";
 ---
 
 <head>
-  <title>JEE Mains</title>
+  <title>JEE Mains | JeeNeeTards TimeKeeper</title>
 </head>
-<Layout title="Time Keeper">
-  <Head />
-  <hr />
+<Layout title="Time Keeper | JeeNeeTards TimeKeeper">
   <section>
     <main>
       <div class="flex flex-col items-center py-12" id="timerbase">
@@ -29,5 +25,4 @@ import Footer from "../../components/Footer.astro";
   <hr />
   <Timer />
   <Minibar />
-  <Footer />
 </Layout>
