@@ -1,33 +1,28 @@
 ---
-import Head from "../../components/Head.astro";
 import Timer from "../../components/timer.astro";
-import Footer from "../../components/Footer.astro";
 import "../../../src/global.css";
 import Minibar from "../../components/minibar.svelte";
 import Layout from "../../layouts/Layout.astro";
 ---
 
 <head>
-  <title>NEET</title>
+  <title>NEET | JeeNeeTards TimeKeeper</title>
 </head>
-<Head />
-<Layout title="Time Keeper" />
-<hr />
-<section>
-  <main>
-    <div class="flex flex-col items-center py-12" id="timerbase">
-      <h1 class="text-5xl md:text-3xl font-bold text-center">
-        Neet <br />
-      </h1>
-      <h2 class="text-2xl md:text-2xl font-bold text-center pt-2 pb-10">
-        (5th May 24)
-      </h2>
-      <div class="pb-16" id="timer3"></div>
-    </div>
-  </main>
-</section>
-
-<hr />
-<Timer />
-<Minibar />
-<Footer />
+<Layout title="Time Keeper | JeeNeeTards TimeKeeper">
+  <section>
+    <main>
+      <div class="flex flex-col items-center py-12" id="timerbase">
+        <h1 class="text-5xl md:text-3xl font-bold text-center">
+          Neet <br />
+        </h1>
+        <h2 class="text-2xl md:text-2xl font-bold text-center pt-2 pb-10">
+          (5th May 24)
+        </h2>
+        <div class="pb-16" id="timer3"></div>
+      </div>
+    </main>
+  </section>
+  <hr />
+  <Timer/>
+  <Minibar />
+</Layout>

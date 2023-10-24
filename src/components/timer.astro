@@ -7,40 +7,37 @@ import "../../src/global.css";
 <body>
   <script>
     var events = [
-      // JEE [timer1]
-      { name: "Event 1", date: new Date("Jan 24, 2024 00:00:00").getTime() },
-      // JEE Adv Date [timer2]
-      { name: "Event 2", date: new Date("Jun 04, 2024 00:00:00").getTime() },
-      // NEET [timer3]
-      { name: "Event 3", date: new Date("May 05, 2024 00:00:00").getTime() },
-      // BITSAT [timer4]
-      { name: "Event 4", date: new Date("May 21, 2024 00:00:00").getTime() },
-      // MHTCET [timer5]
-      { name: "Event 5", date: new Date("May 09, 2024 00:00:00").getTime() },
-    ];
+  // JEE [timer1]
+  { name: "Event 1", date: new Date("Jan 24, 2024 00:00:00").getTime() },
+  // JEE Adv Date [timer2]
+  { name: "Event 2", date: new Date("Jun 04, 2024 00:00:00").getTime() },
+  // NEET [timer3]
+  { name: "Event 3", date: new Date("May 05, 2024 00:00:00").getTime() },
+  // BITSAT [timer4]
+  { name: "Event 4", date: new Date("May 21, 2024 00:00:00").getTime() },
+  // MHTCET [timer5]
+  { name: "Event 5", date: new Date("May 09, 2024 00:00:00").getTime() },
+];
 
-    var countdowns = [];
+var countdowns = events.map((event, i) => ({
+  id: `timer${i + 1}`,
+  date: event.date,
+}));
 
-    // create countdowns
-    for (var i = 0; i < events.length; i++) {
-      var countDownDate = events[i].date;
-      var timerId = "timer" + (i + 1);
-      var x;
+function updateCountdown(timer) {
+  const element = document.getElementById(timer.id);
 
-      function startCountdown(id, date) {
-        x = setInterval(function () {
-          var now = new Date().getTime();
-          var distance = date - now;
-          if (distance > 0) {
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor(
-              (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-            );
-            var minutes = Math.floor(
-              (distance % (1000 * 60 * 60)) / (1000 * 60)
-            );
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            var countdownHtml =
+  if (element) {
+    const now = new Date().getTime();
+    const distance = timer.date - now;
+
+    if (distance > 0) {
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      const countdownHtml =
               '<div class="countdown-content mx-auto flex flex-wrap justify-center gap-5 md:gap-2 text-center">' +
               '<div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">' +
               '<span class="font-mono md:text-9xl lg:text-7xl xl:text-9xl">' +
@@ -92,41 +89,22 @@ import "../../src/global.css";
               "</div>" +
               "</div>";
 
-            var element = document.getElementById(id);
-            if (element) {
               element.innerHTML = countdownHtml;
-            }
-          } else {
-            clearInterval(x);
-            document.getElementById(id).innerHTML = "Best of Luck";
-          }
-        }, 1000);
+        } else {
+          clearInterval(x);
+          element.innerHTML = "Best of Luck";
+        }
       }
-
-      countdowns.push({ id: timerId, date: countDownDate });
-
-      startCountdown(timerId, countDownDate);
     }
 
-    // Wrap the code inside a window.onload event handler
-    window.onload = function () {
-      // handle event selection change
-      function toggleEvent() {
-        var currentEvent = document.getElementById("xevent-select").value;
-        var countDownDatex = eventsx[currentEvent].datex;
-        var timerIdx = "xtimer" + (currentEvent + 1);
-        var x;
+    function updateAllCountdowns() {
+      countdowns.forEach(updateCountdown);
+    }
 
-        clearInterval(countdownsx[currentEvent].x);
+    // Update the countdowns every second
+    const x = setInterval(updateAllCountdowns, 1000);
 
-        startCountdown(timerIdx, countDownDatex);
-      }
-
-      // Check if the element exists before adding the event listener
-      var xEventSelect = document.getElementById("xevent-select");
-      if (xEventSelect) {
-        xEventSelect.addEventListener("change", toggleEvent);
-      }
-    };
+    // Initial update
+    updateAllCountdowns();
   </script>
 </body>
