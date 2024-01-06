@@ -149,7 +149,7 @@
       // BITSAT [xtimer4]
       { name: "Event x4", datex: new Date("May 21, 2025 00:00:00").getTime() },
       // MHTCET [xtimer5]
-      { name: "Event x5", datex: new Date("May 09, 2025 00:00:00").getTime() },
+      { name: "Event x5", datex: new Date("Apr 16, 2025 00:00:00").getTime() },
       // WBJEE [xtimer6]
       { name: "Event x6", datex: new Date("Apr 30, 2025 00:00:00").getTime() },
     ];
