@@ -18,6 +18,7 @@
         "@types/react": "^18.2.31",
         "@types/react-dom": "^18.2.14",
         "astro": "^3.3.3",
+        "astro-emoji": "^1.2.0",
         "daisyui": "^2.51.4",
         "htmx.org": "^1.9.4",
         "react": "^18.2.0",
