@@ -141,7 +141,7 @@
 
     var eventsx = [
       // JEE Mains [xtimer1]
-      { name: "Event x1", datex: new Date("Jan 24, 2024 00:00:00").getTime() },
+      { name: "Event x1", datex: new Date("Apr 01, 2024 00:00:00").getTime() },
       // JEE Adv [xtimer2]
       { name: "Event x2", datex: new Date("Jun 04, 2024 00:00:00").getTime() },
       // NEET [xtimer3]

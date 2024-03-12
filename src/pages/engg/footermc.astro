@@ -1,0 +1,40 @@
+---
+const today = new Date();
+---
+
+<body>
+</body>
+<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+  <div>
+    <p class="max-w-screen-lg">
+      (meow bored) <br>
+    </p>
+  </div>
+</footer>
+
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  footer {
+    margin-top: auto;
+  }
+</style>
+<script>
+  // Set the original title of the webpage
+  var originalTitle = document.title;
+
+  // Add an event listener for changes in page visibility
+  document.addEventListener("visibilitychange", function () {
+    // If the page is hidden, append "(Away)" to the title
+    if (document.hidden) {
+      document.title = "PADHLE!!!!!";
+    }
+    // If the page is visible, remove "(Away)" from the title
+    else {
+      document.title = originalTitle;
+    }
+  });
+</script>
