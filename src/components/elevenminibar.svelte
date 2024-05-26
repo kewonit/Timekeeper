@@ -1,10 +1,10 @@
 <script>
-  let jeeMainsYear = "Jee Mains (Jan 2025)";
-  let jeeadvanced = "Jee Adv 25";
-  let neet = "NEET 25";
-  let bitsat = "BITSAT 25";
-  let mhtcet = "MHT-CET 25";
-  let wbjee = "WBJEE 25";
+  let jeeMainsYear = "Jee Mains (Jan 2026)";
+  let jeeadvanced = "Jee Adv 26";
+  let neet = "NEET 26";
+  let bitsat = "BITSAT 26";
+  let mhtcet = "MHT-CET 26";
+  let wbjee = "WBJEE 26";
 </script>
 
 <hr />
