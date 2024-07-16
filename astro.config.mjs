@@ -8,7 +8,7 @@ import solidJs from "@astrojs/solid-js";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind(), svelte(), react(), solidJs()],
+  integrations: [tailwind(), svelte()],
   output: "server",
   adapter: cloudflare()
 });
