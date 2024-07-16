@@ -2,7 +2,6 @@
   var timer = null;
   var end;
   var toZero;
-  var btn = document.getElementById("btn"); // The element ID should be "start-count" not "btn"
   var oDay = document.getElementById("day");
   var oHour = document.getElementById("hour");
   var oMinute = document.getElementById("minute");
@@ -14,6 +13,8 @@
   var storedEndtime = localStorage.getItem("endtime");
   if (storedEndtime) {
     endtime.value = storedEndtime;
+    // Automatically start the countdown if there's a stored endtime
+    startCountdown();
   }
 
   toZero =
@@ -23,7 +24,9 @@
     oSecond.innerHTML =
       "00";
 
-  startBtn.onclick = function () {
+  startBtn.onclick = startCountdown;
+
+  function startCountdown() {
     end = endtime.value;
     if (!end) {
       alert("Please enter a date");
@@ -34,7 +37,7 @@
 
     // Save the endtime in local storage
     localStorage.setItem("endtime", end);
-  };
+  }
 
   function countDown() {
     var timedate = new Date(Date.parse(end.replace(/-/g, "/")));
@@ -49,12 +52,12 @@
     var second = Math.floor(_second);
 
     function toDou(n) {
-      if (n < 10) {
-        return "0" + n;
-      } else {
-        return "" + n;
-      }
+    if (n < 10) {
+      return "0" + n;
+    } else {
+      return "" + n;
     }
+  }
     if (date > 0) {
       oDay.innerHTML = toDou(day);
       oHour.innerHTML = toDou(hour);

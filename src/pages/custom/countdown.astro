@@ -1,12 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Logic from "../../components/customcountdown.svelte";
-import Minibar from "../../components/minibar.svelte";
+import Minibar from "../../components/custom-minibar.svelte";
+import CustomMinibar from "../../components/custom-minibar.svelte";
 ---
 <head>
     <title>Custom Countdown | JeeNeeTards TimeKeeper</title>
   </head>
-  <hr />
 <Layout title="Time Keeper | JeeNeeTards Countdown" > 
     
      <div class="card">
@@ -44,16 +44,18 @@ import Minibar from "../../components/minibar.svelte";
             <span class="font-mono text-3xl md:text-9xl lg:text-7xl xl:text-9xl" id="second"></span>Seconds
         </div>
     </div>
-    <Minibar />
+    <div class="px-6">
+    <CustomMinibar client:only />
+    </div>
     <div class="inline-block font-medium align-middle text-xl">
-        <hr class="pb-4"/>
+        <hr class="pb-4 border-gray-600"/>
         <div class="mx-auto max-w-md py-4 px-10">
             <label
                 for="Date"
                 class="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-rose-200 focus-within:ring-1 focus-within:ring-rose-200"
             >
-                <span class="text-xs font-medium text-gray-500">YYYY-MM-DD</span>
-                <input class="mt-1 w-full rounded-md pl-2 border-gray-200 shadow-sm sm:text-sm" type="text" placeholder="2024-24-07" id="endtime" value=""> 
+                <span class="text-xs font-medium text-gray-500">Year-Month-Day</span>
+                <input class="mt-1 w-full rounded-md pl-2 border-gray-200 shadow-sm sm:text-sm" type="text" placeholder="2025-07-24" id="endtime" value=""> 
             </label>  
         <div class="py-2">
             <a id="start-count" class="mx-auto text-center w-full inline-block rounded border border-rose-200 bg-rose-200 px-12 py-3 text-sm font-medium text-black hover:bg-transparent hover:text-rose-300 focus:outline-none focus:ring active:text-rose-200" id="start-count">Start</a>
