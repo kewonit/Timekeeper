@@ -1,34 +1,33 @@
 ---
 const today = new Date();
 ---
+<body>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M4LCZ4JGCV"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+    gtag("config", "G-M4LCZ4JGCV");
+  </script>
+</body>
+<footer>
   <div>
-    <p class="max-w-screen-lg">
-      ALL OF THESE DATES ARE <b> SUPER TENTATIVE!</b>
-      <br /> It is strongly recommended to double-check the information provided
-      on this website with official sources to ensure its accuracy. This website
-      holds no responsibility for any damages, losses, or inconveniences arising
-      from the use of its services.
-    </p>
-    <p>
-      Built by KewKartik | <a
-        href="https://github.com/kewkartik">Github</a
-      >
-    </p>
-  </div>
+    <div class="py-8 px-8">
+      <p class="text-sm text-gray-500">
+        &copy; {new Date().getFullYear()}. TimeKeeper | Built by <a href="https://github.com/kewonit" class="text-blue-300">Kewonit</a> | Repo on <a href="https://github.com/kewonit/Timekeeper" class="text-blue-300">Github</a> 
+      </p>
+      <p class="text-xs text-gray-500">
+        It is strongly recommended to double-check the information provided on this website with official sources to ensure its accuracy. This website holds no responsibility for any damages, losses, or inconveniences arising from the use of its services.
+      </p>
+    </div>
 </footer>
 
-<style>
-  body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  footer {
-    margin-top: auto;
-  }
-</style>
+
 <script>
   // Set the original title of the webpage
   var originalTitle = document.title;
