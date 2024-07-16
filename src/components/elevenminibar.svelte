@@ -162,13 +162,11 @@
   <form on:submit={addExam} class="mb-4 p-4 border rounded">
     <div class="grid grid-cols-2 gap-4">
       <input name="name" type="text" placeholder="Exam Name" required class="input input-bordered" />
-      <input name="month" type="text" placeholder="Month" required class="input input-bordered" />
+      <input name="month" type="text" placeholder="Month (Jan / Feb / Mar)" required class="input input-bordered" />
       <input name="day" type="number" placeholder="Day" required class="input input-bordered" />
       <select name="color" required class="select select-bordered">
         <option value="colour">Select Color</option>
         <option value="primary">Primary</option>
-        <option value="secondary">Secondary</option>
-        <option value="accent">Accent</option>
       </select>
     </div>
     <button type="submit" class="btn btn-primary mt-4">Add Custom Exam</button>
