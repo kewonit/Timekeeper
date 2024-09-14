@@ -1,10 +1,11 @@
 ---
 export interface Props {
   title: string;
+  description: string;
 }
 const { title } = Astro.props;
+const { description } = Astro.props;
 import Head from "../components/Head.astro";
-import { ViewTransitions } from 'astro:transitions';
 import Footer from "../components/Footer.astro";
 ---
 
@@ -15,11 +16,14 @@ import Footer from "../components/Footer.astro";
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <ViewTransitions  />
     <title>{title}</title>
     <title>
-      Exam Countdown/Timer for Exams like JEE, NEET, BITSAT 2023/2024/2025
+      Exam Countdown & TimerKeeper for Exams like JEE, NEET, BITSAT 2023/2024/2025
     </title>
+    <meta
+      name="description"
+      content={description}
+    />
   </head>
   <body>
     <Head />

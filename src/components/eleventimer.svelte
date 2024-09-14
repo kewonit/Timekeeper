@@ -44,7 +44,7 @@
   $: paddedSeconds = seconds.toString().padStart(2, '0');
 </script>
 
-<div class="stats flex">
+<div class="stats flex border-y border-x border-gray-600 rounded-3xl">
   <div class="stat block">
       {#if !countdownFinished}
         <div class="countdown-content mx-auto flex flex-wrap justify-center gap-5 md:gap-2 text-center">
