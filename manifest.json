@@ -4,7 +4,7 @@
     "description": "JEE Mains, JEE ADV, NEET, BITSAT, MHTCET, WBJEE 2024 Coutdown/TimeKeeper | JeeNeeTards Countdown/Timer for Exams like JEE, NEET, BITSAT 2023/2024/2025",
     "icons": [
         {
-            "src": "./favicon.ico",
+            "src": "/favicon.ico",
             "type": "image/svg+xml",
             "sizes": "512x512"
         }
@@ -23,7 +23,7 @@
             "url": "/today?source=pwa",
             "icons": [
                 {
-                    "src": "./favicon.ico",
+                    "src": "/favicon.ico",
                     "sizes": "192x192"
                 }
             ]

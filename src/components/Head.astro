@@ -1,158 +1,144 @@
-<meta charset="UTF-8" />
-<title>
-  JeeNeeTards Countdown/Timer for Exams like JEE, NEET, BITSAT 2023/2024/2025/2026
-</title>
-<meta
-  name="description"
-  content="JEE NEET BITSAT Exam Countdown Timer 2023/2024/2025 | JeeNeeTards: Your Ultimate Preparation TimeKeeper Tool for JEE Main, JEE Advanced, NEET-UG, and BITSAT. Stay Motivated with Real-Time Countdowns. Ace Your Entrance Exams!"
-/>
-<link rel="icon" type="image/x-icon" href="../favicon.ico" />
-<meta name="generator" content={Astro.generator} />
-<meta property="og:image" content="/1-min.webp" />
-<link rel="manifest" href="/manifest.webmanifest" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeeNeeTards Countdown/Timer/TimerKeeper for Exams</title>
+    <meta name="description" content="JEE NEET BITSAT Exam Countdown Timer 2023/2024/2025 | JeeNeeTards: Your Ultimate Preparation TimeKeeper Tool for JEE Main, JEE Advanced, NEET-UG, and BITSAT. Stay Motivated with Real-Time Countdowns. Ace Your Entrance Exams!">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        #popup-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+        }
 
-<link rel="icon" type="image/x-icon" href="../favicon.ico" />
-<div class="navbar bg-base-100 z-40">
-  <div class="flex-1">
-    <a
-      class="btn btn-ghost normal-case text-lg md:text-lg xl:text-xl"
-      href="../">TimeKeeper</a
-    >
-  </div>
-  <div class="flex-none">
-    <ul class="menu menu-horizontal px-1">
-      <li tabindex="0">
-        <a>
-          Exams
-          <svg
-            class="fill-current"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            ><path
-              d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
-            ></path></svg
-          >
-        </a>
-        <ul class="p-2 bg-base-100">
-          <li><a href="../exams/jeemains">Jee Mains</a></li>
-          <li><a href="../exams/jeeadvanced">Jee Adv</a></li>
-          <li><a href="../exams/neet">NEET</a></li>
-          <li><a href="../exams/bitsat">BITSAT</a></li>
-          <li><a href="../exams/mhtcet">MHT-CET</a></li>
-          <hr class="border-gray-600"/>
-          <li class="bg-pink-200 text-black">
-            <a href="../eleventh/eleventh">2026</a>
-          </li>
-          <hr class="border-gray-600"/>
-          <li><a id="popup-button">motivation</a></li>
-          <hr class="border-gray-600"/>
-          <li class="bg-cyan-200 text-black">
-            <a target="_blank" href="https://www.reddit.com/r/mht_cet/"
-              >r/mht_cet</a
-            >
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="../custom/countdown">Custom</a>
-      </li>
-    </ul>
-  </div>
-</div>
-<hr />
-<div id="popup-container">
-  <div id="popup-content">
-    <h1 id="quote-display">Padhle fr, ps you're doing well</h1>
-  </div>
-</div>
-<style>
-  #popup-container {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 9999;
-  }
+        #popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            color: white;
+        }
 
-  #popup-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 600px;
-    text-align: center;
-    color: white;
-  }
+        #popup-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
 
-  #popup-content h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
+        .fade-in {
+            animation: fade-in 1s;
+        }
 
-  #popup-content p {
-    font-size: 1.2rem;
-    line-height: 1.5;
-  }
+        .fade-out {
+            animation: fade-out 1s;
+        }
 
-  .fade-in {
-    animation-name: fade-in;
-    animation-duration: 1s;
-  }
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-  .fade-out {
-    animation-name: fade-out;
-    animation-duration: 1s;
-  }
+        @keyframes fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar bg-base-100 z-40">
+        <div class="flex-1">
+            <a class="btn btn-ghost normal-case text-lg md:text-lg xl:text-xl" href="../">TimeKeeper</a>
+        </div>
+        <div class="flex-none">
+            <ul class="menu menu-horizontal px-1">
+                <li tabindex="0">
+                    <a>
+                        Exams
+                        <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg>
+                    </a>
+                    <ul class="p-2 bg-base-100">
+                        <li><a href="../exams/jeemains">Jee Mains</a></li>
+                        <li><a href="../exams/jeeadvanced">Jee Adv</a></li>
+                        <li><a href="../exams/neet">NEET</a></li>
+                        <li><a href="../exams/bitsat">BITSAT</a></li>
+                        <li><a href="../exams/mhtcet">MHT-CET</a></li>
+                        <hr class="border-gray-600"/>
+                        <li class="bg-pink-200 text-black">
+                            <a href="../eleventh/eleventh">2026</a>
+                        </li>
+                        <hr class="border-gray-600"/>
+                        <li><a id="popup-button">motivation</a></li>
+                        <hr class="border-gray-600"/>
+                        <li class="bg-cyan-200 text-black">
+                            <a target="_blank" href="https://www.reddit.com/r/mht_cet/">r/mht_cet</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../custom/countdown">Custom</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <hr />
+    <div id="popup-container">
+        <div id="popup-content">
+            <h1 id="quote-display">Padhle fr, ps you're doing well</h1>
+        </div>
+    </div>
 
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.getElementById("popup-button");
+            const container = document.getElementById("popup-container");
+            const quoteDisplay = document.getElementById("quote-display");
 
-  @keyframes fade-out {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-</style>
-<script>
-  const button = document.getElementById("popup-button");
-  const container = document.getElementById("popup-container");
-  const quoteDisplay = document.getElementById("quote-display");
+            const motivationQuotes = [
+                "Padhle fr, ps you're doing well",
+                "Success is the sum of small efforts repeated day in and day out.",
+                "The expert in anything was once a beginner.",
+                "Your future is created by what you do today, not tomorrow.",
+                "The only way to do great work is to love what you do."
+            ];
 
-  const motivationQuotes = ["Padhle fr, ps you're doing well"];
+            function showPopup() {
+                if (!container || !quoteDisplay) {
+                    console.error("Required elements not found");
+                    return;
+                }
 
-  button.addEventListener("click", () => {
-    const randomQuoteIndex = Math.floor(
-      Math.random() * motivationQuotes.length
-    );
-    const randomQuote = motivationQuotes[randomQuoteIndex];
-    quoteDisplay.innerHTML = randomQuote;
+                const randomQuote = motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
+                quoteDisplay.textContent = randomQuote;
 
-    container.classList.add("fade-in");
-    container.style.display = "flex";
+                container.classList.add("fade-in");
+                container.style.display = "flex";
 
-    setTimeout(() => {
-      container.classList.remove("fade-in");
-      container.classList.add("fade-out");
+                setTimeout(() => {
+                    container.classList.remove("fade-in");
+                    container.classList.add("fade-out");
 
-      setTimeout(() => {
-        container.classList.remove("fade-out");
-        container.style.display = "none";
-      }, 1000);
-    }, 4000);
-  });
-</script>
+                    setTimeout(() => {
+                        container.classList.remove("fade-out");
+                        container.style.display = "none";
+                    }, 1000);
+                }, 4000);
+            }
+
+            if (button) {
+                button.addEventListener("click", showPopup);
+            } else {
+                console.error("Popup button not found");
+            }
+        });
+    </script>
+</body>
+</html>
