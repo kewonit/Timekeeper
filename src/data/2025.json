@@ -3,38 +3,38 @@
     "exams": [
       {
         "name": "Jee Mains",
-        "month": "Jan",
-        "day": 24,
+        "month": "Apr",
+        "day": 9,
         "color": "rose-300"
       },
       {
         "name": "Jee Adv",
         "month": "May",
-        "day": 26,
+        "day": 18,
         "color": "teal-300"
       },
       {
         "name": "NEET",
         "month": "May",
-        "day": 5,
+        "day": 4,
         "color": "orange-400"
       },
       {
         "name": "BITSAT",
         "month": "May",
-        "day": 20,
+        "day": 26,
         "color": "orange-300"
       },
       {
         "name": "MHT-CET",
         "month": "Apr",
-        "day": 22,
+        "day": 9,
         "color": "amber-300"
       },
       {
         "name": "WBJEE",
         "month": "Apr",
-        "day": 28,
+        "day": 27,
         "color": "lime-400"
       }
     ]
