@@ -141,17 +141,17 @@
 
     var eventsx = [
       // JEE Mains [xtimer1]
-      { name: "Event x1", datex: new Date("Apr 01, 2025 00:00:00").getTime() },
+      { name: "Event x1", datex: new Date("Apr 09, 2025 00:00:00").getTime() },
       // JEE Adv [xtimer2]
-      { name: "Event x2", datex: new Date("May 26, 2025 00:00:00").getTime() },
+      { name: "Event x2", datex: new Date("May 18, 2025 00:00:00").getTime() },
       // NEET [xtimer3]
-      { name: "Event x3", datex: new Date("May 05, 2025 00:00:00").getTime() },
+      { name: "Event x3", datex: new Date("May 04, 2025 00:00:00").getTime() },
       // BITSAT [xtimer4]
-      { name: "Event x4", datex: new Date("May 20, 2025 00:00:00").getTime() },
+      { name: "Event x4", datex: new Date("May 26, 2025 00:00:00").getTime() },
       // MHTCET [xtimer5]
-      { name: "Event x5", datex: new Date("Apr 22, 2025 00:00:00").getTime() },
+      { name: "Event x5", datex: new Date("Apr 19, 2025 00:00:00").getTime() },
       // WBJEE [xtimer6]
-      { name: "Event x6", datex: new Date("Apr 28, 2025 00:00:00").getTime() },
+      { name: "Event x6", datex: new Date("Apr 27, 2025 00:00:00").getTime() },
     ];
 
     var countdownsx = [];
