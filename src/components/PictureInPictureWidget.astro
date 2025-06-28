@@ -681,13 +681,6 @@ class PictureInPictureCountdown {
     const status = document.getElementById('pip-status');
     if (status) {
       status.classList.add('active');
-      const statusText = document.getElementById('pip-status-text');
-      if (statusText) {
-        const examName = this.currentExam.name.length > 12 
-          ? this.currentExam.name.substring(0, 12) + '...' 
-          : this.currentExam.name;
-        statusText.textContent = `${examName} • PiP Active`;
-      }
     }
   }
 
@@ -695,7 +688,6 @@ class PictureInPictureCountdown {
     const status = document.getElementById('pip-status');
     if (status) {
       status.classList.remove('active');
-      console.log('PiP status indicator hidden');
     }
   }
 

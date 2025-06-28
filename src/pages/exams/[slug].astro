@@ -50,6 +50,16 @@ const relatedExamsData = exam.relatedExams
     .countdown-number {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       transform-style: preserve-3d;
+      color: var(--text-primary) !important;
+    }
+    
+    .countdown-label {
+      color: var(--text-secondary) !important;
+    }
+    
+    .countdown-display {
+      background-color: var(--bg-secondary) !important;
+      color: var(--text-primary) !important;
     }
     
     .countdown-number.flip {
@@ -75,22 +85,44 @@ const relatedExamsData = exam.relatedExams
     @media (max-width: 640px) {
       .countdown-display .grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        gap: 0.75rem;
       }
       
       .countdown-number {
-        font-size: 2.5rem !important;
+        font-size: 2rem !important;
         line-height: 1.1;
+      }
+      
+      .countdown-label {
+        font-size: 0.75rem !important;
       }
     }
     
     @media (max-width: 480px) {
+      .countdown-display {
+        padding: 1rem !important;
+      }
+      
+      .countdown-display .grid {
+        gap: 0.5rem;
+      }
+      
       .countdown-number {
-        font-size: 2rem !important;
+        font-size: 1.75rem !important;
       }
       
       .countdown-label {
-        font-size: 0.875rem !important;
+        font-size: 0.7rem !important;
+      }
+    }
+    
+    @media (max-width: 360px) {
+      .countdown-number {
+        font-size: 1.5rem !important;
+      }
+      
+      .countdown-label {
+        font-size: 0.65rem !important;
       }
     }
     
@@ -98,21 +130,39 @@ const relatedExamsData = exam.relatedExams
     @media (max-width: 768px) {
       #fullscreen-countdown .grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 2rem !important;
+        gap: 1.5rem !important;
       }
       
-      #fullscreen-countdown .countdown-number {
-        font-size: 4rem !important;
-      }
-    }
-    
-    @media (max-width: 480px) {
       #fullscreen-countdown .countdown-number {
         font-size: 3rem !important;
       }
       
       #fullscreen-countdown .countdown-label {
-        font-size: 1rem !important;
+        font-size: 0.875rem !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #fullscreen-countdown .countdown-number {
+        font-size: 2.5rem !important;
+      }
+      
+      #fullscreen-countdown .countdown-label {
+        font-size: 0.75rem !important;
+      }
+      
+      #fullscreen-countdown .grid {
+        gap: 1rem !important;
+      }
+    }
+    
+    @media (max-width: 360px) {
+      #fullscreen-countdown .countdown-number {
+        font-size: 2rem !important;
+      }
+      
+      #fullscreen-countdown .countdown-label {
+        font-size: 0.7rem !important;
       }
     }
 
@@ -130,11 +180,11 @@ const relatedExamsData = exam.relatedExams
     }
   </style>
   <!-- Fullscreen Countdown Modal -->
-  <div id="fullscreen-modal" class="fixed inset-0 bg-black z-50 hidden transition-opacity duration-300 opacity-0">
+  <div id="fullscreen-modal" class="fixed inset-0 z-50 hidden transition-opacity duration-300 opacity-0">
     <div class="h-full flex flex-col items-center justify-center p-8">
       <div class="text-center mb-8">
-        <h1 class="font-serif italic text-4xl lg:text-6xl text-white mb-4">{exam.name}</h1>
-        <p class="text-xl lg:text-2xl text-gray-300" id="fullscreen-session-info"></p>
+        <h1 class="font-serif italic text-4xl lg:text-6xl mb-4">{exam.name}</h1>
+        <p class="text-xl lg:text-2xl" id="fullscreen-session-info"></p>
       </div>
       
       <div id="fullscreen-countdown" class="mb-8">
@@ -143,7 +193,7 @@ const relatedExamsData = exam.relatedExams
       
       <button 
         onclick="closeFullscreen()"
-        class="fixed top-4 right-4 px-3 py-2 bg-black bg-opacity-50 text-white text-sm rounded-lg hover:bg-opacity-70 transition-all opacity-75 hover:opacity-100 flex items-center gap-2"
+        class="fixed top-4 right-4 px-3 py-2 text-sm rounded-lg transition-all opacity-75 hover:opacity-100 flex items-center gap-2"
         title="Exit Fullscreen (ESC)"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,13 +204,13 @@ const relatedExamsData = exam.relatedExams
     </div>
   </div>
 
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen themed-bg">
     <!-- Header Navigation -->
-    <nav class="border-b border-dashed border-zinc-300 bg-white sticky top-0 z-20">
+    <nav class="border-b border-dashed themed-border themed-bg sticky top-0 z-20">
       <div class="max-w-7xl mx-auto px-4 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center gap-4">
-            <a href="/" class="flex items-center gap-2 text-black hover:text-blue-600 transition-colors">
+            <a href="/" class="flex items-center gap-2 themed-text hover:text-blue-600 transition-colors">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
@@ -168,27 +218,17 @@ const relatedExamsData = exam.relatedExams
             </a>
           </div>
           <div class="flex items-center gap-4">
-            {exam.officialWebsite && (
-              <a 
-                href={exam.officialWebsite} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="px-3 py-1.5 text-sm text-blue-600 hover:text-blue-800 border border-blue-200 hover:border-blue-300 rounded-md transition-colors"
-              >
-                Official Site ↗
-              </a>
-            )}
-            <span class="font-serif italic text-lg text-zinc-600">TimeKeeper</span>
+            <span class="font-serif italic text-lg themed-text-secondary">TimeKeeper</span>
           </div>
         </div>
       </div>
     </nav>
 
-    <div class="max-w-5xl mx-auto px-4 lg:px-8 py-8">
+    <div class="max-w-5xl mx-auto px-4 lg:px-8 py-8 pb-8">
       <!-- Exam Header -->
       <div class="text-center mb-8">
-        <h1 class="font-serif italic text-3xl sm:text-4xl lg:text-6xl text-black mb-4">{exam.name}</h1>
-        <p class="text-lg sm:text-xl lg:text-2xl text-zinc-600 mb-6">{exam.fullName}</p>
+        <h1 class="font-serif italic text-3xl sm:text-4xl lg:text-6xl themed-text mb-4">{exam.name}</h1>
+        <p class="text-lg sm:text-xl lg:text-2xl themed-text-secondary mb-6">{exam.fullName}</p>
         
         <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap mb-6">
           <span class={`inline-block px-3 sm:px-4 py-2 text-xs sm:text-sm border rounded-full ${
@@ -207,77 +247,82 @@ const relatedExamsData = exam.relatedExams
             {exam.category}
           </span>
 
-          <span class="inline-block px-3 sm:px-4 py-2 text-xs sm:text-sm bg-zinc-100 text-zinc-700 rounded-full">
+          <span class="inline-block px-3 sm:px-4 py-2 text-xs sm:text-sm themed-bg-tertiary themed-text-secondary rounded-full">
             {exam.conductingBody}
           </span>
         </div>
 
-        <p class="text-base sm:text-lg text-zinc-700 leading-relaxed max-w-3xl mx-auto px-4">{exam.description}</p>
+        <p class="text-base sm:text-lg themed-text-secondary leading-relaxed max-w-3xl mx-auto px-4">{exam.description}</p>
       </div>
 
-      <!-- Session Toggle (if multiple sessions) -->
-      {exam.sessions.length > 1 && (
-        <div class="flex justify-center mb-8">
-          <div class="bg-zinc-100 p-1 rounded-lg inline-flex flex-wrap gap-1">
-            {exam.sessions.map((session, index) => (
-              <button 
-                onclick={`switchSession(${index})`}
-                class={`session-toggle px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors ${
-                  index === 0 ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-600 hover:text-zinc-900'
-                }`}
-                data-session={index}
-              >
-                {session.session}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       <!-- Large Countdown Display -->
-      <div class="border border-dashed border-zinc-300 rounded-lg p-4 sm:p-8 lg:p-12 mb-8 relative">
+      <div class="border border-dashed themed-border rounded-lg p-2 sm:p-4 lg:p-6 xl:p-8 mb-6 sm:mb-8 relative">
           <div class="text-center">
-          <div class="flex flex-col sm:flex-row sm:items-start justify-between mb-6 gap-4">
-            <div class="flex-1 text-left">
-              <h2 id="current-session-name" class="text-xl sm:text-2xl font-medium text-zinc-800 mb-2">
-                {exam.sessions[0].session}
-              </h2>
-              <p id="current-session-date" class="text-base sm:text-lg text-zinc-600">
-                {new Date(exam.sessions[0].date).toLocaleDateString('en-IN', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric',
-                  weekday: 'long'
-                })}
-              </p>
-            </div>
-            <div class="flex gap-2 sm:self-start">
-              <button 
-                onclick="enterFullscreen()"
-                class="px-3 sm:px-4 py-2 text-xs sm:text-sm text-zinc-600 hover:text-zinc-900 border border-dashed border-zinc-300 hover:border-zinc-400 rounded-md transition-all duration-200 flex items-center gap-2"
-                title="Fullscreen Countdown"
-              >
-                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                </svg>
-                <span class="hidden sm:inline">Fullscreen</span>
-                <span class="sm:hidden">Full</span>
-              </button>
-              <button 
-                onclick="togglePiPWidget()"
-                class="px-2 sm:px-3 py-2 text-xs sm:text-sm text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-dashed border-blue-200 hover:border-blue-300 rounded-md transition-all duration-200 flex items-center gap-1 sm:gap-2"
-                title="Picture-in-Picture Countdown"
-              >
-                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke-width="2"/>
-                  <rect x="8" y="8" width="8" height="6" rx="1" ry="1" stroke-width="2"/>
-                </svg>
-                <span class="text-xs font-medium">PiP</span>
-              </button>
+          <div class="flex flex-col gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
+            <!-- Session info and controls on mobile, side by side on larger screens -->
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-3">
+              <div class="flex-1 text-left">
+                <h2 id="current-session-name" class="text-base sm:text-lg lg:text-xl xl:text-2xl font-medium themed-text mb-0.5 sm:mb-1 lg:mb-2">
+                  {exam.sessions[0].session}
+                </h2>
+                <p id="current-session-date" class="text-xs sm:text-sm lg:text-base xl:text-lg themed-text-secondary">
+                  {new Date(exam.sessions[0].date).toLocaleDateString('en-IN', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    weekday: 'long'
+                  })}
+                </p>
+              </div>
+              <div class="flex flex-col gap-1.5 sm:gap-2 lg:gap-3 sm:self-start">
+                <!-- Session Toggle (if multiple sessions) -->
+                {exam.sessions.length > 1 && (
+                  <div class="flex justify-center sm:justify-end">
+                    <div class="themed-bg-tertiary p-0.5 rounded-lg inline-flex flex-wrap gap-0.5">
+                      {exam.sessions.map((session, index) => (
+                        <button 
+                          onclick={`switchSession(${index})`}
+                          class={`session-toggle px-2 py-1 text-xs font-medium rounded-md transition-all duration-200 ${
+                            index === 0 ? 'active' : ''
+                          }`}
+                          data-session={index}
+                        >
+                          {session.session}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div class="flex gap-1.5 sm:gap-2 justify-center sm:justify-end">
+                  <button 
+                    onclick="enterFullscreen()"
+                    class="action-button-mobile px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm themed-text-secondary hover:themed-text border border-dashed themed-border hover:themed-border-secondary rounded-md transition-all duration-200 flex items-center gap-1 sm:gap-2"
+                    title="Fullscreen Countdown"
+                  >
+                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                    <span class="button-text hidden sm:inline">Fullscreen</span>
+                    <span class="button-text-mobile sm:hidden">Full</span>
+                  </button>
+                  <button 
+                    onclick="togglePiPWidget()"
+                    class="action-button-mobile px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm themed-text-secondary hover:themed-text border border-dashed themed-border hover:themed-border-secondary rounded-md transition-all duration-200 flex items-center gap-1 sm:gap-2"
+                    title="Pop-Out Countdown"
+                  >
+                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke-width="2"/>
+                      <rect x="8" y="8" width="8" height="6" rx="1" ry="1" stroke-width="2"/>
+                    </svg>
+                    <span class="button-text hidden sm:inline">Pop-Out</span>
+                    <span class="button-text-mobile sm:hidden">Pop</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           
-          <div id="main-countdown" class="countdown-display bg-zinc-50 p-4 sm:p-8 lg:p-12 rounded-lg">
+          <div id="main-countdown" class="countdown-display themed-bg-secondary p-3 sm:p-6 lg:p-8 xl:p-12 rounded-lg">
             <!-- Countdown will be populated by JavaScript -->
           </div>
         </div>
@@ -286,34 +331,34 @@ const relatedExamsData = exam.relatedExams
       <!-- Exam Details Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
         <!-- Basic Info -->
-        <div class="border border-dashed border-zinc-300 p-4 sm:p-6 rounded-lg">
-          <h3 class="font-serif italic text-lg sm:text-xl mb-4 text-zinc-800">Basic Information</h3>
+        <div class="border border-dashed themed-border p-4 sm:p-6 rounded-lg">
+          <h3 class="font-serif italic text-lg sm:text-xl mb-4 themed-text">Basic Information</h3>
           <div class="space-y-3 text-sm">
             <div class="flex justify-between">
-              <span class="text-zinc-500">Duration:</span>
-              <span class="text-zinc-800 font-medium">{exam.duration}</span>
+              <span class="themed-text-tertiary">Duration:</span>
+              <span class="themed-text font-medium">{exam.duration}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-zinc-500">Eligibility:</span>
-              <span class="text-zinc-800 font-medium text-right max-w-32 sm:max-w-none">{exam.eligibility}</span>
+              <span class="themed-text-tertiary">Eligibility:</span>
+              <span class="themed-text font-medium text-right max-w-32 sm:max-w-none">{exam.eligibility}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-zinc-500">Total Seats:</span>
-              <span class="text-zinc-800 font-medium">{exam.seats}</span>
+              <span class="themed-text-tertiary">Total Seats:</span>
+              <span class="themed-text font-medium">{exam.seats}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-zinc-500">Sessions:</span>
-              <span class="text-zinc-800 font-medium">{exam.sessions.length}</span>
+              <span class="themed-text-tertiary">Sessions:</span>
+              <span class="themed-text font-medium">{exam.sessions.length}</span>
             </div>
           </div>
         </div>
 
         <!-- Subjects -->
-        <div class="border border-dashed border-zinc-300 p-4 sm:p-6 rounded-lg">
-          <h3 class="font-serif italic text-lg sm:text-xl mb-4 text-zinc-800">Subjects</h3>
+        <div class="border border-dashed themed-border p-4 sm:p-6 rounded-lg">
+          <h3 class="font-serif italic text-lg sm:text-xl mb-4 themed-text">Subjects</h3>
           <div class="flex flex-wrap gap-2">
             {exam.subjects.map((subject) => (
-              <span class="inline-block px-2 sm:px-3 py-1 text-xs sm:text-sm bg-zinc-100 text-zinc-700 rounded-full">
+              <span class="inline-block px-2 sm:px-3 py-1 text-xs sm:text-sm themed-bg-tertiary themed-text-secondary rounded-full">
                 {subject}
               </span>
             ))}
@@ -321,8 +366,8 @@ const relatedExamsData = exam.relatedExams
         </div>
 
         <!-- Quick Actions -->
-        <div class="border border-dashed border-zinc-300 p-4 sm:p-6 rounded-lg md:col-span-2 lg:col-span-1">
-          <h3 class="font-serif italic text-lg sm:text-xl mb-4 text-zinc-800">Quick Links</h3>
+        <div class="border border-dashed themed-border p-4 sm:p-6 rounded-lg md:col-span-2 lg:col-span-1">
+          <h3 class="font-serif italic text-lg sm:text-xl mb-4 themed-text">Quick Links</h3>
           <div class="space-y-3">
             {exam.officialWebsite && (
               <a 
@@ -336,7 +381,7 @@ const relatedExamsData = exam.relatedExams
             )}
             <button 
               onclick="shareExam()"
-              class="block w-full px-4 py-2 text-sm text-zinc-600 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-md transition-colors"
+              class="block w-full px-4 py-2 text-sm themed-text-secondary themed-bg-secondary hover:themed-bg-tertiary border themed-border rounded-md transition-colors"
             >
               Share This Exam
             </button>
@@ -346,16 +391,16 @@ const relatedExamsData = exam.relatedExams
 
       <!-- Related Exams -->
       {relatedExamsData.length > 0 && (
-        <div class="border border-dashed border-zinc-300 p-4 sm:p-6 rounded-lg mb-8">
-          <h3 class="font-serif italic text-xl sm:text-2xl mb-6 text-zinc-800">Related Exams</h3>
+        <div class="border border-dashed themed-border p-4 sm:p-6 rounded-lg mb-8">
+          <h3 class="font-serif italic text-xl sm:text-2xl mb-6 themed-text">Related Exams</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {relatedExamsData.map((relatedExam) => (
               <a 
                 href={`/exams/${relatedExam.slug}`}
-                class="block p-4 border border-dashed border-zinc-200 rounded-lg hover:border-zinc-400 transition-colors group"
+                class="block p-4 border border-dashed themed-border rounded-lg hover:themed-border-secondary transition-colors group"
               >
-                <h4 class="font-medium text-sm sm:text-base text-zinc-800 group-hover:text-blue-600 mb-2">{relatedExam.name}</h4>
-                <p class="text-xs text-zinc-500 mb-2">{relatedExam.category}</p>
+                <h4 class="font-medium text-sm sm:text-base themed-text group-hover:text-blue-600 mb-2">{relatedExam.name}</h4>
+                <p class="text-xs themed-text-tertiary mb-2">{relatedExam.category}</p>
                 <div class="text-xs text-blue-600 group-hover:text-blue-800">View Details →</div>
               </a>
             ))}
@@ -364,18 +409,19 @@ const relatedExamsData = exam.relatedExams
       )}
 
       <!-- Important Notice -->
-      <div class="border border-dashed border-amber-200 bg-amber-50/50 p-3 sm:p-4 rounded-lg">
+      <div class="border border-dashed themed-disclaimer p-3 sm:p-4 rounded-lg">
         <div class="flex items-start gap-2">
-          <svg class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 themed-disclaimer-accent mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.072-.833-2.842 0L4.982 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
           <div class="flex-1">
-            <h3 class="text-sm font-medium text-amber-800 mb-1">Disclaimer</h3>
-            <p class="text-xs text-amber-700/80 leading-relaxed">
+            <h3 class="text-sm font-medium themed-disclaimer-accent mb-1">Disclaimer</h3>
+            <p class="text-xs themed-disclaimer leading-relaxed">
               Please verify exam dates from {exam.conductingBody}'s official website. 
               This countdown is for reference only.
             </p>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -531,9 +577,9 @@ const relatedExamsData = exam.relatedExams
       // Update toggle buttons
       document.querySelectorAll('.session-toggle').forEach((btn, i) => {
         if (i === index) {
-          btn.className = 'session-toggle px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors bg-white text-zinc-900 shadow-sm';
+          btn.classList.add('active');
         } else {
-          btn.className = 'session-toggle px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors text-zinc-600 hover:text-zinc-900';
+          btn.classList.remove('active');
         }
       });
       

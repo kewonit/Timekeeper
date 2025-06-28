@@ -29,101 +29,132 @@ const indianExams: ExamData[] = examData.exams;
 ---
 
 <Layout>
-  <div class="min-h-screen flex bg-white relative">
+  <div class="min-h-screen flex themed-bg relative">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-64 bg-white border-r border-dashed border-zinc-300 h-screen fixed transition-transform duration-300 ease-in-out z-30 lg:translate-x-0 -translate-x-full">
+    <div id="sidebar" class="w-64 themed-bg border-r border-dashed themed-border h-screen fixed transition-transform duration-300 ease-in-out z-30 lg:translate-x-0 -translate-x-full">
       <div class="p-4 sm:p-6">
         <div class="mb-6 sm:mb-8">
-          <h1 class="font-serif italic text-2xl sm:text-3xl">TimeKeeper</h1>
-          <p class="font-serif italic text-xs sm:text-sm text-zinc-500">Indian Exams Countdown 2026</p>
-          <div class="border-b border-dashed border-zinc-300 mt-3 sm:mt-4"></div>
+          <h1 class="font-serif italic text-2xl sm:text-3xl themed-text">TimeKeeper</h1>
+          <p class="font-serif italic text-xs sm:text-sm themed-text-secondary">Indian Exams Countdown 2026</p>
+          <div class="border-b border-dashed themed-border mt-3 sm:mt-4"></div>
         </div>
         <nav class="space-y-2">
           <button 
             onclick="showView('all')"
-            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md bg-zinc-100"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-bg-tertiary"
           >
-            <span>All Exams</span>
+            <span class="themed-text">All Exams</span>
           </button>
           <button 
             onclick="showView('engineering')"
-            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md text-zinc-600 hover:bg-zinc-50"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
           >
             <span>Engineering</span>
           </button>
           <button 
             onclick="showView('medical')"
-            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md text-zinc-600 hover:bg-zinc-50"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
           >
             <span>Medical</span>
           </button>
           <button 
             onclick="showView('management')"
-            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md text-zinc-600 hover:bg-zinc-50"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
           >
             <span>Management</span>
           </button>
           <button 
             onclick="showView('civil-services')"
-            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md text-zinc-600 hover:bg-zinc-50"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
           >
             <span>Civil Services</span>
           </button>
           <button 
             onclick="showView('banking')"
-            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md text-zinc-600 hover:bg-zinc-50"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
           >
             <span>Banking</span>
           </button>
           <button 
             onclick="showView('defence')"
-            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md text-zinc-600 hover:bg-zinc-50"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
           >
             <span>Defence</span>
           </button>
         </nav>
+        
+        <!-- Theme Toggle Section -->
+        <div class="mt-8 pt-6 border-t border-dashed themed-border">
+          <div class="mb-3">
+            <h3 class="text-sm font-medium themed-text mb-3">Theme</h3>
+            <div class="flex items-center justify-between gap-2">
+              <button 
+                class="theme-circle"
+                data-theme="light"
+                onclick="setTheme('light')"
+                title="Light Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="dark"
+                onclick="setTheme('dark')"
+                title="Dark Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="ocean"
+                onclick="setTheme('ocean')"
+                title="Ocean Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="valentine"
+                onclick="setTheme('valentine')"
+                title="Valentine Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="cupcake"
+                onclick="setTheme('cupcake')"
+                title="Cupcake Theme"
+              ></button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Main Content -->
     <div class="w-full lg:ml-64 flex-1">
-      <nav class="border-b border-dashed border-zinc-300 bg-white sticky top-0 z-20">
+      <nav class="border-b border-dashed themed-border themed-bg sticky top-0 z-20">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 w-full">
           <div class="flex items-center justify-between h-14 sm:h-16">
             <div class="flex items-center gap-2 sm:gap-4">
               <button
                 id="mobile-menu-btn"
-                class="lg:hidden p-2 -ml-2 rounded-md hover:bg-zinc-100"
+                class="lg:hidden p-2 -ml-2 rounded-md hover:themed-bg-secondary"
                 onclick="toggleMobileMenu()"
               >
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 themed-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
               <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-                <h1 id="page-title" class="font-serif italic text-lg sm:text-xl">All Exams</h1>
+                <h1 id="page-title" class="font-serif italic text-lg sm:text-xl themed-text">All Exams</h1>
                 <div class="flex items-center gap-2 mt-1 sm:mt-0">
-                  <span class="hidden sm:block h-px w-4 bg-zinc-300"></span>
-                  <span id="event-count" class="text-xs sm:text-sm text-zinc-500">
+                  <span class="hidden sm:block h-px w-4 themed-bg-tertiary"></span>
+                  <span id="event-count" class="text-xs sm:text-sm themed-text-secondary">
                     (25 exams)
                   </span>
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-2">
-              <button 
-                onclick="toggleAutoRefresh()"
-                id="refresh-btn"
-                class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-white bg-black hover:bg-zinc-800 rounded-md"
-              >
-                Auto Refresh: ON
-              </button>
-            </div>
+
           </div>
         </div>
       </nav>
 
-      <div class="max-w-7xl mx-auto w-full p-3 sm:p-4 lg:p-8">
+      <div class="max-w-7xl mx-auto w-full p-3 sm:p-4 lg:p-8 mb-8">
         <div id="events-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           <!-- Events will be populated by JavaScript -->
         </div>
@@ -140,8 +171,21 @@ const indianExams: ExamData[] = examData.exams;
 
   <script define:vars={{ indianExams }}>
     let currentView = 'all';
-    let autoRefresh = true;
     let refreshInterval;
+    
+    // Wait for global theme to be initialized
+    document.addEventListener('DOMContentLoaded', () => {
+      // Listen for theme changes to update any theme-dependent elements
+      window.addEventListener('themeChanged', (event) => {
+        // Update any theme-dependent UI elements here if needed
+        updateNavButtons();
+      });
+      
+      renderExams();
+      // Start refreshing every second
+      if (refreshInterval) clearInterval(refreshInterval);
+      refreshInterval = setInterval(renderExams, 1000);
+    });
     
     function formatTimeRemaining(targetDate) {
       const now = new Date().getTime();
@@ -208,15 +252,15 @@ const indianExams: ExamData[] = examData.exams;
         
         // Format sessions display
         const sessionsDisplay = exam.sessions.length > 1 ? 
-          `<p class="text-xs text-zinc-500 mb-1">Next Session: ${nextSession.session}</p>` :
+          `<p class="text-xs themed-text-tertiary mb-1">Next Session: ${nextSession.session}</p>` :
           '';
         
         return `
-          <div class="border border-dashed border-zinc-300 p-4 sm:p-6 rounded-lg hover:border-zinc-400 transition-colors flex flex-col cursor-pointer group" onclick="window.location.href='/exams/${exam.slug}'">
+          <div class="border border-dashed themed-border p-4 sm:p-6 rounded-lg hover:themed-border-secondary transition-colors flex flex-col cursor-pointer group themed-bg" onclick="window.location.href='/exams/${exam.slug}'">
             <div class="flex items-start justify-between mb-3 sm:mb-4">
               <div class="flex-1">
-                <h2 class="font-serif italic text-lg sm:text-xl text-black mb-1 group-hover:text-blue-600">${exam.name}</h2>
-                <p class="text-xs sm:text-sm text-zinc-500 mb-2">${exam.fullName}</p>
+                <h2 class="font-serif italic text-lg sm:text-xl themed-text mb-1 group-hover:text-blue-600 transition-colors">${exam.name}</h2>
+                <p class="text-xs sm:text-sm themed-text-secondary mb-2">${exam.fullName}</p>
                 <div class="flex items-center gap-2 mb-2 flex-wrap">
                   <span class="inline-block px-2 py-1 text-xs border rounded-full ${categoryColor}">
                     ${exam.category}
@@ -230,60 +274,60 @@ const indianExams: ExamData[] = examData.exams;
               </div>
             </div>
             
-            <p class="text-xs sm:text-sm text-zinc-600 mb-3 sm:mb-4 line-clamp-2">${exam.description}</p>
+            <p class="text-xs sm:text-sm themed-text-secondary mb-3 sm:mb-4 line-clamp-2">${exam.description}</p>
             
             <div class="grid grid-cols-2 gap-3 mb-3 sm:mb-4 text-xs">
               <div>
-                <p class="text-zinc-500 mb-1">Conducting Body:</p>
-                <p class="text-zinc-700">${exam.conductingBody}</p>
+                <p class="themed-text-tertiary mb-1">Conducting Body:</p>
+                <p class="themed-text-secondary">${exam.conductingBody}</p>
               </div>
               <div>
-                <p class="text-zinc-500 mb-1">Duration:</p>
-                <p class="text-zinc-700">${exam.duration}</p>
+                <p class="themed-text-tertiary mb-1">Duration:</p>
+                <p class="themed-text-secondary">${exam.duration}</p>
               </div>
               <div>
-                <p class="text-zinc-500 mb-1">Eligibility:</p>
-                <p class="text-zinc-700">${exam.eligibility}</p>
+                <p class="themed-text-tertiary mb-1">Eligibility:</p>
+                <p class="themed-text-secondary">${exam.eligibility}</p>
               </div>
               <div>
-                <p class="text-zinc-500 mb-1">Total Seats:</p>
-                <p class="text-zinc-700">${exam.seats}</p>
+                <p class="themed-text-tertiary mb-1">Total Seats:</p>
+                <p class="themed-text-secondary">${exam.seats}</p>
               </div>
             </div>
             
             <div class="mt-auto">
-              <div class="bg-zinc-50 p-3 rounded-md mb-3">
+              <div class="themed-bg-secondary p-3 rounded-md mb-3">
                 ${sessionsDisplay}
-                <p class="text-xs text-zinc-500 mb-1">Exam Date: ${new Date(nextSession.date).toLocaleDateString('en-IN', { 
+                <p class="text-xs themed-text-tertiary mb-1">Exam Date: ${new Date(nextSession.date).toLocaleDateString('en-IN', { 
                   year: 'numeric', 
                   month: 'long', 
                   day: 'numeric' 
                 })}</p>
-                <div class="countdown-display ${timeRemaining.expired ? 'text-red-600' : 'text-black'}">
+                <div class="countdown-display ${timeRemaining.expired ? 'text-red-600' : 'themed-text'}">
                   ${timeRemaining.expired ? 
                     `<p class="text-sm font-medium">${timeRemaining.text}</p>` :
                     `<div class="grid grid-cols-4 gap-2 text-center">
                       <div>
                         <div class="text-lg font-bold">${timeRemaining.days}</div>
-                        <div class="text-xs text-zinc-500">Days</div>
+                        <div class="text-xs themed-text-tertiary">Days</div>
                       </div>
                       <div>
                         <div class="text-lg font-bold">${timeRemaining.hours}</div>
-                        <div class="text-xs text-zinc-500">Hours</div>
+                        <div class="text-xs themed-text-tertiary">Hours</div>
                       </div>
                       <div>
                         <div class="text-lg font-bold">${timeRemaining.minutes}</div>
-                        <div class="text-xs text-zinc-500">Min</div>
+                        <div class="text-xs themed-text-tertiary">Min</div>
                       </div>
                       <div>
                         <div class="text-lg font-bold">${timeRemaining.seconds}</div>
-                        <div class="text-xs text-zinc-500">Sec</div>
+                        <div class="text-xs themed-text-tertiary">Sec</div>
                       </div>
                     </div>`
                   }
                 </div>
               </div>
-              <div class="flex items-center justify-between text-xs text-zinc-500">
+              <div class="flex items-center justify-between text-xs themed-text-tertiary">
                 <span>Click for details →</span>
                 <span class="font-medium">${exam.sessions.length > 1 ? `${exam.sessions.length} Sessions` : 'Single Session'}</span>
               </div>
@@ -296,12 +340,12 @@ const indianExams: ExamData[] = examData.exams;
     function showView(view) {
       currentView = view;
       
-      // Update nav buttons
+      // Update nav buttons with theme-aware classes
       document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.className = 'nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md text-zinc-600 hover:bg-zinc-50';
+        btn.className = 'nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary';
       });
       
-      event.target.className = 'nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md bg-zinc-100';
+      event.target.className = 'nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-bg-tertiary';
       
       renderExams();
     }
@@ -331,43 +375,9 @@ const indianExams: ExamData[] = examData.exams;
       overlay.classList.add('hidden');
     }
     
-    function toggleAutoRefresh() {
-      autoRefresh = !autoRefresh;
-      const btn = document.getElementById('refresh-btn');
-      
-      if (autoRefresh) {
-        btn.textContent = 'Auto Refresh: ON';
-        btn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-white bg-black hover:bg-zinc-800 rounded-md';
-        startAutoRefresh();
-      } else {
-        btn.textContent = 'Auto Refresh: OFF';
-        btn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-zinc-600 bg-zinc-100 hover:bg-zinc-200 rounded-md';
-        stopAutoRefresh();
-      }
-    }
-    
-    function startAutoRefresh() {
-      if (refreshInterval) clearInterval(refreshInterval);
-      refreshInterval = setInterval(renderExams, 1000);
-    }
-    
-    function stopAutoRefresh() {
-      if (refreshInterval) {
-        clearInterval(refreshInterval);
-        refreshInterval = null;
-      }
-    }
-    
     // Make functions global
     window.showView = showView;
     window.toggleMobileMenu = toggleMobileMenu;
     window.closeMobileMenu = closeMobileMenu;
-    window.toggleAutoRefresh = toggleAutoRefresh;
-    
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      renderExams();
-      startAutoRefresh();
-    });
   </script>
 </Layout>

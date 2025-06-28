@@ -1,0 +1,42 @@
+---
+// src/components/JsonLD.astro
+import type { Props as LayoutProps } from "../layouts/Layout.astro";
+
+interface Props extends LayoutProps {}
+
+const { exam } = Astro.props;
+
+let eventSchema = {};
+
+if (exam) {
+  const firstSession = exam.sessions[0];
+  if (firstSession) {
+    eventSchema = {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": `${exam.name} ${new Date(firstSession.date).getFullYear()}`,
+      "description": `Countdown timer and details for the ${exam.fullName}.`,
+      "startDate": new Date(firstSession.date).toISOString(),
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": {
+        "@type": "VirtualLocation",
+        "url": Astro.url.href
+      },
+      "organizer": {
+        "@type": "Organization",
+        "name": exam.conductingBody
+      },
+      "offers": {
+        "@type": "Offer",
+        "name": "Exam Registration",
+        "url": exam.officialWebsite,
+        "availability": "https://schema.org/OnlineOnly"
+      },
+      "keywords": exam.keywords.join(", ")
+    };
+  }
+}
+---
+{Object.keys(eventSchema).length > 0 && (
+  <script type="application/ld+json" set:html={JSON.stringify(eventSchema, null, 2)} />
+)}
