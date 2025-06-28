@@ -1,0 +1,48 @@
+{
+    "name": "TimeKeeper - Indian Exams Countdown",
+    "short_name": "TimeKeeper",
+    "description": "Ultimate countdown app for Indian competitive exams",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "categories": [
+        "education",
+        "productivity",
+        "utilities"
+    ],
+    "icons": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "All Exams",
+            "short_name": "All Exams",
+            "description": "View all exam countdowns",
+            "url": "/",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml"
+                }
+            ]
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "640x480",
+            "type": "image/svg+xml",
+            "form_factor": "wide"
+        }
+    ]
+}

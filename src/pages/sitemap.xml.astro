@@ -1,0 +1,22 @@
+---
+import examData from '../data/exams.json';
+
+const exams = examData.exams;
+const baseUrl = 'https://exam-timekeeper.pages.dev'; // Replace with your actual domain
+
+const pages = [
+  '',
+  ...exams.map(exam => `exams/${exam.slug}`)
+];
+---
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {pages.map(page => (
+    <url>
+      <loc>{baseUrl}/{page}</loc>
+      <lastmod>{new Date().toISOString().split('T')[0]}</lastmod>
+      <changefreq>{page === '' ? 'daily' : 'weekly'}</changefreq>
+      <priority>{page === '' ? '1.0' : '0.8'}</priority>
+    </url>
+  ))}
+</urlset>

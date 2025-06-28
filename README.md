@@ -1,27 +1,51 @@
-![Picture](https://preview.redd.it/f24b9k2rluoa1.png?width=2679&format=png&auto=webp&v=enabled&s=cd3738c4758b45698fe70cf4bd03a3e9a0946557)
+# 🕰️ TimeKeeper - Indian Exams Countdown 2026
 
-## 🚀 Project Structure
+The ultimate countdown app for Indian competitive exams. Track JEE Mains, JEE Advanced, NEET, BITSAT, MHTCET, WBJEE and 25+ major Indian exams with real-time countdown timers.
 
+## ✨ Features
+
+- **Real-time Countdowns**: Live countdown timers for upcoming Indian competitive exams
+- **Dynamic Individual Pages**: Dedicated pages for each exam with detailed information
+- **SEO Optimized**: Programmatic SEO for maximum search visibility
+- **25+ Major Exams**: Comprehensive coverage of Indian competitive exams
+- **Related Exams**: Smart recommendations for similar exams
+- **Mobile Responsive**: Perfect on all devices
+- **Beautiful UI**: Clean, modern design inspired by educational platforms
+
+## 🎯 Covered Exams (2026)
+
+### Engineering Entrance
+- JEE Mains, JEE Advanced, BITSAT, MHTCET, WBJEE, KCET, COMEDK, VITEEE
+
+### Medical Entrance  
+- NEET UG, NEET PG, AIIMS, JIPMER, KEAM Medical
+
+### Management Entrance
+- CAT, XAT, SNAP, NMAT, MAT, CMAT
+
+### Banking & Finance
+- SBI PO, IBPS PO, RBI Grade B, NABARD
+
+### Civil Services
+- UPSC CSE, SSC CGL, SSC CHSL, Railway NTPC
+
+### And Many More!
+
+## 🚀 Quick Start
+
+```bash
+npm install
+npm run dev
 ```
-/
-├── public/
-├── src/
-│   ├── components/
-│   ├── layouts/
-│   ├── pages/
-└── package.json
-```
 
-## 🧞 Commands
+Visit `http://localhost:4321` to see the countdown timers!
 
-All commands are run from the root of the project, from a terminal:
+## 📱 Features
 
-| Command           | Action                                       |
-| :---------------- | :------------------------------------------- |
-| `npm install`     | Installs dependencies                        |
-| `npm run dev`     | Starts local dev server at `localhost:3000`  |
-| `npm run build`   | Build your production site to `./dist/`      |
-| `npm run preview` | Preview your build locally, before deploying |
+- Individual exam pages with detailed countdown
+- Related exam recommendations
+- SEO-optimized URLs and meta tags
+- Real-time updates
+- Mobile-first responsive design
 
-## TODO
-- [x] Custom Timer
+Built with ❤️ for Indian students and JeeNeeTards community!
