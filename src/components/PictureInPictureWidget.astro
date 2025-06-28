@@ -412,9 +412,7 @@ class PictureInPictureCountdown {
       // Start PiP
       await this.video.requestPictureInPicture();
       
-      // Show status indicator
-      this.showStatusIndicator();
-      
+      // Status indicator will be shown by the 'enterpictureinpicture' event
       // Start countdown updates
       this.startUpdating();
       
@@ -469,6 +467,7 @@ class PictureInPictureCountdown {
         await document.exitPictureInPicture();
       }
       
+      // Always reset state and hide indicator
       this.isActive = false;
       this.hideStatusIndicator();
       this.stopUpdating();
@@ -483,8 +482,14 @@ class PictureInPictureCountdown {
         this.stream.getTracks().forEach(track => track.stop());
         this.stream = null;
       }
+      
+      console.log('PiP stopped and cleaned up');
     } catch (error) {
       console.error('Failed to stop Picture-in-Picture:', error);
+      // Even if there's an error, make sure we clean up
+      this.isActive = false;
+      this.hideStatusIndicator();
+      this.stopUpdating();
     }
   }
 
@@ -690,6 +695,7 @@ class PictureInPictureCountdown {
     const status = document.getElementById('pip-status');
     if (status) {
       status.classList.remove('active');
+      console.log('PiP status indicator hidden');
     }
   }
 
@@ -762,14 +768,24 @@ window.closePiP = async () => {
 
 // Handle PiP events
 document.addEventListener('enterpictureinpicture', () => {
-  console.log('Entered Picture-in-Picture mode');
+  window.pipCountdown.showStatusIndicator();
 });
 
 document.addEventListener('leavepictureinpicture', () => {
-  console.log('Left Picture-in-Picture mode');
   window.pipCountdown.hideStatusIndicator();
   window.pipCountdown.isActive = false;
   window.pipCountdown.stopUpdating();
+  
+  // Clean up video stream when PiP is closed
+  if (window.pipCountdown.video) {
+    window.pipCountdown.video.srcObject = null;
+    window.pipCountdown.video = null;
+  }
+  
+  if (window.pipCountdown.stream) {
+    window.pipCountdown.stream.getTracks().forEach(track => track.stop());
+    window.pipCountdown.stream = null;
+  }
 });
 
 // Keyboard shortcuts
