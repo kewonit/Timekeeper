@@ -1,0 +1,126 @@
+---
+interface Props {
+  currentPage?: string;
+  exam?: any;
+}
+
+const { currentPage = 'home', exam } = Astro.props;
+
+// Generate FAQ data based on context
+const generateFAQs = (context: string, exam?: any) => {
+  if (context === 'exam' && exam) {
+    return [
+      {
+        question: `When is ${exam.name} 2026 exam?`,
+        answer: `${exam.fullName} 2026 is scheduled for ${new Date(exam.sessions?.[0]?.date || exam.date).toLocaleDateString('en-IN', { 
+          day: 'numeric', 
+          month: 'long', 
+          year: 'numeric' 
+        })}. Our countdown timer shows the exact time remaining until the exam.`
+      },
+      {
+        question: `How accurate is the ${exam.name} countdown timer?`,
+        answer: `Our ${exam.name} countdown timer updates every second and is synchronized with official exam dates. It shows precise time remaining in days, hours, minutes, and seconds until the exam date.`
+      },
+      {
+        question: `What is ${exam.fullName}?`,
+        answer: `${exam.description} It is conducted by ${exam.conductingBody} and has ${exam.seats} seats available.`
+      },
+      {
+        question: `Can I track multiple exam dates?`,
+        answer: `Yes! Our platform allows you to track ${exam.name} along with other related exams like ${exam.relatedExams?.slice(0, 3).join(', ')}. Each exam has its dedicated countdown timer.`
+      },
+      {
+        question: `Does the countdown timer work offline?`,
+        answer: `Yes, our countdown timer works offline once loaded. The timer continues to run even without internet connection, ensuring you never lose track of time until ${exam.name} 2026.`
+      },
+      {
+        question: `What subjects are covered in ${exam.name}?`,
+        answer: `${exam.name} covers ${exam.subjects?.join(', ')}. The exam duration is ${exam.duration}.`
+      },
+      {
+        question: `Who can appear for ${exam.name}?`,
+        answer: `Eligibility for ${exam.name} is: ${exam.eligibility}. The exam is conducted by ${exam.conductingBody}.`
+      },
+      {
+        question: `Is there a Picture-in-Picture mode for the countdown?`,
+        answer: `Yes! Our ${exam.name} countdown timer supports Picture-in-Picture mode, allowing you to keep track of time while working on other tasks.`
+      }
+    ];
+  }
+
+  // General FAQs for home page
+  return [
+    {
+      question: "What is TimeKeeper countdown timer?",
+      answer: "TimeKeeper is the ultimate countdown timer for Indian competitive exams. Track exact time remaining for JEE Main, JEE Advanced, NEET, CAT, BITSAT, and 25+ major Indian exams with real-time precision."
+    },
+    {
+      question: "How accurate are the exam countdown timers?",
+      answer: "Our countdown timers are extremely accurate, updating every second with official exam dates. They show precise time remaining in days, hours, minutes, and seconds until each exam."
+    },
+    {
+      question: "Which Indian exams can I track?",
+      answer: "You can track JEE Main, JEE Advanced, NEET UG, CAT, BITSAT, MHTCET, WBJEE, KVPY, AIIMS, JIPMER, XAT, SNAP, NMAT, CLAT, and many more Indian competitive and entrance exams."
+    },
+    {
+      question: "Does the countdown work on mobile devices?",
+      answer: "Yes! Our countdown timers are fully responsive and work perfectly on mobile phones, tablets, and desktop computers. The interface adapts to your screen size for optimal viewing."
+    },
+    {
+      question: "Can I use Picture-in-Picture mode?",
+      answer: "Yes! Our advanced Picture-in-Picture feature lets you keep the countdown timer visible while working on other tasks, perfect for study sessions and exam preparation."
+    },
+    {
+      question: "Is the countdown timer free to use?",
+      answer: "Absolutely! TimeKeeper is completely free. No registration required, no hidden fees, no premium features - just reliable exam countdown timers for all students."
+    },
+    {
+      question: "How often are exam dates updated?",
+      answer: "We continuously monitor official exam conducting bodies like NTA, IITs, IIMs, and AIIMS to ensure our countdown timers reflect the most current and accurate exam dates."
+    },
+    {
+      question: "Can I share countdown timers with friends?",
+      answer: "Yes! Each exam has its dedicated page with a shareable URL. You can easily share specific exam countdown timers with your study group or friends preparing for the same exam."
+    },
+    {
+      question: "What happens when an exam date passes?",
+      answer: "When an exam date passes, the countdown timer automatically updates to show 'Exam Completed' status. For exams with multiple sessions, it switches to the next upcoming session."
+    },
+  ];
+};
+
+const faqs = generateFAQs(currentPage, exam);
+---
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {faqs.map((faq, index) => `
+    ${index > 0 ? ',' : ''}{
+      "@type": "Question",
+      "name": "${faq.question}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "${faq.answer}"
+      }
+    }`).join('')}
+  ]
+}
+</script>
+
+<!-- FAQ Schema for better search results -->
+<div style="display: none;" aria-hidden="true">
+  <div itemscope itemtype="https://schema.org/FAQPage">
+    {faqs.map(faq => (
+      <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <h3 itemprop="name">{faq.question}</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <div itemprop="text">{faq.answer}</div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

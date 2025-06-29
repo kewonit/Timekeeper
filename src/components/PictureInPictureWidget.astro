@@ -1,0 +1,624 @@
+---
+// Direct Picture-in-Picture Countdown Component
+---
+
+<style>
+  /* PiP Canvas Styles */
+  #pip-canvas {    
+    background: linear-gradient(135deg, #ffffff 0%, #f4f4f5 50%, #ffffff 100%);
+    font-family: 'Inter', sans-serif;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  /* PiP Status Indicator */
+  .pip-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #374151;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 1001;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    display: none;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .pip-status.active {
+    display: flex;
+    animation: slideIn 0.3s ease;
+  }
+
+  .pip-indicator {
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  .pip-close-btn {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 2px;
+    margin-left: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pip-close-btn:hover {
+    color: #374151;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+
+  .pip-fallback {
+    display: none !important;
+  }
+</style>
+
+<!-- Hidden canvas for PiP -->
+<canvas id="pip-canvas" width="640" height="360" style="display: none;"></canvas>
+
+<!-- PiP Status Indicator -->
+<div id="pip-status" class="pip-status">
+  <div class="pip-indicator"></div>
+  <span id="pip-status-text">Picture-in-Picture Active</span>
+  <button onclick="closePiP()" class="pip-close-btn">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+</div>
+
+<!-- Mobile fallback notification -->
+<div id="pip-fallback" class="pip-fallback">
+  <div style="margin-bottom: 6px; font-weight: 500;">� Picture-in-Picture not supported</div>
+  <div style="font-size: 11px; opacity: 0.7;">Use a desktop browser for PiP countdown experience</div>
+</div>
+
+<script>
+// Global type extensions
+declare global {
+  interface Window {
+    pipCountdown: PictureInPictureCountdown;
+    startPiPCountdown: (exam: any, session?: any) => void;
+    stopPiPCountdown: () => void;
+    closePiP: () => void;
+  }
+}
+
+class PictureInPictureCountdown {
+  isActive: boolean;
+  currentExam: any;
+  currentSession: any;
+  updateInterval: ReturnType<typeof setInterval> | null;
+  canvas: HTMLCanvasElement | null;
+  ctx: CanvasRenderingContext2D | null;
+  video: HTMLVideoElement | null;
+  stream: MediaStream | null;
+  serviceWorker: ServiceWorkerRegistration | null;
+
+  constructor() {
+    this.isActive = false;
+    this.currentExam = null;
+    this.currentSession = null;
+    this.updateInterval = null;
+    this.canvas = null;
+    this.ctx = null;
+    this.video = null;
+    this.stream = null;
+    this.serviceWorker = null;
+    
+    this.init();
+  }
+
+  init() {
+    // Ensure DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.initCanvas());
+    } else {
+      this.initCanvas();
+    }
+    
+    this.registerServiceWorker();
+  }
+
+  initCanvas() {
+    this.canvas = document.getElementById('pip-canvas') as HTMLCanvasElement;
+    if (this.canvas) {
+      this.ctx = this.canvas.getContext('2d');
+      
+      // Set canvas dimensions for a more compact layout
+      this.canvas.width = 680; // Use a high resolution for quality
+      this.canvas.height = 280; // Reduced height to minimize vertical space
+      
+      // Draw a test frame to ensure canvas is ready with the light theme
+      if (this.ctx) {
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Add subtle border
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(0.5, 0.5, this.canvas.width - 1, this.canvas.height - 1);
+      }
+    } else {
+      // console.error('PiP Canvas element not found');
+    }
+  }
+
+  async registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        this.serviceWorker = registration;
+      } catch (error) {
+        // console.error('Service Worker registration failed:', error);
+      }
+    }
+  }
+
+  checkSupport(): { supported: boolean; reason?: string } {
+    // Check if running on mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (!('pictureInPictureEnabled' in document)) {
+      return { 
+        supported: false, 
+        reason: isMobile ? 'Picture-in-Picture not available on mobile devices' : 'Browser does not support Picture-in-Picture'
+      };
+    }
+    
+    if (!document.pictureInPictureEnabled) {
+      return { 
+        supported: false, 
+        reason: 'Picture-in-Picture is disabled in browser settings. Please enable it to use this feature.'
+      };
+    }
+    
+    if (!this.canvas) {
+      return { 
+        supported: false, 
+        reason: 'Canvas element not available. Please refresh the page and try again.'
+      };
+    }
+    
+    if (!this.canvas.captureStream) {
+      return { 
+        supported: false, 
+        reason: isMobile ? 'Canvas streaming not supported on this device' : 'Canvas stream capture not supported in this browser'
+      };
+    }
+    
+    return { supported: true };
+  }
+
+  async startPiP(exam: any, session: any = null) {
+    const support = this.checkSupport();
+    if (!support.supported) {
+      this.showFallbackNotification(support.reason);
+      return false;
+    }
+
+    try {
+      this.currentExam = exam;
+      this.currentSession = session || (exam.sessions && exam.sessions[0]);
+      this.isActive = true;
+
+      // Initialize canvas with countdown content first
+      if (!this.canvas || !this.ctx) {
+        return false;
+      }
+
+      // Check for captureStream support
+      if (!this.canvas.captureStream) {
+        this.showFallbackNotification('Your browser doesn\'t support canvas streaming for Picture-in-Picture');
+        return false;
+      }
+
+      // Draw initial countdown to ensure canvas has content
+      this.updateCountdown();
+      
+      // Small delay to ensure canvas is rendered
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Create video stream from canvas
+      if (!this.video) {
+        try {
+          this.stream = this.canvas.captureStream(60); // Increased frame rate for smoother video
+          
+          // Verify stream has video tracks
+          const videoTracks = this.stream.getVideoTracks();
+          if (videoTracks.length === 0) {
+            throw new Error('No video tracks in canvas stream');
+          }
+          
+          this.video = document.createElement('video');
+          this.video.srcObject = this.stream;
+          this.video.muted = true;
+          this.video.autoplay = true;
+          this.video.playsInline = true;
+          this.video.loop = true;
+          
+          // Set video dimensions to match canvas
+          this.video.width = this.canvas.width;
+          this.video.height = this.canvas.height;
+          
+          // Simplified video loading - start playback immediately
+          await this.video.play();
+          
+          // Small delay to ensure video is ready
+          await new Promise(resolve => setTimeout(resolve, 200));
+          
+        } catch (streamError) {
+          throw new Error(`Canvas stream creation failed`);
+        }
+      }
+
+      // Start PiP immediately - no additional readyState checks
+      await this.video.requestPictureInPicture();
+      
+      // Status indicator will be shown by the 'enterpictureinpicture' event
+      // Start countdown updates
+      this.startUpdating();
+      
+      // Setup service worker background sync
+      if (this.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'SETUP_BACKGROUND_SYNC',
+          data: this.currentSession
+        });
+      }
+
+      return true;
+    } catch (error: any) {
+      // Clean up on error
+      if (this.video) {
+        this.video.srcObject = null;
+        this.video = null;
+      }
+      
+      if (this.stream) {
+        this.stream.getTracks().forEach(track => track.stop());
+        this.stream = null;
+      }
+      
+      this.isActive = false;
+      
+      // Provide specific error messages based on error type
+      let errorMessage = 'Failed to start Picture-in-Picture mode';
+      if (error?.message?.includes('not supported')) {
+        errorMessage = 'Picture-in-Picture is not supported on this device or browser';
+      } else if (error?.message?.includes('stream')) {
+        errorMessage = 'Unable to create video stream for Picture-in-Picture';
+      } else if (error?.message?.includes('timeout')) {
+        errorMessage = 'Picture-in-Picture initialization timed out. Please try again.';
+      } else if (error?.message?.includes('permission')) {
+        errorMessage = 'Picture-in-Picture permission denied. Please allow PiP in browser settings.';
+      }
+      
+      this.showFallbackNotification(errorMessage);
+      return false;
+    }
+  }
+
+  async stopPiP() {
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      }
+      
+      // Always reset state and hide indicator
+      this.isActive = false;
+      this.hideStatusIndicator();
+      this.stopUpdating();
+      
+      // Clean up video stream
+      if (this.video) {
+        this.video.srcObject = null;
+        this.video = null;
+      }
+      
+      if (this.stream) {
+        this.stream.getTracks().forEach(track => track.stop());
+        this.stream = null;
+      }
+      
+    } catch (error) {
+      // console.error('Failed to stop Picture-in-Picture:', error);
+      // Even if there's an error, make sure we clean up
+      this.isActive = false;
+      this.hideStatusIndicator();
+      this.stopUpdating();
+    }
+  }
+
+  formatTimeRemaining(targetDate: string) {
+    const now = new Date().getTime();
+    const target = new Date(targetDate).getTime();
+    const distance = target - now;
+    
+    if (distance < 0) {
+      return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+    
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    return { expired: false, days, hours, minutes, seconds };
+  }
+
+  updateCountdown() {
+    if (!this.currentSession || !this.ctx || !this.canvas) return;
+
+    const timeRemaining = this.formatTimeRemaining(this.currentSession.date);
+    
+    if (timeRemaining.expired) {
+      this.drawExpiredState();
+      return;
+    }
+    
+    this.drawCountdown(timeRemaining.days, timeRemaining.hours, timeRemaining.minutes, timeRemaining.seconds);
+  }
+
+  drawCountdown(days: number, hours: number, minutes: number, seconds: number) {
+    if (!this.ctx || !this.canvas) return;
+    
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    
+    // Clear canvas with clean white background
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillRect(0, 0, width, height);
+    
+    // Add subtle border
+    this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
+    
+    // Top section - Exam name (left) and Session info (right) - with more padding
+    const topY = 50;
+    
+    // Left side - Exam name (much larger text)
+    this.ctx.fillStyle = '#09090b';
+    this.ctx.font = 'bold 40px Inter, sans-serif';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText(this.currentExam.name, 20, topY);
+    
+    // Right side - Session and date (larger text)
+    this.ctx.fillStyle = '#52525b';
+    this.ctx.font = '24px Inter, sans-serif';
+    this.ctx.textAlign = 'right';
+    const sessionText = this.currentSession.session || 'Main Session';
+    this.ctx.fillText(sessionText, width - 20, topY - 10);
+    
+    this.ctx.fillStyle = '#71717a';
+    this.ctx.font = '20px Inter, sans-serif';
+    const dateText = new Date(this.currentSession.date).toLocaleDateString('en-IN', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+    this.ctx.fillText(dateText, width - 20, topY + 20);
+    
+    // Main countdown section - moved to the bottom
+    const countdownHeight = 160;
+    const countdownStartY = height - countdownHeight - 20; // Positioned with a 20px bottom margin
+    
+    // Countdown grid - 4 columns
+    const items = [
+      { value: days, label: 'DAYS' },
+      { value: hours, label: 'HRS' },
+      { value: minutes, label: 'MIN' },
+      { value: seconds, label: 'SEC' }
+    ];
+    
+    const padding = 10;
+    const gridWidth = width - (padding * 2);
+    const itemWidth = gridWidth / 4;
+    
+    items.forEach((item, index) => {
+      const x = padding + (index * itemWidth);
+      const centerX = x + (itemWidth / 2);
+      
+      // Background for each countdown item
+      this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.03)';
+      this.ctx!.fillRect(x + 4, countdownStartY, itemWidth - 8, countdownHeight);
+      
+      // Border for each item
+      this.ctx!.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+      this.ctx!.lineWidth = 1;
+      this.ctx!.strokeRect(x + 4.5, countdownStartY + 0.5, itemWidth - 9, countdownHeight - 1);
+      
+      // Much larger countdown number
+      this.ctx!.fillStyle = '#09090b';
+      this.ctx!.font = 'bold 72px Inter, sans-serif'; // Slightly smaller font size
+      this.ctx!.textAlign = 'center';
+      this.ctx!.fillText(item.value.toString().padStart(2, '0'), centerX, countdownStartY + (countdownHeight / 2) + 22);
+      
+      // Larger label below the number
+      this.ctx!.fillStyle = '#71717a';
+      this.ctx!.font = 'bold 16px Inter, sans-serif'; // Slightly smaller font size
+      this.ctx!.fillText(item.label, centerX, countdownStartY + countdownHeight - 22);
+    });
+  }
+
+  drawExpiredState() {
+    if (!this.ctx || !this.canvas) return;
+    
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    
+    // Clear with clean white background
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillRect(0, 0, width, height);
+    
+    // Add border
+    this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
+    
+    // Top section - Exam name (left) and Session info (right) - with more padding
+    const topY = 50;
+    
+    // Left side - Exam name (larger text)
+    this.ctx.fillStyle = '#09090b';
+    this.ctx.font = 'bold 40px Inter, sans-serif';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText(this.currentExam.name, 20, topY);
+    
+    // Right side - Session and date (larger text)
+    this.ctx.fillStyle = '#52525b';
+    this.ctx.font = '24px Inter, sans-serif';
+    this.ctx.textAlign = 'right';
+    const sessionText = this.currentSession.session || 'Main Session';
+    this.ctx.fillText(sessionText, width - 20, topY - 10);
+    
+    this.ctx.fillStyle = '#71717a';
+    this.ctx.font = '20px Inter, sans-serif';
+    const dateText = new Date(this.currentSession.date).toLocaleDateString('en-IN', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+    this.ctx.fillText(dateText, width - 20, topY + 20);
+    
+    // Center content area
+    const centerY = height / 2 + 40; // Adjusted to be lower
+    
+    // Much larger completed message
+    this.ctx.fillStyle = '#16a34a';
+    this.ctx.font = 'bold 64px Inter, sans-serif';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('✓ COMPLETED', width / 2, centerY - 25);
+    
+    // Larger subtitle
+    this.ctx.fillStyle = '#52525b';
+    this.ctx.font = '24px Inter, sans-serif';
+    this.ctx.fillText('Exam has started/passed', width / 2, centerY + 25);
+  }
+
+  showStatusIndicator() {
+    const status = document.getElementById('pip-status');
+    if (status) {
+      status.classList.add('active');
+    }
+  }
+
+  hideStatusIndicator() {
+    const status = document.getElementById('pip-status');
+    if (status) {
+      status.classList.remove('active');
+    }
+  }
+
+  showFallbackNotification(reason?: string) {
+    // Notification functionality removed - just log the reason
+  }
+
+  startUpdating() {
+    this.stopUpdating();
+    this.updateCountdown();
+    this.updateInterval = setInterval(() => this.updateCountdown(), 1000);
+  }
+
+  stopUpdating() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+      this.updateInterval = null;
+    }
+  }
+
+  // Public API methods
+  updateSession(session: any) {
+    if (this.isActive) {
+      this.currentSession = session;
+      this.updateCountdown();
+    }
+  }
+}
+
+// Initialize global PiP countdown
+window.pipCountdown = new PictureInPictureCountdown();
+
+// Global functions
+window.startPiPCountdown = async (exam: any, session?: any) => {
+  return await window.pipCountdown.startPiP(exam, session);
+};
+
+window.stopPiPCountdown = async () => {
+  await window.pipCountdown.stopPiP();
+};
+
+window.closePiP = async () => {
+  await window.pipCountdown.stopPiP();
+};
+
+// Handle PiP events
+document.addEventListener('enterpictureinpicture', () => {
+  window.pipCountdown.showStatusIndicator();
+});
+
+document.addEventListener('leavepictureinpicture', () => {
+  window.pipCountdown.hideStatusIndicator();
+  window.pipCountdown.isActive = false;
+  window.pipCountdown.stopUpdating();
+  
+  // Clean up video stream when PiP is closed
+  if (window.pipCountdown.video) {
+    window.pipCountdown.video.srcObject = null;
+    window.pipCountdown.video = null;
+  }
+  
+  if (window.pipCountdown.stream) {
+    window.pipCountdown.stream.getTracks().forEach(track => track.stop());
+    window.pipCountdown.stream = null;
+  }
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.pictureInPictureElement) {
+    window.closePiP();
+  }
+});
+</script>

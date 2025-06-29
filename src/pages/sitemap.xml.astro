@@ -1,0 +1,53 @@
+---
+import examData from '../data/exams.json';
+
+const exams = examData.exams;
+const baseUrl = 'https://timekeeper.edbn.me'; // Replace with your actual domain
+
+// Generate dynamic pages
+const staticPages = [
+  { url: '', priority: '1.0', changefreq: 'daily', lastmod: new Date().toISOString().split('T')[0] },
+  { url: 'about', priority: '0.7', changefreq: 'monthly', lastmod: new Date().toISOString().split('T')[0] },
+  { url: 'contact', priority: '0.6', changefreq: 'monthly', lastmod: new Date().toISOString().split('T')[0] },
+  { url: 'privacy', priority: '0.5', changefreq: 'yearly', lastmod: new Date().toISOString().split('T')[0] },
+  { url: 'terms', priority: '0.5', changefreq: 'yearly', lastmod: new Date().toISOString().split('T')[0] }
+];
+
+const examPages = exams.map(exam => ({
+  url: `exams/${exam.slug}`,
+  priority: '0.9',
+  changefreq: 'daily',
+  lastmod: new Date().toISOString().split('T')[0]
+}));
+
+// Category pages
+const categories = [...new Set(exams.map(exam => exam.category))];
+const categoryPages = categories.map(category => ({
+  url: `category/${category.toLowerCase().replace(/\s+/g, '-')}`,
+  priority: '0.8',
+  changefreq: 'weekly',
+  lastmod: new Date().toISOString().split('T')[0]
+}));
+
+const allPages = [...staticPages, ...examPages, ...categoryPages];
+---
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  {allPages.map(page => (
+    <url>
+      <loc>{baseUrl}/{page.url}</loc>
+      <lastmod>{page.lastmod}</lastmod>
+      <changefreq>{page.changefreq}</changefreq>
+      <priority>{page.priority}</priority>
+      {page.url.startsWith('exams/') && (
+        <image:image>
+          <image:loc>{baseUrl}/favicon.svg</image:loc>
+          <image:title>{exams.find(e => e.slug === page.url.replace('exams/', ''))?.name} Countdown Timer</image:title>
+          <image:caption>Real-time countdown for {exams.find(e => e.slug === page.url.replace('exams/', ''))?.fullName}</image:caption>
+        </image:image>
+      )}
+    </url>
+  ))}
+</urlset>

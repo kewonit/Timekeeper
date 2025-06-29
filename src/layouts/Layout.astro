@@ -1,52 +1,585 @@
 ---
 export interface Props {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  exam?: any;
 }
-const { title } = Astro.props;
-const { description } = Astro.props;
-import Head from "../components/Head.astro";
-import Footer from "../components/Footer.astro";
+
+const { 
+  title = "TimeKeeper - Indian Exams Countdown 2026",
+  description = "Ultimate countdown app for Indian competitive exams. Track JEE Mains, JEE Advanced, NEET, BITSAT, MHTCET, WBJEE and 25+ major Indian exams with real-time countdown timers.",
+  keywords = ["Indian exams 2026", "JEE countdown", "NEET countdown", "exam timer", "competitive exams", "entrance exams"],
+  exam
+} = Astro.props;
+
+
+// Import SEO and PiP Components
+import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
+import JsonLD from '../components/JsonLD.astro';
+import SEOHead from '../components/SEOHead.astro';
+import FAQSchema from '../components/FAQSchema.astro';
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <title>
-      Exam Countdown & TimerKeeper for Exams like JEE, NEET, BITSAT 2023/2024/2025
-    </title>
-    <meta
-      name="description"
-      content={description}
-    />
-  </head>
-  <body>
-    <Head />
-    <slot />
-    <Footer />
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<!-- Prevent theme flash by setting theme immediately -->
+		<script>
+			(function() {
+				const savedTheme = localStorage.getItem('timekeeper-theme');
+				const theme = savedTheme && ['light', 'dark', 'ocean', 'valentine', 'cupcake'].includes(savedTheme) 
+					? savedTheme 
+					: (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+				document.documentElement.setAttribute('data-theme', theme);
+			})();
+		</script>
+		
+		<!-- Enhanced SEO Meta Tags -->
+		<SEOHead exam={exam} currentUrl={Astro.url.href} />
+		
+		<!-- Structured Data -->
+		<JsonLD type={exam ? 'exam' : 'website'} exam={exam} />
+		
+		<!-- FAQ Schema -->
+		<FAQSchema currentPage={exam ? 'exam' : 'home'} exam={exam} />
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="apple-mobile-web-app-title" content="TimeKeeper" />
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2J1V5S9K5"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-Q2J1V5S9K5');
+		</script>
+	</head>
+	<body class="font-sans transition-colors duration-300">
+		<slot />
+		
+		<!-- Picture-in-Picture Widget - Global -->
+		<PictureInPictureWidget />
+		
+		<!-- Global Footer -->
+		<footer class="border-t border-dashed themed-border themed-bg">
+			<div class="max-w-7xl mx-auto px-4 py-6">
+				<div class="text-center space-y-3">
+					<div class="flex items-center justify-center gap-2 text-sm themed-text-secondary">
+						<span class="font-serif italic">TimeKeeper</span>
+						<span class="h-px w-4 themed-bg-tertiary"></span>
+						<span>Exams Countdown 2026</span>
+					</div>
+					<div class="text-xs themed-disclaimer max-w-2xl mx-auto p-3 rounded-lg border themed-disclaimer">
+						<p>
+							This service provides exam countdown timers for reference only. 
+							We are not affiliated with any exam conducting body. All information is subject to change. 
+							Please verify details from official sources before making decisions.
+						</p>
+					</div>
+					<div class="text-xs themed-text-tertiary">
+						<span>Built by <a href="https://kew.edbn.me" class="hover:underline">kew.edbn.me</a></span>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</body>
+	
+	<!-- Global Theme Management Script -->
+	<script>
+		// Global theme management - runs on every page
+		(function() {
+			let currentTheme = 'light';
+			
+			// Theme initialization - prevent flashing
+			function initializeTheme() {
+				// Get saved theme from localStorage or default to 'light'
+				const savedTheme = localStorage.getItem('timekeeper-theme');
+				if (savedTheme && ['light', 'dark', 'ocean', 'valentine', 'cupcake'].includes(savedTheme)) {
+					currentTheme = savedTheme;
+				} else {
+					// Auto-detect system preference if no saved theme
+					if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+						currentTheme = 'dark';
+					}
+				}
+				
+				// Set theme immediately to prevent flash
+				document.documentElement.setAttribute('data-theme', currentTheme);
+			}
+			
+			// Set theme function
+			function setTheme(theme: string) {
+				// Validate theme
+				const validThemes = ['light', 'dark', 'ocean', 'valentine', 'cupcake'];
+				if (!validThemes.includes(theme)) {
+					console.warn(`Invalid theme: ${theme}. Falling back to light theme.`);
+					theme = 'light';
+				}
+				
+				currentTheme = theme;
+				document.documentElement.setAttribute('data-theme', theme);
+				
+				// Store in localStorage with error handling
+				try {
+					localStorage.setItem('timekeeper-theme', theme);
+				} catch (e) {
+					console.warn('Could not save theme to localStorage:', e);
+				}
+				
+				// Update meta theme-color for mobile browsers
+				updateMetaThemeColor(theme);
+				
+				// Update theme selector if it exists
+				updateThemeSelector();
+				
+				// Dispatch custom event for other scripts to listen to
+				window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
+			}
+			
+			// Update meta theme color
+			function updateMetaThemeColor(theme: string) {
+				const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+				if (metaThemeColor) {
+					const themeColors: { [key: string]: string } = {
+						'light': '#ffffff',
+						'dark': '#000000',
+						'ocean': '#f0f9ff',
+						'valentine': '#fff1f2',
+						'cupcake': '#fdf2f8'
+					};
+					metaThemeColor.setAttribute('content', themeColors[theme] || '#ffffff');
+				}
+			}
+			
+			// Update theme selector visual state
+			function updateThemeSelector() {
+				const themeCircles = document.querySelectorAll('.theme-circle');
+				themeCircles.forEach(circle => {
+					const circleTheme = circle.getAttribute('data-theme');
+					if (circleTheme === currentTheme) {
+						circle.classList.add('active');
+					} else {
+						circle.classList.remove('active');
+					}
+				});
+			}
+			
+			// Listen for system theme changes
+			function setupSystemThemeListener() {
+				if (window.matchMedia) {
+					const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+					mediaQuery.addEventListener('change', (e) => {
+						// Only auto-switch if user hasn't manually selected a theme
+						if (!localStorage.getItem('timekeeper-theme')) {
+							setTheme(e.matches ? 'dark' : 'light');
+						}
+					});
+				}
+			}
+			
+			// Handle localStorage availability
+			function isLocalStorageAvailable() {
+				try {
+					const test = '__localStorage_test__';
+					localStorage.setItem(test, test);
+					localStorage.removeItem(test);
+					return true;
+				} catch (e) {
+					return false;
+				}
+			}
+			
+			// Make setTheme globally available
+			(window as any).setTheme = setTheme;
+			(window as any).getCurrentTheme = () => currentTheme;
+			
+			// Initialize theme immediately to prevent flashing
+			initializeTheme();
+			
+			// Setup system theme listener when DOM is ready
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', setupSystemThemeListener);
+			} else {
+				setupSystemThemeListener();
+			}
+		})();
+	</script>
 </html>
+
 <style is:global>
-  :root {
-    --accent: 124, 58, 237;
-    --accent-gradient: linear-gradient(
-      45deg,
-      rgb(var(--accent)),
-      #da62c4 30%,
-      white 60%
-    );
-  }
-  html {
-    font-family: system-ui, sans-serif;
-    background-color: #f6f6f6;
-  }
-  code {
-    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-      DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-  }
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+		font-family: 'Inter', sans-serif;
+	}
+	
+	.font-serif {
+		font-family: 'Playfair Display', serif;
+	}
+
+	/* Theme Variables */
+	:root {
+		--theme-transition: all 0.3s ease;
+	}
+
+	/* Light Theme (Default) */
+	[data-theme="light"] {
+		--bg-primary: rgb(255, 255, 255);
+		--bg-secondary: rgb(248, 250, 252);
+		--bg-tertiary: rgb(241, 245, 249);
+		--border-primary: rgb(203, 213, 225);
+		--border-secondary: rgb(226, 232, 240);
+		--text-primary: rgb(15, 23, 42);
+		--text-secondary: rgb(71, 85, 105);
+		--text-tertiary: rgb(148, 163, 184);
+		--accent-primary: rgb(59, 130, 246);
+		--accent-hover: rgb(37, 99, 235);
+		--success: rgb(16, 185, 129);
+		--warning: rgb(245, 158, 11);
+		--error: rgb(239, 68, 68);
+		--shadow: rgba(0, 0, 0, 0.1);
+		--disclaimer-bg: rgb(255, 251, 235);
+		--disclaimer-border: rgb(252, 211, 77);
+		--disclaimer-text: rgb(146, 64, 14);
+		--disclaimer-accent: rgb(217, 119, 6);
+	}
+
+	/* Dark Theme */
+	[data-theme="dark"] {
+		--bg-primary: rgb(0, 0, 0);
+		--bg-secondary: rgb(17, 17, 17);
+		--bg-tertiary: rgb(38, 38, 38);
+		--border-primary: rgb(64, 64, 64);
+		--border-secondary: rgb(115, 115, 115);
+		--text-primary: rgb(255, 255, 255);
+		--text-secondary: rgb(229, 229, 229);
+		--text-tertiary: rgb(163, 163, 163);
+		--accent-primary: rgb(96, 165, 250);
+		--accent-hover: rgb(59, 130, 246);
+		--success: rgb(34, 197, 94);
+		--warning: rgb(251, 191, 36);
+		--error: rgb(248, 113, 113);
+		--shadow: rgba(255, 255, 255, 0.1);
+		--disclaimer-bg: rgb(20, 20, 20);
+		--disclaimer-border: rgb(64, 64, 64);
+		--disclaimer-text: rgb(255, 255, 255);
+		--disclaimer-accent: rgb(251, 191, 36);
+	}
+
+	/* Valentine Theme */
+	[data-theme="valentine"] {
+		--bg-primary: rgb(255, 241, 242);
+		--bg-secondary: rgb(254, 226, 226);
+		--bg-tertiary: rgb(252, 165, 165);
+		--border-primary: rgb(244, 114, 182);
+		--border-secondary: rgb(249, 168, 212);
+		--text-primary: rgb(136, 19, 55);
+		--text-secondary: rgb(190, 24, 93);
+		--text-tertiary: rgb(244, 114, 182);
+		--accent-primary: rgb(236, 72, 153);
+		--accent-hover: rgb(219, 39, 119);
+		--success: rgb(34, 197, 94);
+		--warning: rgb(245, 158, 11);
+		--error: rgb(239, 68, 68);
+		--shadow: rgba(236, 72, 153, 0.2);
+		--disclaimer-bg: rgb(254, 202, 202);
+		--disclaimer-border: rgb(244, 114, 182);
+		--disclaimer-text: rgb(136, 19, 55);
+		--disclaimer-accent: rgb(190, 24, 93);
+	}
+
+	/* Cupcake Theme */
+	[data-theme="cupcake"] {
+		--bg-primary: rgb(253, 242, 248);
+		--bg-secondary: rgb(252, 231, 243);
+		--bg-tertiary: rgb(251, 207, 232);
+		--border-primary: rgb(219, 112, 147);
+		--border-secondary: rgb(240, 171, 252);
+		--text-primary: rgb(112, 26, 117);
+		--text-secondary: rgb(147, 51, 234);
+		--text-tertiary: rgb(168, 85, 247);
+		--accent-primary: rgb(168, 85, 247);
+		--accent-hover: rgb(147, 51, 234);
+		--success: rgb(34, 197, 94);
+		--warning: rgb(245, 158, 11);
+		--error: rgb(239, 68, 68);
+		--shadow: rgba(168, 85, 247, 0.2);
+		--disclaimer-bg: rgb(251, 207, 232);
+		--disclaimer-border: rgb(219, 112, 147);
+		--disclaimer-text: rgb(112, 26, 117);
+		--disclaimer-accent: rgb(147, 51, 234);
+	}
+
+	/* Ocean Theme (replacing Halloween) */
+	[data-theme="ocean"] {
+		--bg-primary: rgb(240, 249, 255);
+		--bg-secondary: rgb(224, 242, 254);
+		--bg-tertiary: rgb(186, 230, 253);
+		--border-primary: rgb(125, 211, 252);
+		--border-secondary: rgb(165, 216, 252);
+		--text-primary: rgb(12, 74, 110);
+		--text-secondary: rgb(14, 116, 144);
+		--text-tertiary: rgb(34, 211, 238);
+		--accent-primary: rgb(14, 165, 233);
+		--accent-hover: rgb(2, 132, 199);
+		--success: rgb(34, 197, 94);
+		--warning: rgb(245, 158, 11);
+		--error: rgb(239, 68, 68);
+		--shadow: rgba(14, 165, 233, 0.2);
+		--disclaimer-bg: rgb(224, 242, 254);
+		--disclaimer-border: rgb(125, 211, 252);
+		--disclaimer-text: rgb(12, 74, 110);
+		--disclaimer-accent: rgb(14, 116, 144);
+	}
+
+	/* Apply theme variables to elements */
+	.themed-bg {
+		background-color: var(--bg-primary);
+	}
+	
+	.themed-bg-secondary {
+		background-color: var(--bg-secondary);
+	}
+	
+	.themed-bg-tertiary {
+		background-color: var(--bg-tertiary);
+	}
+	
+	.themed-border {
+		border-color: var(--border-primary);
+	}
+	
+	.themed-border-secondary {
+		border-color: var(--border-secondary);
+	}
+	
+	.themed-text {
+		color: var(--text-primary);
+	}
+	
+	.themed-text-secondary {
+		color: var(--text-secondary);
+	}
+	
+	.themed-text-tertiary {
+		color: var(--text-tertiary);
+	}
+	
+	.themed-accent {
+		background-color: var(--accent-primary);
+	}
+	
+	.themed-accent-hover:hover {
+		background-color: var(--accent-hover);
+	}
+	
+	.themed-shadow {
+		box-shadow: 0 4px 6px -1px var(--shadow), 0 2px 4px -1px var(--shadow);
+	}
+	
+	.themed-shadow-lg {
+		box-shadow: 0 10px 15px -3px var(--shadow), 0 4px 6px -2px var(--shadow);
+	}
+	
+	/* Disclaimer and warning box styles */
+	.themed-disclaimer {
+		background-color: var(--disclaimer-bg);
+		border-color: var(--disclaimer-border);
+		color: var(--disclaimer-text);
+	}
+	
+	.themed-disclaimer-accent {
+		color: var(--disclaimer-accent);
+	}
+
+	/* Smooth transitions for theme changes */
+	*, *::before, *::after {
+		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	
+	/* Global theme utilities */
+	.theme-transition {
+		transition: var(--theme-transition);
+	}
+	
+	/* Theme selector circles */
+	.theme-circle {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		border: 2px solid transparent;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		position: relative;
+	}
+	
+	.theme-circle:hover {
+		transform: scale(1.1);
+		border-color: var(--border-secondary);
+	}
+	
+	.theme-circle.active {
+		border-color: var(--accent-primary);
+		box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--accent-primary);
+	}
+	
+	/* Session toggle styling */
+	.session-toggle {
+		transition: all 0.2s ease;
+		font-weight: 500;
+		letter-spacing: 0.025em;
+	}
+	
+	.session-toggle:not(.active) {
+		color: var(--text-tertiary);
+		background-color: transparent;
+	}
+	
+	.session-toggle:not(.active):hover {
+		color: var(--text-secondary);
+		background-color: var(--bg-secondary);
+		transform: translateY(-1px);
+	}
+	
+	.session-toggle.active {
+		color: var(--text-primary);
+		background-color: var(--bg-primary);
+		box-shadow: 0 2px 4px -1px var(--shadow);
+		transform: translateY(-1px);
+	}
+	
+	/* Responsive button improvements */
+	@media (max-width: 640px) {
+		.session-toggle {
+			font-size: 0.75rem;
+			padding: 0.375rem 0.75rem;
+			min-width: 3rem;
+		}
+		
+		/* Smaller action buttons on mobile */
+		.action-button-mobile {
+			padding: 0.375rem 0.75rem !important;
+			font-size: 0.75rem !important;
+			gap: 0.25rem !important;
+		}
+		
+		.action-button-mobile svg {
+			width: 0.875rem !important;
+			height: 0.875rem !important;
+		}
+		
+		.action-button-mobile .button-text {
+			display: none;
+		}
+		
+		.action-button-mobile .button-text-mobile {
+			display: inline;
+		}
+	}
+	
+	@media (max-width: 480px) {
+		.session-toggle {
+			font-size: 0.6875rem;
+			padding: 0.25rem 0.5rem;
+			min-width: 2.5rem;
+		}
+		
+		/* Even more compact on very small screens */
+		.action-button-mobile {
+			padding: 0.25rem 0.5rem !important;
+			font-size: 0.6875rem !important;
+		}
+		
+		.action-button-mobile svg {
+			width: 0.75rem !important;
+			height: 0.75rem !important;
+		}
+	}
+	
+	/* Theme specific circle colors */
+	.theme-circle[data-theme="light"] {
+		background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
+		border: 2px solid #cbd5e1;
+	}
+	
+	.theme-circle[data-theme="dark"] {
+		background: linear-gradient(135deg, #000000 0%, #111111 50%, #262626 100%);
+		border: 2px solid #404040;
+	}
+	
+	.theme-circle[data-theme="ocean"] {
+		background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #0ea5e9 100%);
+		border: 2px solid #7dd3fc;
+	}
+	
+	.theme-circle[data-theme="valentine"] {
+		background: linear-gradient(135deg, #fff1f2 0%, #fecaca 50%, #ec4899 100%);
+		border: 2px solid #f472b6;
+	}
+	
+	.theme-circle[data-theme="cupcake"] {
+		background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 50%, #a855f7 100%);
+		border: 2px solid #c084fc;
+	}
+	
+	/* Fullscreen modal specific styling */
+	#fullscreen-modal {
+		background-color: var(--bg-primary);
+	}
+	
+	#fullscreen-modal h1,
+	#fullscreen-modal p,
+	#fullscreen-modal .countdown-number,
+	#fullscreen-modal .countdown-label,
+	#fullscreen-modal .countdown-display {
+		color: var(--text-primary) !important;
+	}
+	
+	#fullscreen-modal .countdown-display {
+		background-color: var(--bg-secondary) !important;
+	}
+	
+	#fullscreen-modal button {
+		background-color: var(--bg-tertiary);
+		color: var(--text-primary);
+		border-color: var(--border-primary);
+	}
+	
+	#fullscreen-modal button:hover {
+		background-color: var(--bg-secondary);
+	}
+	
+	/* Main page countdown styling */
+	.countdown-number,
+	.countdown-label {
+		color: var(--text-primary) !important;
+	}
+	
+	.countdown-display {
+		background-color: var(--bg-secondary) !important;
+		color: var(--text-primary) !important;
+	}
 </style>
+
+<!-- SEO Optimizer Script -->
+<script type="module">
+    import('../utils/seo-optimizer.js').catch(() => {
+        // SEO Optimizer failed to load
+    });
+</script>

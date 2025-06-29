@@ -1,0 +1,101 @@
+{
+    "name": "TimeKeeper - Indian Exams Countdown Timer 2026",
+    "short_name": "TimeKeeper",
+    "description": "Ultimate real-time countdown timer for Indian competitive exams. Track JEE Main, JEE Advanced, NEET, CAT, BITSAT and 25+ major exams with precise countdown timers.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en-IN",
+    "dir": "ltr",
+    "categories": [
+        "education",
+        "productivity",
+        "utilities",
+        "reference"
+    ],
+    "icons": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "All Exam Countdowns",
+            "short_name": "All Exams",
+            "description": "View countdown timers for all Indian competitive exams",
+            "url": "/",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml"
+                }
+            ]
+        },
+        {
+            "name": "JEE Main Timer",
+            "short_name": "JEE Main",
+            "description": "JEE Main 2026 countdown timer",
+            "url": "/exams/jee-main",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml"
+                }
+            ]
+        },
+        {
+            "name": "NEET Timer",
+            "short_name": "NEET",
+            "description": "NEET UG 2026 countdown timer",
+            "url": "/exams/neet-ug",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml"
+                }
+            ]
+        },
+        {
+            "name": "CAT Timer",
+            "short_name": "CAT",
+            "description": "CAT 2026 countdown timer",
+            "url": "/exams/cat",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml"
+                }
+            ]
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "640x480",
+            "type": "image/svg+xml",
+            "form_factor": "wide",
+            "label": "TimeKeeper exam countdown interface"
+        }
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "edge_side_panel": {
+        "preferred_width": 350
+    },
+    "protocol_handlers": [
+        {
+            "protocol": "web+timekeeper",
+            "url": "/exams/%s"
+        }
+    ]
+}

@@ -1,0 +1,1016 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
+---
+
+<Layout title="Custom Countdown - TimeKeeper">
+  <PictureInPictureWidget />
+  <!-- Fullscreen Countdown Modal -->
+  <div id="fullscreen-modal" class="fixed inset-0 z-50 hidden">
+    <div class="h-full flex flex-col items-center justify-center p-8">
+      <div class="text-center mb-8">
+        <h2 id="fullscreen-title" class="text-4xl sm:text-5xl font-serif italic themed-text"></h2>
+        <p id="fullscreen-description" class="themed-text-secondary mt-2 text-lg"></p>
+      </div>
+      
+      <div id="fullscreen-countdown" class="mb-8">
+        <!-- Fullscreen countdown numbers will be injected here -->
+      </div>
+      
+      <button 
+        onclick="window.closeFullscreen()"
+        title="Exit Fullscreen (ESC)"
+        class="absolute top-8 right-8 p-3 rounded-full themed-bg-secondary hover:themed-bg-tertiary transition-all"
+      >
+        <svg class="w-8 h-8 themed-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="min-h-screen flex themed-bg relative">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 themed-bg border-r border-dashed themed-border h-screen fixed transition-transform duration-300 ease-in-out z-30 lg:translate-x-0 -translate-x-full">
+      <div class="p-4 sm:p-6">
+        <div class="mb-6 sm:mb-8">
+          <h1 class="font-serif italic text-2xl sm:text-3xl themed-text">TimeKeeper</h1>
+          <p class="font-serif italic text-xs sm:text-sm themed-text-secondary">Custom Countdown</p>
+          <div class="border-b border-dashed themed-border mt-3 sm:mt-4"></div>
+        </div>
+        <nav class="space-y-2">
+          <a 
+            href="/"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
+          >
+            <span>All Exams</span>
+          </a>
+          <a 
+            href="/countdown"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-bg-tertiary"
+          >
+            <span class="themed-text">Custom Countdown</span>
+          </a>
+        </nav>
+        
+        <!-- Theme Toggle Section -->
+        <div class="mt-8 pt-6 border-t border-dashed themed-border">
+          <div class="mb-3">
+            <h3 class="text-sm font-medium themed-text mb-3">Theme</h3>
+            <div class="flex items-center justify-between gap-2">
+              <button 
+                class="theme-circle"
+                data-theme="light"
+                onclick="window.setTheme('light')"
+                title="Light Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="dark"
+                onclick="window.setTheme('dark')"
+                title="Dark Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="ocean"
+                onclick="window.setTheme('ocean')"
+                title="Ocean Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="valentine"
+                onclick="window.setTheme('valentine')"
+                title="Valentine Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="cupcake"
+                onclick="window.setTheme('cupcake')"
+                title="Cupcake Theme"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full lg:ml-64 flex-1">
+      <nav class="border-b border-dashed themed-border themed-bg sticky top-0 z-20">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 w-full">
+          <div class="flex items-center justify-between h-14 sm:h-16">
+            <div class="flex items-center gap-2 sm:gap-4">
+              <button
+                id="mobile-menu-btn"
+                class="lg:hidden p-2 -ml-2 rounded-md hover:themed-bg-secondary"
+                onclick="window.toggleMobileMenu()"
+              >
+                <svg class="w-6 h-6 themed-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                <h1 class="font-serif italic text-lg sm:text-xl themed-text">Custom Countdown</h1>
+                <div class="flex items-center gap-2 mt-1 sm:mt-0">
+                  <span class="hidden sm:block h-px w-4 themed-bg-tertiary"></span>
+                  <span id="countdown-count" class="text-xs sm:text-sm themed-text-secondary">
+                    (0 countdowns)
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button 
+              id="add-countdown-btn"
+              class="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm themed-accent-button font-medium rounded-md transition-all duration-200"
+              onclick="window.openCountdownModal()"
+            >
+              <span class="hidden sm:inline">+ Add Countdown</span>
+              <span class="sm:hidden">+</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Content Area -->
+      <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6">
+        <!-- Empty State -->
+        <div id="empty-state" class="text-center py-12 sm:py-20">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 themed-text-tertiary">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+              <path d="M13 7h-2v5.414l3.293 3.293 1.414-1.414L13 11.586z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg sm:text-xl font-serif italic themed-text mb-2">No countdowns yet</h3>
+          <p class="themed-text-secondary mb-6 sm:mb-8 max-w-md mx-auto">
+            Create your first custom countdown to track important dates and events.
+          </p>
+          <button 
+            class="px-6 py-3 themed-accent-button font-medium rounded-md transition-all duration-200"
+            onclick="window.openCountdownModal()"
+          >
+            Create Your First Countdown
+          </button>
+        </div>
+
+        <!-- Countdowns Grid -->
+        <div id="countdowns-grid" class="gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 hidden">
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Countdown Modal -->
+    <div id="countdown-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4 hidden">
+      <div class="themed-bg rounded-lg border border-dashed themed-border w-full max-w-md">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 id="modal-title" class="text-xl font-serif italic themed-text">Add New Countdown</h2>
+            <button onclick="window.closeCountdownModal()" class="themed-text-secondary hover:themed-text transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <form id="countdown-form" class="space-y-4">
+            <div>
+              <label for="countdown-title" class="block text-sm font-medium themed-text mb-2">Title</label>
+              <input 
+                type="text" 
+                id="countdown-title" 
+                name="title"
+                placeholder="e.g., Wedding Day, Job Interview, Vacation"
+                class="w-full p-3 border border-dashed themed-border rounded-md themed-bg themed-text focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+                maxlength="50"
+              >
+            </div>
+            
+            <div>
+              <label for="countdown-description" class="block text-sm font-medium themed-text mb-2">Description (Optional)</label>
+              <textarea 
+                id="countdown-description" 
+                name="description"
+                placeholder="Add more details about this event..."
+                rows="3"
+                class="w-full p-3 border border-dashed themed-border rounded-md themed-bg themed-text focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                maxlength="200"
+              ></textarea>
+            </div>
+            
+            <div>
+              <label for="countdown-date" class="block text-sm font-medium themed-text mb-2">Target Date & Time</label>
+              <input 
+                type="datetime-local" 
+                id="countdown-date" 
+                name="date"
+                class="w-full p-3 border border-dashed themed-border rounded-md themed-bg themed-text focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              >
+            </div>
+
+            <div>
+              <label for="countdown-color" class="block text-sm font-medium themed-text mb-2">Color Theme</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="window.selectColor('blue')" class="color-option w-8 h-8 rounded-full bg-blue-500 border-2 border-transparent" data-color="blue"></button>
+                <button type="button" onclick="window.selectColor('green')" class="color-option w-8 h-8 rounded-full bg-green-500 border-2 border-transparent" data-color="green"></button>
+                <button type="button" onclick="window.selectColor('purple')" class="color-option w-8 h-8 rounded-full bg-purple-500 border-2 border-transparent" data-color="purple"></button>
+                <button type="button" onclick="window.selectColor('red')" class="color-option w-8 h-8 rounded-full bg-red-500 border-2 border-transparent" data-color="red"></button>
+                <button type="button" onclick="window.selectColor('yellow')" class="color-option w-8 h-8 rounded-full bg-yellow-500 border-2 border-transparent" data-color="yellow"></button>
+                <button type="button" onclick="window.selectColor('pink')" class="color-option w-8 h-8 rounded-full bg-pink-500 border-2 border-transparent" data-color="pink"></button>
+              </div>
+              <input type="hidden" id="countdown-color" name="color" value="blue">
+            </div>
+            
+            <div class="flex gap-3 pt-4">
+              <button 
+                type="button"
+                onclick="window.closeCountdownModal()"
+                class="flex-1 px-4 py-2 themed-text-secondary border border-dashed themed-border rounded-md hover:themed-bg-secondary transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit"
+                class="flex-1 px-4 py-2 themed-accent-button font-medium rounded-md transition-all duration-200"
+              >
+                <span id="submit-text">Create Countdown</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4 hidden">
+      <div class="themed-bg rounded-lg border border-dashed themed-border w-full max-w-sm">
+        <div class="p-6">
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto mb-4 text-red-500">
+              <svg fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z"/>
+                <path d="M9 8V17H11V8H9ZM13 8V17H15V8H13Z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-serif italic themed-text mb-2">Delete Countdown</h3>
+            <p class="themed-text-secondary mb-6">
+              Are you sure you want to delete this countdown? This action cannot be undone.
+            </p>
+            <div class="flex gap-3">
+              <button 
+                onclick="window.closeDeleteModal()"
+                class="flex-1 px-4 py-2 themed-text-secondary border border-dashed themed-border rounded-md hover:themed-bg-secondary transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onclick="window.confirmDelete()"
+                class="flex-1 px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .color-option.selected {
+      border-color: currentColor;
+      box-shadow: 0 0 0 2px currentColor;
+    }
+
+    .countdown-card {
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .countdown-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .countdown-number {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Color themes for countdown cards */
+    .countdown-blue { 
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+    .countdown-green { 
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+    .countdown-purple { 
+      background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(147, 51, 234, 0.05) 100%);
+      border-color: rgba(147, 51, 234, 0.3);
+    }
+    .countdown-red { 
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .countdown-yellow { 
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .countdown-pink { 
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+      border-color: rgba(236, 72, 153, 0.3);
+    }
+
+    .expired {
+      opacity: 0.7;
+    }
+
+    .expired .countdown-number {
+      color: #ef4444;
+    }
+
+    /* Mobile menu overlay */
+    #mobile-overlay {
+      backdrop-filter: blur(4px);
+    }
+
+    /* Modal display handling */
+    #countdown-modal.show {
+      display: flex;
+    }
+
+    #delete-modal.show {
+      display: flex;
+    }
+
+    #countdowns-grid.show {
+      display: grid;
+    }
+
+    /* Fullscreen Modal transitions */
+    #fullscreen-modal {
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      backdrop-filter: blur(20px);
+      background-color: var(--theme-bg-primary);
+    }
+    #fullscreen-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    #fullscreen-modal:not(.hidden) {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Styles for fullscreen countdown from [slug].astro */
+    .countdown-number.flip {
+      animation: flipAnimation 0.3s ease-in-out;
+    }
+    
+    @keyframes flipAnimation {
+      0% { transform: rotateX(0deg); }
+      50% { transform: rotateX(-90deg); }
+      100% { transform: rotateX(0deg); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @media (max-width: 1023px) {
+      #sidebar.show {
+        transform: translateX(0);
+      }
+    }
+  </style>
+
+  <script>
+    import Alpine from 'alpinejs';
+
+    window.Alpine = Alpine;
+    Alpine.start();
+
+    // Countdown Management System
+    class CountdownManager {
+      constructor() {
+        this.countdowns = this.loadCountdowns();
+        this.editingId = null;
+        this.deleteId = null;
+        this.updateIntervals = new Map();
+        this.init();
+      }
+
+      init() {
+        this.renderCountdowns();
+        this.setupEventListeners();
+        this.startAllCountdowns();
+        this.setMinDateTime();
+      }
+
+      loadCountdowns() {
+        try {
+          const saved = localStorage.getItem('timekeeper-countdowns');
+          return saved ? JSON.parse(saved) : [];
+        } catch (error) {
+          console.error('Error loading countdowns:', error);
+          return [];
+        }
+      }
+
+      saveCountdowns() {
+        try {
+          localStorage.setItem('timekeeper-countdowns', JSON.stringify(this.countdowns));
+        } catch (error) {
+          console.error('Error saving countdowns:', error);
+        }
+      }
+
+      generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+      }
+
+      setMinDateTime() {
+        const now = new Date();
+        const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 16);
+        const dateInput = document.getElementById('countdown-date');
+        if (dateInput) {
+          dateInput.min = localDateTime;
+        }
+      }
+
+      validateForm(formData) {
+        const errors = [];
+        
+        if (!formData.title.trim()) {
+          errors.push('Title is required');
+        }
+        
+        if (formData.title.length > 50) {
+          errors.push('Title must be 50 characters or less');
+        }
+        
+        if (formData.description.length > 200) {
+          errors.push('Description must be 200 characters or less');
+        }
+        
+        const targetDate = new Date(formData.date);
+        const now = new Date();
+        
+        if (isNaN(targetDate.getTime())) {
+          errors.push('Please enter a valid date and time');
+        }
+        
+        if (targetDate <= now) {
+          errors.push('Target date must be in the future');
+        }
+        
+        return errors;
+      }
+
+      addCountdown(formData) {
+        const errors = this.validateForm(formData);
+        
+        if (errors.length > 0) {
+          alert(errors.join('\n'));
+          return false;
+        }
+
+        const countdown = {
+          id: this.generateId(),
+          title: formData.title.trim(),
+          description: formData.description.trim(),
+          targetDate: formData.date,
+          color: formData.color,
+          createdAt: new Date().toISOString()
+        };
+
+        this.countdowns.unshift(countdown);
+        this.saveCountdowns();
+        this.renderCountdowns();
+        this.startCountdown(countdown.id);
+        return true;
+      }
+
+      editCountdown(id, formData) {
+        const errors = this.validateForm(formData);
+        
+        if (errors.length > 0) {
+          alert(errors.join('\n'));
+          return false;
+        }
+
+        const index = this.countdowns.findIndex(c => c.id === id);
+        if (index !== -1) {
+          this.countdowns[index] = {
+            ...this.countdowns[index],
+            title: formData.title.trim(),
+            description: formData.description.trim(),
+            targetDate: formData.date,
+            color: formData.color
+          };
+          
+          this.saveCountdowns();
+          this.renderCountdowns();
+          this.stopCountdown(id);
+          this.startCountdown(id);
+          return true;
+        }
+        return false;
+      }
+
+      deleteCountdown(id) {
+        this.countdowns = this.countdowns.filter(c => c.id !== id);
+        this.stopCountdown(id);
+        this.saveCountdowns();
+        this.renderCountdowns();
+      }
+
+      calculateTimeRemaining(targetDate) {
+        const now = new Date().getTime();
+        const target = new Date(targetDate).getTime();
+        const difference = target - now;
+
+        if (difference <= 0) {
+          return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        return { expired: false, days, hours, minutes, seconds };
+      }
+
+      formatDateTime(dateString) {
+        const date = new Date(dateString);
+        const options = {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        };
+        // Format to "Jul 11, 2025 at 3:54 AM"
+        return new Intl.DateTimeFormat('en-US', options).format(date).replace(' at', ', at');
+      }
+
+      startCountdown(id) {
+        if (this.updateIntervals.has(id)) {
+          clearInterval(this.updateIntervals.get(id));
+        }
+
+        const interval = setInterval(() => {
+          this.updateCountdownDisplay(id);
+        }, 1000);
+
+        this.updateIntervals.set(id, interval);
+        this.updateCountdownDisplay(id);
+      }
+
+      stopCountdown(id) {
+        if (this.updateIntervals.has(id)) {
+          clearInterval(this.updateIntervals.get(id));
+          this.updateIntervals.delete(id);
+        }
+      }
+
+      startAllCountdowns() {
+        this.countdowns.forEach(countdown => {
+          this.startCountdown(countdown.id);
+        });
+      }
+
+      updateCountdownDisplay(id) {
+        const countdown = this.countdowns.find(c => c.id === id);
+        if (!countdown) return;
+
+        const timeRemaining = this.calculateTimeRemaining(countdown.targetDate);
+        const card = document.querySelector(`[data-countdown-id="${id}"]`);
+        
+        if (!card) return;
+
+        const daysEl = card.querySelector('.days');
+        const hoursEl = card.querySelector('.hours');
+        const minutesEl = card.querySelector('.minutes');
+        const secondsEl = card.querySelector('.seconds');
+
+        if (timeRemaining.expired) {
+          card.classList.add('expired');
+          if (daysEl) daysEl.textContent = '00';
+          if (hoursEl) hoursEl.textContent = '00';
+          if (minutesEl) minutesEl.textContent = '00';
+          if (secondsEl) secondsEl.textContent = '00';
+          
+          const statusEl = card.querySelector('.countdown-status');
+          if (statusEl) {
+            statusEl.textContent = 'Expired';
+            statusEl.className = 'countdown-status text-red-500 font-medium';
+          }
+          
+          this.stopCountdown(id);
+        } else {
+          card.classList.remove('expired');
+          if (daysEl) daysEl.textContent = String(timeRemaining.days).padStart(2, '0');
+          if (hoursEl) hoursEl.textContent = String(timeRemaining.hours).padStart(2, '0');
+          if (minutesEl) minutesEl.textContent = String(timeRemaining.minutes).padStart(2, '0');
+          if (secondsEl) secondsEl.textContent = String(timeRemaining.seconds).padStart(2, '0');
+        }
+      }
+
+      renderCountdowns() {
+        const grid = document.getElementById('countdowns-grid');
+        const emptyState = document.getElementById('empty-state');
+        const countElement = document.getElementById('countdown-count');
+
+        if (this.countdowns.length === 0) {
+          grid?.classList.add('hidden');
+          grid?.classList.remove('show');
+          emptyState?.classList.remove('hidden');
+          if (countElement) countElement.textContent = '(0 countdowns)';
+          return;
+        }
+
+        emptyState?.classList.add('hidden');
+        grid?.classList.remove('hidden');
+        grid?.classList.add('show');
+        if (countElement) {
+          countElement.textContent = `(${this.countdowns.length} countdown${this.countdowns.length !== 1 ? 's' : ''})`;
+        }
+
+        if (grid) {
+          grid.innerHTML = this.countdowns.map(countdown => {
+            const timeRemaining = this.calculateTimeRemaining(countdown.targetDate);
+            
+            return `
+              <div class="countdown-card countdown-${countdown.color} border border-dashed rounded-lg p-4 sm:p-6 hover:shadow-md" data-countdown-id="${countdown.id}">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-serif italic themed-text truncate" title="${countdown.title}">${countdown.title}</h3>
+                    <p class="text-sm themed-text-secondary truncate" title="${countdown.description}">${countdown.description || ''}</p>
+                  </div>
+                  <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" @click.away="open = false" class="p-1 rounded-full themed-text-secondary hover:themed-bg-secondary transition-colors">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+                    </button>
+                    <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 themed-bg border border-dashed themed-border rounded-md shadow-lg z-10">
+                      <a href="#" @click.prevent="window.countdownManager.openEditModal('${countdown.id}'); open = false" class="block px-4 py-2 text-sm themed-text-secondary hover:themed-bg-secondary">Edit</a>
+                      <a href="#" @click.prevent="window.openFullscreen('${countdown.id}')" class="block px-4 py-2 text-sm themed-text-secondary hover:themed-bg-secondary">Fullscreen</a>
+                      <a href="#" @click.prevent="window.shareCountdown('${countdown.id}')" class="block px-4 py-2 text-sm themed-text-secondary hover:themed-bg-secondary">Share</a>
+                      <a href="#" @click.prevent="window.openDeleteModal('${countdown.id}'); open = false" class="block px-4 py-2 text-sm text-red-500 hover:themed-bg-secondary">Delete</a>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="flex justify-around text-center mb-4">
+                  <div><span class="text-3xl sm:text-4xl font-bold countdown-number days">${String(timeRemaining.days).padStart(2, '0')}</span><div class="text-xs themed-text-secondary">Days</div></div>
+                  <div><span class="text-3xl sm:text-4xl font-bold countdown-number hours">${String(timeRemaining.hours).padStart(2, '0')}</span><div class="text-xs themed-text-secondary">Hours</div></div>
+                  <div><span class="text-3xl sm:text-4xl font-bold countdown-number minutes">${String(timeRemaining.minutes).padStart(2, '0')}</span><div class="text-xs themed-text-secondary">Minutes</div></div>
+                  <div><span class="text-3xl sm:text-4xl font-bold countdown-number seconds">${String(timeRemaining.seconds).padStart(2, '0')}</span><div class="text-xs themed-text-secondary">Seconds</div></div>
+                </div>
+
+                <div class="text-center border-t border-dashed themed-border pt-3 mt-3">
+                  <p class="text-xs sm:text-sm themed-text-secondary countdown-status">
+                    Target: ${this.formatDateTime(countdown.targetDate)}
+                  </p>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      setupEventListeners() {
+        // Form submission
+        const form = document.getElementById('countdown-form');
+        if (form) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+              title: formData.get('title'),
+              description: formData.get('description'),
+              date: formData.get('date'),
+              color: formData.get('color')
+            };
+
+            let success = false;
+            if (this.editingId) {
+              success = this.editCountdown(this.editingId, data);
+            } else {
+              success = this.addCountdown(data);
+            }
+
+            if (success) {
+              this.closeCountdownModal();
+            }
+          });
+        }
+
+        // Color selection
+        document.querySelectorAll('.color-option').forEach(button => {
+          button.addEventListener('click', () => {
+            const color = button.dataset.color;
+            if (color) this.selectColor(color);
+          });
+        });
+
+        // Set default color selection
+        this.selectColor('blue');
+      }
+
+      selectColor(color) {
+        document.querySelectorAll('.color-option').forEach(btn => {
+          btn.classList.remove('selected');
+        });
+        
+        const colorBtn = document.querySelector(`[data-color="${color}"]`);
+        if (colorBtn) colorBtn.classList.add('selected');
+        
+        const colorInput = document.getElementById('countdown-color');
+        if (colorInput) colorInput.value = color;
+      }
+
+      openCountdownModal() {
+        this.editingId = null;
+        const modal = document.getElementById('countdown-modal');
+        const titleEl = document.getElementById('modal-title');
+        const submitEl = document.getElementById('submit-text');
+        const form = document.getElementById('countdown-form');
+        
+        if (titleEl) titleEl.textContent = 'Add New Countdown';
+        if (submitEl) submitEl.textContent = 'Create Countdown';
+        if (form) form.reset();
+        
+        this.selectColor('blue');
+        this.setMinDateTime();
+        
+        modal?.classList.remove('hidden');
+        modal?.classList.add('show');
+      }
+
+      openEditModal(id) {
+        const countdown = this.countdowns.find(c => c.id === id);
+        if (!countdown) return;
+
+        this.editingId = id;
+        const modal = document.getElementById('countdown-modal');
+        const titleEl = document.getElementById('modal-title');
+        const submitEl = document.getElementById('submit-text');
+        const titleInput = document.getElementById('countdown-title');
+        const descInput = document.getElementById('countdown-description');
+        const dateInput = document.getElementById('countdown-date');
+        
+        if (titleEl) titleEl.textContent = 'Edit Countdown';
+        if (submitEl) submitEl.textContent = 'Update Countdown';
+        if (titleInput) titleInput.value = countdown.title;
+        if (descInput) descInput.value = countdown.description || '';
+        if (dateInput) dateInput.value = countdown.targetDate;
+        
+        this.selectColor(countdown.color);
+        this.setMinDateTime();
+        
+        modal?.classList.remove('hidden');
+        modal?.classList.add('show');
+      }
+
+      closeCountdownModal() {
+        const modal = document.getElementById('countdown-modal');
+        modal?.classList.add('hidden');
+        modal?.classList.remove('show');
+        this.editingId = null;
+      }
+
+      openDeleteModal(id) {
+        this.deleteId = id;
+        const modal = document.getElementById('delete-modal');
+        modal?.classList.remove('hidden');
+        modal?.classList.add('show');
+      }
+
+      closeDeleteModal() {
+        const modal = document.getElementById('delete-modal');
+        modal?.classList.add('hidden');
+        modal?.classList.remove('show');
+        this.deleteId = null;
+      }
+
+      confirmDelete() {
+        if (this.deleteId) {
+          this.deleteCountdown(this.deleteId);
+          this.closeDeleteModal();
+        }
+      }
+    }
+
+    // Theme Management (matches existing theme system)
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('timekeeper-theme', theme);
+      
+      // Update theme buttons
+      document.querySelectorAll('.theme-circle').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      const themeBtn = document.querySelector(`[data-theme="${theme}"]`);
+      if (themeBtn) {
+        themeBtn.classList.add('active');
+      }
+    }
+
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('timekeeper-theme') || 'light';
+      setTheme(savedTheme);
+    }
+
+    // Mobile menu functionality
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar');
+      if (!sidebar) return;
+      
+      const isVisible = sidebar.classList.contains('show');
+      
+      if (isVisible) {
+        sidebar.classList.remove('show');
+        const overlay = document.getElementById('mobile-overlay');
+        if (overlay) {
+          overlay.remove();
+        }
+      } else {
+        sidebar.classList.add('show');
+        
+        // Add overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'mobile-overlay';
+        overlay.className = 'fixed inset-0 bg-black bg-opacity-25 z-20 lg:hidden';
+        overlay.onclick = toggleMobileMenu;
+        document.body.appendChild(overlay);
+      }
+    }
+
+    // Global functions (for onclick handlers)
+    let countdownManager;
+
+    // Global function declarations
+    window.openCountdownModal = () => countdownManager?.openCountdownModal();
+    window.closeCountdownModal = () => countdownManager?.closeCountdownModal();
+    window.openDeleteModal = (id) => countdownManager?.openDeleteModal(id);
+    window.closeDeleteModal = () => countdownManager?.closeDeleteModal();
+    window.confirmDelete = () => countdownManager?.confirmDelete();
+    window.selectColor = (color) => countdownManager?.selectColor(color);
+    window.setTheme = setTheme;
+    window.toggleMobileMenu = toggleMobileMenu;
+
+    // New Features
+    let fullscreenInterval;
+    let activeFullscreenCountdownId = null;
+
+    function formatTimeRemaining(targetDate) {
+      const now = new Date().getTime();
+      const target = new Date(targetDate).getTime();
+      const distance = target - now;
+      
+      if (distance < 0) {
+        return { expired: true, text: "Countdown has ended" };
+      }
+      
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      return { expired: false, days, hours, minutes, seconds };
+    }
+
+    function updateFullscreenCountdown() {
+      if (!activeFullscreenCountdownId) return;
+      const countdown = countdownManager.countdowns.find(c => c.id === activeFullscreenCountdownId);
+      if (!countdown) return;
+
+      const timeRemaining = formatTimeRemaining(countdown.targetDate);
+      const fullscreenCountdown = document.getElementById('fullscreen-countdown');
+      
+      if (!fullscreenCountdown) return;
+
+      if (timeRemaining.expired) {
+        fullscreenCountdown.innerHTML = `<p class="text-2xl sm:text-4xl font-medium text-red-400 fade-in">Countdown Ended</p>`;
+        if (fullscreenInterval) clearInterval(fullscreenInterval);
+      } else {
+        const html = `
+          <div class="grid grid-cols-4 gap-4 sm:gap-8 text-center">
+            <div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.days).padStart(2, '0')}</div>
+              <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Days</div>
+            </div>
+            <div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.hours).padStart(2, '0')}</div>
+              <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Hours</div>
+            </div>
+            <div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.minutes).padStart(2, '0')}</div>
+              <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Minutes</div>
+            </div>
+            <div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.seconds).padStart(2, '0')}</div>
+              <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Seconds</div>
+            </div>
+          </div>
+        `;
+        fullscreenCountdown.innerHTML = html;
+      }
+    }
+
+    window.openFullscreen = (id) => {
+      const countdown = countdownManager.countdowns.find(c => c.id === id);
+      if (!countdown) return;
+
+      activeFullscreenCountdownId = id;
+      const titleEl = document.getElementById('fullscreen-title');
+      const descEl = document.getElementById('fullscreen-description');
+      if(titleEl) titleEl.textContent = countdown.title;
+      if(descEl) descEl.textContent = countdown.description || '';
+      
+      const modal = document.getElementById('fullscreen-modal');
+      if(modal) modal.classList.remove('hidden');
+
+      updateFullscreenCountdown();
+      if (fullscreenInterval) clearInterval(fullscreenInterval);
+      fullscreenInterval = setInterval(updateFullscreenCountdown, 1000);
+    };
+
+    window.closeFullscreen = () => {
+      const modal = document.getElementById('fullscreen-modal');
+      if(modal) modal.classList.add('hidden');
+      if (fullscreenInterval) clearInterval(fullscreenInterval);
+      fullscreenInterval = null;
+      activeFullscreenCountdownId = null;
+    };
+
+    window.shareCountdown = async (id) => {
+      const countdown = countdownManager.countdowns.find(c => c.id === id);
+      if (!countdown) return;
+
+      const shareData = {
+        title: `Countdown: ${countdown.title}`,
+        text: `Check out this countdown for ${countdown.title}!`,
+        url: window.location.href 
+      };
+
+      if (navigator.share && navigator.canShare(shareData)) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {
+          console.error('Error sharing:', err);
+        }
+      } else {
+        alert('Web Share API is not supported in your browser, or you are not on a secure connection (https).');
+      }
+    };
+
+    window.togglePiP = async (id) => {
+      const countdown = countdownManager.countdowns.find(c => c.id === id);
+      if (!countdown) return;
+
+      if (window.pipCountdown && window.pipCountdown.isActive) {
+        await window.stopPiPCountdown();
+      } else {
+        const examData = {
+          name: countdown.title,
+          sessions: [{ session: 'Custom Event', date: countdown.targetDate }]
+        };
+        await window.startPiPCountdown(examData);
+      }
+    };
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('fullscreen-modal');
+      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+        window.closeFullscreen();
+      }
+    });
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTheme();
+      countdownManager = new CountdownManager();
+      window.countdownManager = countdownManager;
+    });
+
+    // Handle page visibility changes to keep countdowns accurate
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        // Page became visible, restart all countdowns to sync
+        countdownManager?.startAllCountdowns();
+      }
+    });
+  </script>
+</Layout>
