@@ -4,15 +4,8 @@
 
 <style>
   /* PiP Canvas Styles */
-  #pip-canvas {
-    background: linear-grad<!-- Mobile fallback notification -->
-<div id="pip-fallback" class="pip-fallback">
-  <div style="margin-bottom: 6px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-    <span>📱</span>
-    <span>Picture-in-Picture not available</span>
-  </div>
-  <div style="font-size: 11px; opacity: 0.7;">Use a desktop browser for PiP countdown experience</div>
-</div>135deg, #ffffff 0%, #f4f4f5 50%, #ffffff 100%);
+  #pip-canvas {    
+    background: linear-gradient(135deg, #ffffff 0%, #f4f4f5 50%, #ffffff 100%);
     font-family: 'Inter', sans-serif;
     border-radius: 8px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -94,41 +87,8 @@
     }
   }
 
-  /* Mobile fallback notification */
   .pip-fallback {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.95);
-    color: #374151;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 13px;
-    text-align: center;
-    z-index: 1001;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    max-width: calc(100vw - 40px);
-    display: none;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .pip-fallback.show {
-    display: block;
-    animation: slideUp 0.3s ease;
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translate(-50%, 100px);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
+    display: none !important;
   }
 </style>
 
@@ -168,7 +128,7 @@ class PictureInPictureCountdown {
   isActive: boolean;
   currentExam: any;
   currentSession: any;
-  updateInterval: number | null;
+  updateInterval: ReturnType<typeof setInterval> | null;
   canvas: HTMLCanvasElement | null;
   ctx: CanvasRenderingContext2D | null;
   video: HTMLVideoElement | null;
@@ -205,13 +165,9 @@ class PictureInPictureCountdown {
     if (this.canvas) {
       this.ctx = this.canvas.getContext('2d');
       
-      // Ensure canvas has proper dimensions (16:9 aspect ratio for better PiP experience)
-      if (this.canvas.width === 0 || this.canvas.height === 0) {
-        this.canvas.width = 640;
-        this.canvas.height = 360;
-      }
-      
-      console.log('PiP Canvas initialized:', this.canvas.width, 'x', this.canvas.height);
+      // Set canvas dimensions for a more compact layout
+      this.canvas.width = 680; // Use a high resolution for quality
+      this.canvas.height = 280; // Reduced height to minimize vertical space
       
       // Draw a test frame to ensure canvas is ready with the light theme
       if (this.ctx) {
@@ -224,7 +180,7 @@ class PictureInPictureCountdown {
         this.ctx.strokeRect(0.5, 0.5, this.canvas.width - 1, this.canvas.height - 1);
       }
     } else {
-      console.error('PiP Canvas element not found');
+      // console.error('PiP Canvas element not found');
     }
   }
 
@@ -233,14 +189,8 @@ class PictureInPictureCountdown {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js');
         this.serviceWorker = registration;
-        console.log('PiP Service Worker registered successfully');
-        
-        // Request notification permission
-        if ('Notification' in window && Notification.permission === 'default') {
-          await Notification.requestPermission();
-        }
       } catch (error) {
-        console.error('Service Worker registration failed:', error);
+        // console.error('Service Worker registration failed:', error);
       }
     }
   }
@@ -283,7 +233,6 @@ class PictureInPictureCountdown {
   async startPiP(exam: any, session: any = null) {
     const support = this.checkSupport();
     if (!support.supported) {
-      console.warn('Picture-in-Picture not supported:', support.reason);
       this.showFallbackNotification(support.reason);
       return false;
     }
@@ -295,13 +244,11 @@ class PictureInPictureCountdown {
 
       // Initialize canvas with countdown content first
       if (!this.canvas || !this.ctx) {
-        console.error('Canvas not properly initialized');
         return false;
       }
 
       // Check for captureStream support
       if (!this.canvas.captureStream) {
-        console.error('Canvas captureStream not supported');
         this.showFallbackNotification('Your browser doesn\'t support canvas streaming for Picture-in-Picture');
         return false;
       }
@@ -315,15 +262,13 @@ class PictureInPictureCountdown {
       // Create video stream from canvas
       if (!this.video) {
         try {
-          this.stream = this.canvas.captureStream(30);
+          this.stream = this.canvas.captureStream(60); // Increased frame rate for smoother video
           
           // Verify stream has video tracks
           const videoTracks = this.stream.getVideoTracks();
           if (videoTracks.length === 0) {
             throw new Error('No video tracks in canvas stream');
           }
-          
-          console.log('Canvas stream created with', videoTracks.length, 'video tracks');
           
           this.video = document.createElement('video');
           this.video.srcObject = this.stream;
@@ -336,80 +281,18 @@ class PictureInPictureCountdown {
           this.video.width = this.canvas.width;
           this.video.height = this.canvas.height;
           
-          console.log('Video element created and configured');
+          // Simplified video loading - start playback immediately
+          await this.video.play();
           
-          // Wait for video metadata to load before requesting PiP
-          await new Promise<void>((resolve, reject) => {
-            const timeout = setTimeout(() => {
-              reject(new Error('Video metadata loading timeout'));
-            }, 8000); // Increased timeout for slower devices
-            
-            // Multiple event listeners for better compatibility
-            const onSuccess = () => {
-              console.log('Video metadata loaded, ready for PiP');
-              clearTimeout(timeout);
-              cleanup();
-              resolve();
-            };
-            
-            const onError = (e: any) => {
-              console.error('Video error event:', e);
-              clearTimeout(timeout);
-              cleanup();
-              reject(new Error('Video loading error'));
-            };
-            
-            const cleanup = () => {
-              this.video!.removeEventListener('loadedmetadata', onSuccess);
-              this.video!.removeEventListener('loadeddata', onSuccess);
-              this.video!.removeEventListener('canplay', onSuccess);
-              this.video!.removeEventListener('error', onError);
-            };
-            
-            this.video!.addEventListener('loadedmetadata', onSuccess, { once: true });
-            this.video!.addEventListener('loadeddata', onSuccess, { once: true });
-            this.video!.addEventListener('canplay', onSuccess, { once: true });
-            this.video!.addEventListener('error', onError, { once: true });
-            
-            // Start playing the video with additional error handling
-            this.video!.play()
-              .then(() => {
-                console.log('Video playback started');
-                // If video starts playing but metadata not loaded yet, wait a bit more
-                if (this.video!.readyState < 1) {
-                  setTimeout(() => {
-                    if (this.video!.readyState >= 1) {
-                      onSuccess();
-                    }
-                  }, 500);
-                }
-              })
-              .catch((playError) => {
-                console.error('Video play error:', playError);
-                onError(playError);
-              });
-          });
+          // Small delay to ensure video is ready
+          await new Promise(resolve => setTimeout(resolve, 200));
+          
         } catch (streamError) {
-          console.error('Failed to create canvas stream:', streamError);
-          throw new Error(`Canvas stream creation failed: ${streamError.message}`);
+          throw new Error(`Canvas stream creation failed`);
         }
       }
 
-      // Ensure video is ready for PiP
-      if (this.video.readyState < 1) {
-        await new Promise<void>((resolve, reject) => {
-          const timeout = setTimeout(() => {
-            reject(new Error('Video not ready for PiP'));
-          }, 3000);
-          
-          this.video!.addEventListener('loadedmetadata', () => {
-            clearTimeout(timeout);
-            resolve();
-          }, { once: true });
-        });
-      }
-
-      // Start PiP
+      // Start PiP immediately - no additional readyState checks
       await this.video.requestPictureInPicture();
       
       // Status indicator will be shown by the 'enterpictureinpicture' event
@@ -425,12 +308,7 @@ class PictureInPictureCountdown {
       }
 
       return true;
-    } catch (error) {
-      console.error('Failed to start Picture-in-Picture:', error);
-      console.error('Video ready state:', this.video?.readyState);
-      console.error('Video metadata loaded:', this.video?.readyState >= 1);
-      console.error('Video duration:', this.video?.duration);
-      
+    } catch (error: any) {
       // Clean up on error
       if (this.video) {
         this.video.srcObject = null;
@@ -446,13 +324,13 @@ class PictureInPictureCountdown {
       
       // Provide specific error messages based on error type
       let errorMessage = 'Failed to start Picture-in-Picture mode';
-      if (error.message.includes('not supported')) {
+      if (error?.message?.includes('not supported')) {
         errorMessage = 'Picture-in-Picture is not supported on this device or browser';
-      } else if (error.message.includes('stream')) {
+      } else if (error?.message?.includes('stream')) {
         errorMessage = 'Unable to create video stream for Picture-in-Picture';
-      } else if (error.message.includes('timeout')) {
+      } else if (error?.message?.includes('timeout')) {
         errorMessage = 'Picture-in-Picture initialization timed out. Please try again.';
-      } else if (error.message.includes('permission')) {
+      } else if (error?.message?.includes('permission')) {
         errorMessage = 'Picture-in-Picture permission denied. Please allow PiP in browser settings.';
       }
       
@@ -483,9 +361,8 @@ class PictureInPictureCountdown {
         this.stream = null;
       }
       
-      console.log('PiP stopped and cleaned up');
     } catch (error) {
-      console.error('Failed to stop Picture-in-Picture:', error);
+      // console.error('Failed to stop Picture-in-Picture:', error);
       // Even if there's an error, make sure we clean up
       this.isActive = false;
       this.hideStatusIndicator();
@@ -539,35 +416,35 @@ class PictureInPictureCountdown {
     this.ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
     
     // Top section - Exam name (left) and Session info (right) - with more padding
-    const topY = 35; // Increased from 25 to add more padding
+    const topY = 50;
     
-    // Left side - Exam name
+    // Left side - Exam name (much larger text)
     this.ctx.fillStyle = '#09090b';
-    this.ctx.font = 'bold 20px Inter, sans-serif';
+    this.ctx.font = 'bold 40px Inter, sans-serif';
     this.ctx.textAlign = 'left';
     this.ctx.fillText(this.currentExam.name, 20, topY);
     
-    // Right side - Session and date
+    // Right side - Session and date (larger text)
     this.ctx.fillStyle = '#52525b';
-    this.ctx.font = '14px Inter, sans-serif';
+    this.ctx.font = '24px Inter, sans-serif';
     this.ctx.textAlign = 'right';
     const sessionText = this.currentSession.session || 'Main Session';
-    this.ctx.fillText(sessionText, width - 20, topY - 8);
+    this.ctx.fillText(sessionText, width - 20, topY - 10);
     
     this.ctx.fillStyle = '#71717a';
-    this.ctx.font = '12px Inter, sans-serif';
+    this.ctx.font = '20px Inter, sans-serif';
     const dateText = new Date(this.currentSession.date).toLocaleDateString('en-IN', { 
       month: 'short', 
       day: 'numeric',
       year: 'numeric'
     });
-    this.ctx.fillText(dateText, width - 20, topY + 8);
+    this.ctx.fillText(dateText, width - 20, topY + 20);
     
-    // Main countdown section - takes up most of the space
-    const countdownStartY = 70; // Adjusted to accommodate new top padding
-    const countdownHeight = height - countdownStartY - 40;
+    // Main countdown section - moved to the bottom
+    const countdownHeight = 160;
+    const countdownStartY = height - countdownHeight - 20; // Positioned with a 20px bottom margin
     
-    // Countdown grid - 4 columns, maximize usage of available space
+    // Countdown grid - 4 columns
     const items = [
       { value: days, label: 'DAYS' },
       { value: hours, label: 'HRS' },
@@ -578,43 +455,31 @@ class PictureInPictureCountdown {
     const padding = 10;
     const gridWidth = width - (padding * 2);
     const itemWidth = gridWidth / 4;
-    const itemHeight = countdownHeight - 20;
     
     items.forEach((item, index) => {
       const x = padding + (index * itemWidth);
       const centerX = x + (itemWidth / 2);
-      const centerY = countdownStartY + (itemHeight / 2);
-      
-      // Reduced height background for each countdown item
-      const itemBoxHeight = itemHeight - 60; // Reduced from itemHeight - 20 to make it more compact
-      const itemBoxY = countdownStartY + 20; // Adjusted Y position
       
       // Background for each countdown item
       this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.03)';
-      this.ctx!.fillRect(x + 4, itemBoxY, itemWidth - 8, itemBoxHeight);
+      this.ctx!.fillRect(x + 4, countdownStartY, itemWidth - 8, countdownHeight);
       
       // Border for each item
       this.ctx!.strokeStyle = 'rgba(0, 0, 0, 0.08)';
       this.ctx!.lineWidth = 1;
-      this.ctx!.strokeRect(x + 4.5, itemBoxY + 0.5, itemWidth - 9, itemBoxHeight - 1);
+      this.ctx!.strokeRect(x + 4.5, countdownStartY + 0.5, itemWidth - 9, countdownHeight - 1);
       
-      // Large countdown number - centered in the smaller box
+      // Much larger countdown number
       this.ctx!.fillStyle = '#09090b';
-      this.ctx!.font = 'bold 48px Inter, sans-serif';
+      this.ctx!.font = 'bold 72px Inter, sans-serif'; // Slightly smaller font size
       this.ctx!.textAlign = 'center';
-      this.ctx!.fillText(item.value.toString().padStart(2, '0'), centerX, itemBoxY + (itemBoxHeight / 2) + 12);
+      this.ctx!.fillText(item.value.toString().padStart(2, '0'), centerX, countdownStartY + (countdownHeight / 2) + 22);
       
-      // Label below the box
+      // Larger label below the number
       this.ctx!.fillStyle = '#71717a';
-      this.ctx!.font = 'bold 11px Inter, sans-serif';
-      this.ctx!.fillText(item.label, centerX, itemBoxY + itemBoxHeight + 15);
+      this.ctx!.font = 'bold 16px Inter, sans-serif'; // Slightly smaller font size
+      this.ctx!.fillText(item.label, centerX, countdownStartY + countdownHeight - 22);
     });
-    
-    // Footer - compact branding
-    this.ctx.fillStyle = '#a1a1aa';
-    this.ctx.font = '9px Inter, sans-serif';
-    this.ctx.textAlign = 'center';
-    this.ctx.fillText('TimeKeeper', width / 2, height - 8);
   }
 
   drawExpiredState() {
@@ -633,48 +498,43 @@ class PictureInPictureCountdown {
     this.ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
     
     // Top section - Exam name (left) and Session info (right) - with more padding
-    const topY = 35; // Increased from 25 to add more padding
+    const topY = 50;
     
-    // Left side - Exam name
+    // Left side - Exam name (larger text)
     this.ctx.fillStyle = '#09090b';
-    this.ctx.font = 'bold 20px Inter, sans-serif';
+    this.ctx.font = 'bold 40px Inter, sans-serif';
     this.ctx.textAlign = 'left';
     this.ctx.fillText(this.currentExam.name, 20, topY);
     
-    // Right side - Session and date
+    // Right side - Session and date (larger text)
     this.ctx.fillStyle = '#52525b';
-    this.ctx.font = '14px Inter, sans-serif';
+    this.ctx.font = '24px Inter, sans-serif';
     this.ctx.textAlign = 'right';
     const sessionText = this.currentSession.session || 'Main Session';
-    this.ctx.fillText(sessionText, width - 20, topY - 8);
+    this.ctx.fillText(sessionText, width - 20, topY - 10);
     
     this.ctx.fillStyle = '#71717a';
-    this.ctx.font = '12px Inter, sans-serif';
+    this.ctx.font = '20px Inter, sans-serif';
     const dateText = new Date(this.currentSession.date).toLocaleDateString('en-IN', { 
       month: 'short', 
       day: 'numeric',
       year: 'numeric'
     });
-    this.ctx.fillText(dateText, width - 20, topY + 8);
+    this.ctx.fillText(dateText, width - 20, topY + 20);
     
     // Center content area
-    const centerY = height / 2;
+    const centerY = height / 2 + 40; // Adjusted to be lower
     
-    // Large completed message
+    // Much larger completed message
     this.ctx.fillStyle = '#16a34a';
-    this.ctx.font = 'bold 36px Inter, sans-serif';
+    this.ctx.font = 'bold 64px Inter, sans-serif';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('✓ COMPLETED', width / 2, centerY - 20);
+    this.ctx.fillText('✓ COMPLETED', width / 2, centerY - 25);
     
-    // Subtitle
+    // Larger subtitle
     this.ctx.fillStyle = '#52525b';
-    this.ctx.font = '16px Inter, sans-serif';
-    this.ctx.fillText('Exam has started/passed', width / 2, centerY + 20);
-    
-    // Footer
-    this.ctx.fillStyle = '#a1a1aa';
-    this.ctx.font = '9px Inter, sans-serif';
-    this.ctx.fillText('TimeKeeper', width / 2, height - 8);
+    this.ctx.font = '24px Inter, sans-serif';
+    this.ctx.fillText('Exam has started/passed', width / 2, centerY + 25);
   }
 
   showStatusIndicator() {
@@ -692,32 +552,7 @@ class PictureInPictureCountdown {
   }
 
   showFallbackNotification(reason?: string) {
-    const fallback = document.getElementById('pip-fallback');
-    if (fallback) {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const defaultReason = isMobile 
-        ? 'Picture-in-Picture is not supported on mobile devices' 
-        : 'Use a desktop browser for the best PiP countdown experience';
-      
-      const reasonText = reason || defaultReason;
-      const icon = isMobile ? '📱' : '🖥️';
-      
-      fallback.innerHTML = `
-        <div style="margin-bottom: 6px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-          <span>${icon}</span>
-          <span>PiP Not Available</span>
-        </div>
-        <div style="font-size: 11px; opacity: 0.8; line-height: 1.4;">${reasonText}</div>
-        ${isMobile ? '<div style="font-size: 10px; opacity: 0.6; margin-top: 4px;">Try on desktop Chrome, Firefox, or Safari</div>' : ''}
-      `;
-      fallback.classList.add('show');
-      
-      // Auto-hide after longer time for mobile users to read
-      const hideDelay = isMobile ? 6000 : 4000;
-      setTimeout(() => {
-        fallback.classList.remove('show');
-      }, hideDelay);
-    }
+    // Notification functionality removed - just log the reason
   }
 
   startUpdating() {

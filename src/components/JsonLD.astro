@@ -1,42 +1,201 @@
 ---
-// src/components/JsonLD.astro
-import type { Props as LayoutProps } from "../layouts/Layout.astro";
+interface Props {
+  exam?: any;
+  type?: 'website' | 'exam' | 'countdown';
+}
 
-interface Props extends LayoutProps {}
+const { exam, type = 'website' } = Astro.props;
+const baseUrl = 'https://exam-timekeeper.pages.dev';
 
-const { exam } = Astro.props;
+// Generate structured data based on type
+let structuredData = {};
 
-let eventSchema = {};
-
-if (exam) {
-  const firstSession = exam.sessions[0];
-  if (firstSession) {
-    eventSchema = {
-      "@context": "https://schema.org",
-      "@type": "Event",
-      "name": `${exam.name} ${new Date(firstSession.date).getFullYear()}`,
-      "description": `Countdown timer and details for the ${exam.fullName}.`,
-      "startDate": new Date(firstSession.date).toISOString(),
-      "eventStatus": "https://schema.org/EventScheduled",
-      "location": {
-        "@type": "VirtualLocation",
-        "url": Astro.url.href
+if (type === 'website') {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${baseUrl}/#website`,
+        "url": baseUrl,
+        "name": "TimeKeeper - Indian Exams Countdown Timer",
+        "description": "Ultimate countdown timer for Indian competitive exams. Track JEE, NEET, CAT, BITSAT and 25+ major exams with real-time countdowns.",
+        "publisher": {
+          "@id": `${baseUrl}/#organization`
+        },
+        "potentialAction": [
+          {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": `${baseUrl}/exams/{search_term_string}`
+            },
+            "query-input": "required name=search_term_string"
+          }
+        ],
+        "inLanguage": "en-US"
       },
-      "organizer": {
+      {
         "@type": "Organization",
-        "name": exam.conductingBody
+        "@id": `${baseUrl}/#organization`,
+        "name": "TimeKeeper",
+        "url": baseUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${baseUrl}/favicon.svg`,
+          "width": 512,
+          "height": 512
+        },
+        "foundingDate": "2025",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "technical support",
+          "areaServed": "IN",
+          "availableLanguage": "English"
+        },
+        "sameAs": []
       },
-      "offers": {
-        "@type": "Offer",
-        "name": "Exam Registration",
-        "url": exam.officialWebsite,
-        "availability": "https://schema.org/OnlineOnly"
+      {
+        "@type": "WebApplication",
+        "name": "TimeKeeper Countdown Timer",
+        "description": "Real-time countdown timer for Indian competitive exams",
+        "url": baseUrl,
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "screenshot": `${baseUrl}/favicon.svg`,
+        "softwareVersion": "2.0",
+        "datePublished": "2025-01-01",
+        "dateModified": new Date().toISOString().split('T')[0],
+        "author": {
+          "@id": `${baseUrl}/#organization`
+        }
+      }
+    ]
+  };
+} else if (type === 'exam' && exam) {
+  const examUrl = `${baseUrl}/exams/${exam.slug}`;
+  const currentSession = exam.sessions?.[0];
+  const examDate = currentSession?.date || exam.date;
+  
+  structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Event",
+        "@id": `${examUrl}/#event`,
+        "name": `${exam.fullName} ${new Date(examDate).getFullYear()}`,
+        "description": exam.description,
+        "startDate": examDate,
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {
+          "@type": "Country",
+          "name": "India"
+        },
+        "organizer": {
+          "@type": "Organization",
+          "name": exam.conductingBody,
+          "url": exam.officialWebsite || baseUrl
+        },
+        "offers": {
+          "@type": "Offer",
+          "name": `${exam.name} Application`,
+          "category": "Exam Registration",
+          "eligibility": exam.eligibility
+        },
+        "about": exam.subjects?.map((subject: any) => ({
+          "@type": "Thing",
+          "name": subject
+        })),
+        "audience": {
+          "@type": "EducationalAudience",
+          "educationalRole": "student",
+          "audienceType": exam.eligibility
+        }
       },
-      "keywords": exam.keywords.join(", ")
-    };
-  }
+      {
+        "@type": "WebPage",
+        "@id": `${examUrl}/#webpage`,
+        "url": examUrl,
+        "name": `${exam.name} 2026 Countdown Timer | ${exam.fullName}`,
+        "description": exam.metaDescription,
+        "isPartOf": {
+          "@id": `${baseUrl}/#website`
+        },
+        "about": {
+          "@id": `${examUrl}/#event`
+        },
+        "datePublished": "2025-01-01",
+        "dateModified": new Date().toISOString().split('T')[0],
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": baseUrl
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": exam.category,
+              "item": `${baseUrl}#${exam.category.toLowerCase()}`
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": exam.name,
+              "item": examUrl
+            }
+          ]
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": `${exam.name} Countdown Timer`,
+        "description": `Real-time countdown timer for ${exam.fullName}. Track exact time remaining until exam date.`,
+        "url": examUrl,
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "about": {
+          "@id": `${examUrl}/#event`
+        }
+      }
+    ]
+  };
+} else if (type === 'countdown') {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Exam Countdown Timer",
+    "description": "Real-time countdown timer for competitive exams with live updates",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Real-time countdown",
+      "Multiple exam tracking",
+      "Picture-in-Picture mode",
+      "Mobile responsive",
+      "Offline support"
+    ]
+  };
 }
 ---
-{Object.keys(eventSchema).length > 0 && (
-  <script type="application/ld+json" set:html={JSON.stringify(eventSchema, null, 2)} />
-)}
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>

@@ -1,0 +1,271 @@
+---
+interface Props {
+  exam?: any;
+  currentUrl?: string;
+}
+
+const { exam, currentUrl = Astro.url.href } = Astro.props;
+const baseUrl = 'https://exam-timekeeper.pages.dev';
+
+// Generate dynamic SEO keywords based on exam and current context
+function generateDynamicKeywords(exam?: any): string[] {
+  const baseKeywords = [
+    'countdown timer',
+    'exam countdown',
+    'time keeper',
+    'timer app',
+    'exam timer',
+    'countdown clock',
+    'time tracker',
+    'exam date countdown',
+    'real time countdown',
+    'online timer',
+    'exam countdown app',
+    'competitive exam timer',
+    'entrance exam countdown',
+    'exam preparation timer',
+    'study timer',
+    'countdown widget',
+    'exam schedule tracker',
+    'time remaining calculator',
+    'exam day countdown',
+    'digital countdown timer'
+  ];
+
+  const indianExamKeywords = [
+    'indian exams 2026',
+    'indian competitive exams',
+    'indian entrance exams',
+    'india exam countdown',
+    'nta exams',
+    'indian exam dates',
+    'competitive exam india',
+    'entrance exam india',
+    'indian exam calendar',
+    'exam countdown india'
+  ];
+
+  const timeKeywords = [
+    'days hours minutes seconds',
+    'time left until exam',
+    'exam time remaining',
+    'countdown to exam',
+    'exam date tracker',
+    'time until exam',
+    'exam countdown clock',
+    'exam timer widget',
+    'live exam countdown',
+    'real time exam timer'
+  ];
+
+  if (exam) {
+    const examSpecificKeywords = [
+      `${exam.name} countdown`,
+      `${exam.name} timer`,
+      `${exam.name} 2026`,
+      `${exam.name} exam date`,
+      `${exam.name} countdown timer`,
+      `${exam.fullName} countdown`,
+      `${exam.conductingBody} exam`,
+      `time left for ${exam.name}`,
+      `${exam.name} exam countdown`,
+      `${exam.name} time tracker`,
+      ...exam.keywords || []
+    ];
+
+    return [...baseKeywords, ...indianExamKeywords, ...timeKeywords, ...examSpecificKeywords];
+  }
+
+  return [...baseKeywords, ...indianExamKeywords, ...timeKeywords];
+}
+
+// Generate dynamic meta description
+function generateDynamicDescription(exam?: any): string {
+  if (exam) {
+    const timeLeft = calculateTimeLeft(exam.sessions?.[0]?.date || exam.date);
+    const timeString = timeLeft.expired ? 'Exam completed' : 
+      `${timeLeft.days} days, ${timeLeft.hours} hours remaining`;
+    
+    return `${exam.fullName} countdown timer - ${timeString}. Track exact time until ${exam.name} 2026 exam. Real-time countdown with days, hours, minutes, seconds. Get exam dates, preparation tips and study schedule.`;
+  }
+  
+  return 'Ultimate countdown timer for Indian competitive exams 2026. Track JEE Main, JEE Advanced, NEET, CAT, BITSAT and 25+ major exams with real-time countdown. Never miss an exam date again.';
+}
+
+// Calculate time left for dynamic content
+function calculateTimeLeft(targetDate: string) {
+  const now = new Date().getTime();
+  const target = new Date(targetDate).getTime();
+  const distance = target - now;
+  
+  if (distance < 0) {
+    return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
+  
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+  return { expired: false, days, hours, minutes, seconds };
+}
+
+// Generate dynamic title
+function generateDynamicTitle(exam?: any): string {
+  if (exam) {
+    const timeLeft = calculateTimeLeft(exam.sessions?.[0]?.date || exam.date);
+    if (timeLeft.expired) {
+      return `${exam.name} 2026 Results | ${exam.fullName} Exam Completed - TimeKeeper`;
+    }
+    
+    const timeString = timeLeft.days > 0 ? 
+      `${timeLeft.days} Days ${timeLeft.hours}h Left` :
+      `${timeLeft.hours}h ${timeLeft.minutes}m Left`;
+    
+    return `${exam.name} Countdown Timer - ${timeString} | ${exam.fullName} 2026`;
+  }
+  
+  return 'TimeKeeper - Live Countdown Timer for Indian Exams 2026 | JEE, NEET, CAT Timer';
+}
+
+const dynamicKeywords = generateDynamicKeywords(exam);
+const dynamicDescription = generateDynamicDescription(exam);
+const dynamicTitle = generateDynamicTitle(exam);
+---
+
+<!-- Enhanced SEO Meta Tags -->
+<title>{dynamicTitle}</title>
+<meta name="description" content={dynamicDescription} />
+<meta name="keywords" content={dynamicKeywords.join(', ')} />
+
+<!-- Additional Search Engine Tags -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+<!-- Content Classification -->
+<meta name="subject" content="Education, Exam Preparation, Countdown Timer" />
+<meta name="topic" content="Indian Competitive Exams Countdown Timer" />
+<meta name="summary" content={dynamicDescription} />
+<meta name="classification" content="Education" />
+<meta name="category" content="Educational Technology" />
+<meta name="coverage" content="Worldwide" />
+<meta name="distribution" content="Global" />
+<meta name="rating" content="General" />
+
+<!-- Geographic SEO -->
+<meta name="geo.region" content="IN" />
+<meta name="geo.country" content="India" />
+<meta name="ICBM" content="20.5937, 78.9629" />
+<meta name="geo.position" content="20.5937;78.9629" />
+
+<!-- Language and Locale -->
+<meta name="language" content="English" />
+<meta name="locale" content="en_IN" />
+<meta http-equiv="content-language" content="en-IN" />
+
+<!-- Revisit and Update Frequency -->
+<meta name="revisit-after" content="1 day" />
+<meta name="expires" content="never" />
+
+<!-- Enhanced Open Graph -->
+<meta property="og:title" content={dynamicTitle} />
+<meta property="og:description" content={dynamicDescription} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={currentUrl} />
+<meta property="og:site_name" content="TimeKeeper - Indian Exams Countdown" />
+<meta property="og:locale" content="en_IN" />
+<meta property="og:image" content={`${baseUrl}/favicon.svg`} />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
+<meta property="og:image:alt" content="TimeKeeper Countdown Timer for Indian Exams" />
+
+{exam && (
+  <>
+    <meta property="article:author" content="TimeKeeper" />
+    <meta property="article:published_time" content="2025-01-01T00:00:00Z" />
+    <meta property="article:modified_time" content={new Date().toISOString()} />
+    <meta property="article:section" content={exam.category} />
+    <meta property="article:tag" content={exam.keywords?.join(', ')} />
+  </>
+)}
+
+<!-- Enhanced Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={dynamicTitle} />
+<meta name="twitter:description" content={dynamicDescription} />
+<meta name="twitter:image" content={`${baseUrl}/favicon.svg`} />
+<meta name="twitter:image:alt" content="TimeKeeper Exam Countdown Timer" />
+<meta name="twitter:site" content="@timekeeper_app" />
+<meta name="twitter:creator" content="@timekeeper_app" />
+
+<!-- Additional Twitter Meta -->
+<meta name="twitter:app:name:iphone" content="TimeKeeper" />
+<meta name="twitter:app:name:ipad" content="TimeKeeper" />
+<meta name="twitter:app:name:googleplay" content="TimeKeeper" />
+
+<!-- Canonical and Alternate URLs -->
+<link rel="canonical" href={currentUrl} />
+<link rel="alternate" hreflang="en-in" href={currentUrl} />
+<link rel="alternate" hreflang="en" href={currentUrl} />
+<link rel="alternate" hreflang="x-default" href={currentUrl} />
+
+<!-- Preconnect for Performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://api.fontshare.com" />
+
+<!-- DNS Prefetch -->
+<link rel="dns-prefetch" href="//www.google-analytics.com" />
+<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+<link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
+<!-- Favicon and App Icons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/favicon.svg" />
+<link rel="mask-icon" href="/favicon.svg" color="#000000" />
+
+<!-- Web App Manifest -->
+<link rel="manifest" href="/manifest.json" />
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#000000" />
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="msapplication-config" content="/browserconfig.xml" />
+
+<!-- Search Console Verification (add when ready) -->
+<!-- <meta name="google-site-verification" content="your-verification-code" /> -->
+<!-- <meta name="msvalidate.01" content="your-bing-verification-code" /> -->
+
+<!-- Rich Results Testing -->
+<meta name="google" content="notranslate" />
+
+<!-- Additional Performance Hints -->
+<link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": baseUrl
+    },
+    ...(exam ? [
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": exam.category,
+        "item": `${baseUrl}#${exam.category.toLowerCase()}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": exam.name,
+        "item": currentUrl
+      }
+    ] : [])
+  ]
+})}></script>

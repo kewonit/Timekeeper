@@ -1,5 +1,4 @@
 ---
-import JsonLD from '../components/JsonLD.astro';
 export interface Props {
   title?: string;
   description?: string;
@@ -14,57 +13,65 @@ const {
   exam
 } = Astro.props;
 
-const year = new Date().getFullYear() + 1;
-const defaultTitle = `TimeKeeper - Indian Exams Countdown ${year}`;
-const defaultDescription = `Real-time countdown timers for major Indian competitive exams in ${year}. Track JEE, NEET, BITSAT, and more. Get exam dates, time left, and stay prepared.`;
-const defaultKeywords = ["exam countdown", "time keeper", "time left", `Indian exams ${year}`, "JEE countdown", "NEET countdown", "exam timer", "competitive exams", "entrance exams"];
 
-const dynamicTitle = exam ? `${exam.name} ${year} Countdown: Time Left, Exam Date | TimeKeeper` : defaultTitle;
-const dynamicDescription = exam ? `Track the time left for ${exam.name} ${year}. Get the latest exam date, syllabus, and preparation resources for ${exam.fullName}.` : defaultDescription;
-const dynamicKeywords = exam ? [...exam.keywords, "countdown", "timer", "time left", "exam date"].join(", ") : defaultKeywords.join(", ");
-const canonicalUrl = Astro.url.href;
-
-// Import PiP Widget
+// Import SEO and PiP Components
 import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
+import JsonLD from '../components/JsonLD.astro';
+import SEOHead from '../components/SEOHead.astro';
+import FAQSchema from '../components/FAQSchema.astro';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{dynamicTitle}</title>
-    <meta name="description" content={dynamicDescription} />
-    <meta name="keywords" content={dynamicKeywords} />
-    <link rel="canonical" href={canonicalUrl} />
-
-    {/* Open Graph / Facebook */}
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:title" content={dynamicTitle} />
-    <meta property="og:description" content={dynamicDescription} />
-    <meta property="og:image" content="/favicon.svg" />
-
-    {/* Twitter */}
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalUrl} />
-    <meta property="twitter:title" content={dynamicTitle} />
-    <meta property="twitter:description" content={dynamicDescription} />
-    <meta property="twitter:image" content="/favicon.svg" />
-
-    <JsonLD exam={exam} />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<!-- Prevent theme flash by setting theme immediately -->
+		<script>
+			(function() {
+				const savedTheme = localStorage.getItem('timekeeper-theme');
+				const theme = savedTheme && ['light', 'dark', 'ocean', 'valentine', 'cupcake'].includes(savedTheme) 
+					? savedTheme 
+					: (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+				document.documentElement.setAttribute('data-theme', theme);
+			})();
+		</script>
+		
+		<!-- Enhanced SEO Meta Tags -->
+		<SEOHead exam={exam} currentUrl={Astro.url.href} />
+		
+		<!-- Structured Data -->
+		<JsonLD type={exam ? 'exam' : 'website'} exam={exam} />
+		
+		<!-- FAQ Schema -->
+		<FAQSchema currentPage={exam ? 'exam' : 'home'} exam={exam} />
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="apple-mobile-web-app-title" content="TimeKeeper" />
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	</head>
 	<body class="font-sans transition-colors duration-300">
-    <PictureInPictureWidget />
 		<slot />
-				<!-- Global Footer -->
+		
+		<!-- Picture-in-Picture Widget - Global -->
+		<PictureInPictureWidget />
+		
+		<!-- Global Footer -->
 		<footer class="border-t border-dashed themed-border themed-bg">
 			<div class="max-w-7xl mx-auto px-4 py-6">
 				<div class="text-center space-y-3">
 					<div class="flex items-center justify-center gap-2 text-sm themed-text-secondary">
 						<span class="font-serif italic">TimeKeeper</span>
 						<span class="h-px w-4 themed-bg-tertiary"></span>
-						<span>Exams Countdown</span>
+						<span>Exams Countdown 2026</span>
 					</div>
 					<div class="text-xs themed-disclaimer max-w-2xl mx-auto p-3 rounded-lg border themed-disclaimer">
 						<p>
@@ -105,7 +112,7 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
 			}
 			
 			// Set theme function
-			function setTheme(theme) {
+			function setTheme(theme: string) {
 				// Validate theme
 				const validThemes = ['light', 'dark', 'ocean', 'valentine', 'cupcake'];
 				if (!validThemes.includes(theme)) {
@@ -134,10 +141,10 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
 			}
 			
 			// Update meta theme color
-			function updateMetaThemeColor(theme) {
+			function updateMetaThemeColor(theme: string) {
 				const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 				if (metaThemeColor) {
-					const themeColors = {
+					const themeColors: { [key: string]: string } = {
 						'light': '#ffffff',
 						'dark': '#000000',
 						'ocean': '#f0f9ff',
@@ -559,3 +566,10 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
 		color: var(--text-primary) !important;
 	}
 </style>
+
+<!-- SEO Optimizer Script -->
+<script type="module">
+    import('../utils/seo-optimizer.js').catch(() => {
+        // SEO Optimizer failed to load
+    });
+</script>

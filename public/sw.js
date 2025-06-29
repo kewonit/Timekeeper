@@ -1,5 +1,5 @@
 // Service Worker for TimeKeeper PiP Widget
-// Handles background updates and notifications
+// Handles background updates
 
 const CACHE_NAME = 'timekeeper-pip-v1';
 const EXAM_DATA_CACHE = 'timekeeper-exam-data-v1';
@@ -89,7 +89,6 @@ function updateCountdownInBackground() {
 
     if (distance <= 0) {
         // Exam has started/passed
-        notifyExamTime();
         clearInterval(self.updateInterval);
         return;
     }
@@ -109,71 +108,7 @@ function updateCountdownInBackground() {
             });
         });
     });
-
-    // Check for milestone notifications
-    checkMilestoneNotifications(days, hours, minutes);
 }
-
-// Check if we should send milestone notifications
-function checkMilestoneNotifications(days, hours, minutes) {
-    const totalMinutes = days * 24 * 60 + hours * 60 + minutes;
-
-    // Send notifications at specific milestones
-    const milestones = [
-        { time: 7 * 24 * 60, message: '7 days until exam!' },
-        { time: 24 * 60, message: '24 hours until exam!' },
-        { time: 60, message: '1 hour until exam!' },
-        { time: 10, message: '10 minutes until exam!' }
-    ];
-
-    milestones.forEach(milestone => {
-        if (totalMinutes === milestone.time) {
-            showNotification(milestone.message);
-        }
-    });
-}
-
-// Show notification to user
-function showNotification(message) {
-    if ('Notification' in self && Notification.permission === 'granted') {
-        self.registration.showNotification('TimeKeeper - Exam Alert', {
-            body: message,
-            icon: '/favicon.svg',
-            badge: '/favicon.svg',
-            tag: 'exam-countdown',
-            requireInteraction: true,
-            actions: [
-                {
-                    action: 'view',
-                    title: 'View Countdown'
-                },
-                {
-                    action: 'dismiss',
-                    title: 'Dismiss'
-                }
-            ]
-        });
-    }
-}
-
-// Notify when exam time arrives
-function notifyExamTime() {
-    if (self.currentExam) {
-        showNotification(`${self.currentExam.name} exam is starting now!`);
-    }
-}
-
-// Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-    event.notification.close();
-
-    if (event.action === 'view') {
-        // Open the exam page
-        event.waitUntil(
-            clients.openWindow(`/exams/${self.currentExam?.slug || ''}`)
-        );
-    }
-});
 
 // Handle background sync
 self.addEventListener('sync', (event) => {

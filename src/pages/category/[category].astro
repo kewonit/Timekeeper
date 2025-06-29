@@ -1,0 +1,271 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import examData from '../../data/exams.json';
+
+export async function getStaticPaths() {
+  const exams = examData.exams;
+  const categories = [...new Set(exams.map(exam => exam.category))];
+  
+  return categories.map((category) => ({
+    params: { category: category.toLowerCase().replace(/\s+/g, '-') },
+    props: { category, categorySlug: category.toLowerCase().replace(/\s+/g, '-') },
+  }));
+}
+
+const { category, categorySlug } = Astro.props;
+const allExams = examData.exams;
+const exams = allExams.filter(exam => 
+  exam.category.toLowerCase() === category.toLowerCase()
+);
+
+const title = `${category} Exams Countdown Timer 2026 | TimeKeeper`;
+const description = `Track countdown timers for all ${category.toLowerCase()} competitive exams 2026. Real-time countdown for ${exams.map(e => e.name).join(', ')} and more. Never miss an exam date.`;
+const keywords = [
+  `${category.toLowerCase()} exams 2026`,
+  `${category.toLowerCase()} countdown timer`,
+  `${category.toLowerCase()} entrance exams`,
+  `${category.toLowerCase()} exam dates`,
+  ...exams.flatMap(exam => exam.keywords)
+];
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <div class="min-h-screen themed-bg">
+    <!-- Header Navigation -->
+    <nav class="border-b border-dashed themed-border themed-bg sticky top-0 z-20">
+      <div class="max-w-5xl mx-auto px-4 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <a href="/" class="flex items-center space-x-3">
+            <div class="w-8 h-8 themed-bg-tertiary rounded-full flex items-center justify-center">
+              <span class="text-sm font-bold themed-accent">T</span>
+            </div>
+            <div>
+              <h1 class="font-serif text-xl themed-text font-semibold">TimeKeeper</h1>
+              <p class="text-xs themed-text-secondary">Exam Countdown</p>
+            </div>
+          </a>
+          
+          <a href="/" class="px-4 py-2 themed-bg-secondary themed-text rounded-lg hover:themed-bg-tertiary transition-colors">
+            ← All Exams
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto px-4 lg:px-8 py-8">
+      <!-- Category Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl lg:text-5xl font-serif themed-text mb-4">
+          {category} Exams
+          <span class="themed-accent block text-2xl lg:text-3xl mt-2">Countdown Timer 2026</span>
+        </h1>
+        
+        <p class="text-lg themed-text-secondary max-w-3xl mx-auto leading-relaxed">
+          Track real-time countdown for all major {category.toLowerCase()} competitive exams in India. 
+          Get precise time remaining with days, hours, minutes, and seconds until exam dates.
+        </p>
+        
+        <div class="mt-6 flex flex-wrap justify-center gap-2">
+          {exams.slice(0, 6).map(exam => (
+            <span class="px-3 py-1 themed-bg-secondary themed-text-secondary text-sm rounded-full">
+              {exam.name}
+            </span>
+          ))}
+          {exams.length > 6 && (
+            <span class="px-3 py-1 themed-bg-tertiary themed-text text-sm rounded-full">
+              +{exams.length - 6} more
+            </span>
+          )}
+        </div>
+      </div>
+
+      <!-- Exams Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {exams.map(exam => (
+          <a href={`/exams/${exam.slug}`} class="group">
+            <div class="themed-bg-secondary border themed-border rounded-lg p-6 h-full transition-all duration-300 hover:themed-shadow-lg hover:scale-105">
+              <!-- Exam Header -->
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                  <h3 class="text-xl font-semibold themed-text group-hover:themed-accent transition-colors">
+                    {exam.name}
+                  </h3>
+                  <p class="text-sm themed-text-secondary mt-1">
+                    {exam.fullName}
+                  </p>
+                </div>
+                
+                <div class="ml-4 text-right">
+                  <div class="themed-bg-tertiary px-2 py-1 rounded text-xs themed-text-secondary">
+                    {exam.conductingBody}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Countdown Display -->
+              <div class="countdown-display bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg mb-4" data-target={exam.sessions?.[0]?.date}>
+                <div class="grid grid-cols-4 gap-2 text-center">
+                  <div>
+                    <div class="countdown-number text-2xl font-bold text-gray-800">00</div>
+                    <div class="countdown-label text-xs text-gray-600">Days</div>
+                  </div>
+                  <div>
+                    <div class="countdown-number text-2xl font-bold text-gray-800">00</div>
+                    <div class="countdown-label text-xs text-gray-600">Hours</div>
+                  </div>
+                  <div>
+                    <div class="countdown-number text-2xl font-bold text-gray-800">00</div>
+                    <div class="countdown-label text-xs text-gray-600">Min</div>
+                  </div>
+                  <div>
+                    <div class="countdown-number text-2xl font-bold text-gray-800">00</div>
+                    <div class="countdown-label text-xs text-gray-600">Sec</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Exam Details -->
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="themed-text-secondary">Exam Date:</span>
+                  <span class="themed-text font-medium">
+                    {new Date(exam.sessions?.[0]?.date).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </div>
+                
+                <div class="flex justify-between">
+                  <span class="themed-text-secondary">Duration:</span>
+                  <span class="themed-text">{exam.duration}</span>
+                </div>
+                
+                <div class="flex justify-between">
+                  <span class="themed-text-secondary">Seats:</span>
+                  <span class="themed-text">{exam.seats}</span>
+                </div>
+              </div>
+
+              <!-- Subjects -->
+              <div class="mt-4 pt-4 border-t themed-border-secondary">
+                <div class="flex flex-wrap gap-1">
+                  {exam.subjects.slice(0, 3).map(subject => (
+                    <span class="px-2 py-1 themed-bg-tertiary text-xs themed-text-secondary rounded">
+                      {subject}
+                    </span>
+                  ))}
+                  {exam.subjects.length > 3 && (
+                    <span class="px-2 py-1 themed-bg-tertiary text-xs themed-text-secondary rounded">
+                      +{exam.subjects.length - 3}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- SEO Content Section -->
+      <div class="mt-16 prose prose-lg max-w-4xl mx-auto themed-text">
+        <h2 class="text-3xl font-serif themed-text mb-6">
+          About {category} Exams in India
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-xl font-semibold themed-text mb-4">Popular {category} Exams</h3>
+            <ul class="space-y-2">
+              {exams.slice(0, 8).map(exam => (
+                <li class="themed-text-secondary">
+                  <a href={`/exams/${exam.slug}`} class="hover:themed-accent transition-colors">
+                    {exam.fullName} ({exam.name})
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-semibold themed-text mb-4">Why Use TimeKeeper?</h3>
+            <ul class="space-y-2 themed-text-secondary">
+              <li>• Real-time countdown timers</li>
+              <li>• Precise time tracking</li>
+              <li>• Multiple exam support</li>
+              <li>• Picture-in-Picture mode</li>
+              <li>• Mobile responsive design</li>
+              <li>• Offline functionality</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="mt-8 p-6 themed-bg-secondary rounded-lg">
+          <h3 class="text-xl font-semibold themed-text mb-4">
+            Stay Updated with {category} Exam Dates
+          </h3>
+          <p class="themed-text-secondary">
+            Our countdown timers are constantly updated with official {category.toLowerCase()} exam dates. 
+            Track multiple exams simultaneously and never miss an important deadline. 
+            Get accurate time remaining for all major {category.toLowerCase()} competitive exams in India.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize countdown timers for category page
+    function formatTimeRemaining(targetDate) {
+      const now = new Date().getTime();
+      const target = new Date(targetDate).getTime();
+      const distance = target - now;
+      
+      if (distance < 0) {
+        return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+      
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      return { expired: false, days, hours, minutes, seconds };
+    }
+
+    function updateCountdowns() {
+      const countdownElements = document.querySelectorAll('.countdown-display');
+      
+      countdownElements.forEach(element => {
+        const targetDate = element.getAttribute('data-target');
+        if (!targetDate) return;
+        
+        const timeRemaining = formatTimeRemaining(targetDate);
+        const numbers = element.querySelectorAll('.countdown-number');
+        
+        if (timeRemaining.expired) {
+          numbers[0].textContent = '00';
+          numbers[1].textContent = '00';
+          numbers[2].textContent = '00';
+          numbers[3].textContent = '00';
+          element.classList.add('opacity-50');
+        } else {
+          numbers[0].textContent = String(timeRemaining.days).padStart(2, '0');
+          numbers[1].textContent = String(timeRemaining.hours).padStart(2, '0');
+          numbers[2].textContent = String(timeRemaining.minutes).padStart(2, '0');
+          numbers[3].textContent = String(timeRemaining.seconds).padStart(2, '0');
+        }
+      });
+    }
+
+    // Update immediately and then every second
+    updateCountdowns();
+    const interval = setInterval(updateCountdowns, 1000);
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      clearInterval(interval);
+    });
+  </script>
+</Layout>
