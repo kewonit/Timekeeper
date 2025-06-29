@@ -9,7 +9,7 @@ Disallow: /private/
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://exam-timekeeper.pages.dev/sitemap.xml
+Sitemap: https://timekeeper.edbn.me/sitemap.xml
 
 # Search engine specific directives
 User-agent: Googlebot
