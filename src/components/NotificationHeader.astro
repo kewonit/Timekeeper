@@ -1,0 +1,294 @@
+---
+// Notification Header Component
+---
+
+<div id="notification-header" class="notification-header hidden">
+  <div class="notification-content">
+    <div class="notification-text">
+      <div class="notification-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+      </div>
+      <div class="notification-content-text">
+        <span class="notification-title">Important Update</span>
+        <span class="notification-message">
+          TimeKeeper has moved to a new domain: <a href="https://timekeeper.edbn.me" target="_blank" class="notification-link">timekeeper.edbn.me</a>
+        </span>
+      </div>
+    </div>
+    <button id="close-notification" class="close-button" aria-label="Close notification">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .notification-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #8b5fbf 100%);
+    color: white;
+    padding: 16px 24px;
+    z-index: 99999;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.25);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transform: translateY(-100%);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .notification-header.show {
+    transform: translateY(0);
+  }
+
+  .notification-header.hidden {
+    display: none;
+  }
+
+  .notification-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 16px;
+  }
+
+  .notification-text {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .notification-icon {
+    color: #ffd700;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .notification-content-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .notification-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .notification-message {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .notification-link {
+    color: #ffd700;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+    padding: 1px 2px;
+    border-radius: 2px;
+  }
+
+  .notification-link:hover {
+    color: #fff;
+    border-bottom-color: #ffd700;
+    background-color: rgba(255, 215, 0, 0.1);
+  }
+
+  .close-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    backdrop-filter: blur(5px);
+  }
+
+  .close-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .close-button:focus {
+    outline: 2px solid #ffd700;
+    outline-offset: 2px;
+  }
+
+  .close-button:active {
+    transform: scale(0.95);
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .notification-header {
+      padding: 14px 20px;
+    }
+
+    .notification-content {
+      gap: 12px;
+    }
+
+    .notification-text {
+      gap: 10px;
+    }
+
+    .notification-title {
+      font-size: 13px;
+    }
+
+    .notification-message {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .notification-header {
+      padding: 12px 16px;
+    }
+
+    .notification-content {
+      gap: 8px;
+    }
+
+    .notification-text {
+      gap: 8px;
+    }
+
+    .notification-content-text {
+      gap: 2px;
+    }
+
+    .notification-title {
+      font-size: 12px;
+    }
+
+    .notification-message {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .close-button {
+      padding: 6px;
+    }
+  }
+
+  /* Animation enhancement */
+  @keyframes slideInDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .notification-header.show {
+    animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Global body adjustment when notification is active */
+  :global(body.notification-active) {
+    padding-top: 80px;
+    transition: padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @media (max-width: 768px) {
+    :global(body.notification-active) {
+      padding-top: 75px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    :global(body.notification-active) {
+      padding-top: 70px;
+    }
+  }
+</style>
+
+<script>
+  // Notification management
+  const NOTIFICATION_KEY = 'timekeeper-site-update-notification';
+  const NOTIFICATION_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+  function shouldShowNotification() {
+    const lastDismissed = localStorage.getItem(NOTIFICATION_KEY);
+    if (!lastDismissed) return true;
+    
+    const now = Date.now();
+    const dismissedTime = parseInt(lastDismissed, 10);
+    
+    return (now - dismissedTime) >= NOTIFICATION_DURATION;
+  }
+
+  function dismissNotification() {
+    const notification = document.getElementById('notification-header');
+    if (notification) {
+      notification.classList.remove('show');
+      document.body.classList.remove('notification-active');
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 300);
+      
+      // Store dismissal time
+      localStorage.setItem(NOTIFICATION_KEY, Date.now().toString());
+    }
+  }
+
+  function showNotification() {
+    const notification = document.getElementById('notification-header');
+    if (notification) {
+      notification.classList.remove('hidden');
+      // Small delay to ensure the element is rendered before animation
+      setTimeout(() => {
+        notification.classList.add('show');
+        document.body.classList.add('notification-active');
+      }, 10);
+    }
+  }
+
+  // Initialize notification on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    if (shouldShowNotification()) {
+      showNotification();
+    }
+
+    // Add close button event listener
+    const closeButton = document.getElementById('close-notification');
+    if (closeButton) {
+      closeButton.addEventListener('click', dismissNotification);
+    }
+
+    // Also allow dismissal by pressing Escape key when notification is focused
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        const notification = document.getElementById('notification-header');
+        if (notification && notification.classList.contains('show')) {
+          dismissNotification();
+        }
+      }
+    });
+  });
+</script>

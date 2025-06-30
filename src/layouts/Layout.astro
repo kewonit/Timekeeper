@@ -7,6 +7,7 @@ const { title } = Astro.props;
 const { description } = Astro.props;
 import Head from "../components/Head.astro";
 import Footer from "../components/Footer.astro";
+import NotificationHeader from "../components/NotificationHeader.astro";
 ---
 
 <!DOCTYPE html>
@@ -26,6 +27,7 @@ import Footer from "../components/Footer.astro";
     />
   </head>
   <body>
+    <NotificationHeader />
     <Head />
     <slot />
     <Footer />
@@ -45,6 +47,25 @@ import Footer from "../components/Footer.astro";
     font-family: system-ui, sans-serif;
     background-color: #f6f6f6;
   }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    transition: padding-top 0.3s ease-in-out;
+  }
+  
+  /* Adjust body padding when notification is visible */
+  body:has(.notification-header.show) {
+    padding-top: 50px;
+  }
+  
+  /* Fallback for browsers that don't support :has() */
+  @supports not selector(:has(*)) {
+    .notification-active {
+      padding-top: 50px !important;
+    }
+  }
+  
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
       DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
