@@ -1,0 +1,175 @@
+---
+// Example: Using the new data architecture in Astro pages
+import { 
+    getExamData, 
+    getExamBySlug, 
+    calculateTimeRemaining, 
+    generateExamPageTitle,
+    generateExamMetaDescription,
+    getRelatedExams 
+} from '../data/exam-data';
+
+// Get exam data (this could be from your dynamic route)
+const examSlug = Astro.params.slug || 'jee-main';
+const exam = getExamBySlug(examSlug);
+
+if (!exam) {
+    // Handle 404 case
+    return Astro.redirect('/404');
+}
+
+// Calculate time remaining with session awareness
+const timeData = calculateTimeRemaining(exam);
+const { nextSession, timeRemaining, allSessions } = timeData;
+
+// Generate SEO data
+const pageTitle = generateExamPageTitle(exam);
+const metaDescription = generateExamMetaDescription(exam);
+
+// Get related exams
+const relatedExams = getRelatedExams(examSlug, 4);
+
+// You can also use the legacy functions for backward compatibility
+import { indianExams, calculateTimeRemaining as legacyCalc } from '../data/exams';
+---
+
+<html>
+<head>
+    <title>{pageTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <meta name="keywords" content={exam.keywords.join(', ')} />
+</head>
+<body>
+    <h1>{exam.name} Countdown Timer</h1>
+    <p>{exam.description}</p>
+    
+    <!-- Display next session info -->
+    {nextSession && (
+        <div class="next-session">
+            <h2>Next Session: {nextSession.session}</h2>
+            <p>Date: {nextSession.date}</p>
+            
+            {!timeRemaining.expired && (
+                <div class="countdown">
+                    <span>{timeRemaining.days} days</span>
+                    <span>{timeRemaining.hours} hours</span>
+                    <span>{timeRemaining.minutes} minutes</span>
+                    <span>{timeRemaining.seconds} seconds</span>
+                </div>
+            )}
+        </div>
+    )}
+    
+    <!-- Display all sessions -->
+    <div class="all-sessions">
+        <h3>All Sessions</h3>
+        {allSessions.map(({ session, timeRemaining: sessionTime }) => (
+            <div class="session">
+                <h4>{session.session}</h4>
+                <p>Date: {session.date}</p>
+                <p>
+                    {sessionTime.expired 
+                        ? 'Completed' 
+                        : `${sessionTime.days} days remaining`
+                    }
+                </p>
+            </div>
+        ))}
+    </div>
+    
+    <!-- Exam details -->
+    <div class="exam-details">
+        <h3>Exam Details</h3>
+        <p><strong>Full Name:</strong> {exam.fullName}</p>
+        <p><strong>Category:</strong> {exam.category}</p>
+        <p><strong>Eligibility:</strong> {exam.eligibility}</p>
+        <p><strong>Duration:</strong> {exam.duration}</p>
+        <p><strong>Conducting Body:</strong> {exam.conductingBody}</p>
+        <p><strong>Seats:</strong> {exam.seats}</p>
+        
+        <div class="subjects">
+            <h4>Subjects:</h4>
+            <ul>
+                {exam.subjects.map(subject => (
+                    <li>{subject}</li>
+                ))}
+            </ul>
+        </div>
+        
+        {exam.officialWebsite && (
+            <p>
+                <strong>Official Website:</strong> 
+                <a href={exam.officialWebsite} target="_blank" rel="noopener noreferrer">
+                    {exam.officialWebsite}
+                </a>
+            </p>
+        )}
+    </div>
+    
+    <!-- Related exams -->
+    {relatedExams.length > 0 && (
+        <div class="related-exams">
+            <h3>Related Exams</h3>
+            <div class="exam-grid">
+                {relatedExams.map(relatedExam => (
+                    <div class="exam-card">
+                        <h4>
+                            <a href={`/exams/${relatedExam.slug}`}>
+                                {relatedExam.name}
+                            </a>
+                        </h4>
+                        <p>{relatedExam.description}</p>
+                        <p><strong>Category:</strong> {relatedExam.category}</p>
+                        {relatedExam.sessions.length > 0 && (
+                            <p><strong>Next Date:</strong> {relatedExam.sessions[0].date}</p>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    )}
+</body>
+</html>
+
+<style>
+    .countdown {
+        display: flex;
+        gap: 1rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .exam-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+    
+    .exam-card {
+        border: 1px solid #ddd;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .session {
+        border-left: 4px solid #007bff;
+        padding-left: 1rem;
+        margin: 1rem 0;
+    }
+</style>
+
+<script>
+    // Client-side countdown update
+    function updateCountdown() {
+        // This would update the countdown in real-time
+        // You can use Alpine.js or vanilla JavaScript
+        const countdownElement = document.querySelector('.countdown');
+        if (countdownElement) {
+            // Update logic here
+        }
+    }
+    
+    // Update every second
+    setInterval(updateCountdown, 1000);
+</script>

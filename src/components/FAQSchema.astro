@@ -98,7 +98,7 @@ const faqs = generateFAQs(currentPage, exam);
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {faqs.map((faq, index) => `
+    ${faqs.map((faq, index) => `
     ${index > 0 ? ',' : ''}{
       "@type": "Question",
       "name": "${faq.question}",
@@ -114,7 +114,7 @@ const faqs = generateFAQs(currentPage, exam);
 <!-- FAQ Schema for better search results -->
 <div style="display: none;" aria-hidden="true">
   <div itemscope itemtype="https://schema.org/FAQPage">
-    {faqs.map(faq => (
+    ${faqs.map(faq => (
       <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <h3 itemprop="name">{faq.question}</h3>
         <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

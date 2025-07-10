@@ -1,7 +1,7 @@
 ---
-import examData from '../data/exams.json';
+import { getExamData } from '../data/exam-data';
 
-const exams = examData.exams;
+const exams = getExamData();
 const baseUrl = 'https://timekeeper.edbn.me'; // Replace with your actual domain
 
 // Generate dynamic pages

@@ -145,7 +145,7 @@ if (type === 'website') {
               "@type": "ListItem",
               "position": 2,
               "name": exam.category,
-              "item": `${baseUrl}#${exam.category.toLowerCase()}`
+              "item": `${baseUrl}/category/${exam.category.toLowerCase().replace(/\s+/g, '-')}`
             },
             {
               "@type": "ListItem",

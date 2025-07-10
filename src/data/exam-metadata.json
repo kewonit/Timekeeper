@@ -1,0 +1,1755 @@
+{
+    "metadata": {
+        "jee-main-2026": {
+            "name": "JEE Main",
+            "fullName": "Joint Entrance Examination Main",
+            "description": "National level engineering entrance exam for admission to NITs, IIITs, and other technical institutes",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "NTA",
+            "seats": "1,50,000+",
+            "officialWebsite": "https://jeemain.nta.nic.in/",
+            "relatedExams": [
+                "jee-advanced",
+                "bitsat",
+                "wbjee",
+                "mhtcet"
+            ],
+            "slug": "jee-main",
+            "metaDescription": "JEE Main 2026 countdown timer. Track days, hours, minutes until JEE Main exam. Get exam dates and preparation tips.",
+            "keywords": [
+                "JEE Main 2026",
+                "JEE Main countdown",
+                "JEE Main exam date",
+                "JEE preparation",
+                "NTA JEE"
+            ]
+        },
+        "jee-advanced-2026": {
+            "name": "JEE Advanced",
+            "fullName": "Joint Entrance Examination Advanced",
+            "description": "Premier engineering entrance exam for admission to IITs and ISM Dhanbad",
+            "category": "Engineering",
+            "eligibility": "JEE Main qualified",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics"
+            ],
+            "duration": "6 hours (2 papers)",
+            "conductingBody": "IIT (Rotating)",
+            "seats": "17,000+",
+            "officialWebsite": "https://jeeadv.ac.in/",
+            "relatedExams": [
+                "jee-main",
+                "kvpy",
+                "bitsat"
+            ],
+            "slug": "jee-advanced",
+            "metaDescription": "JEE Advanced 2026 countdown timer. Track time until IIT JEE Advanced exam. Complete exam schedule and preparation guide.",
+            "keywords": [
+                "JEE Advanced 2026",
+                "IIT JEE",
+                "JEE Advanced countdown",
+                "IIT entrance exam",
+                "JEE Advanced preparation"
+            ]
+        },
+        "neet-ug-2026": {
+            "name": "NEET UG",
+            "fullName": "National Eligibility cum Entrance Test (Undergraduate)",
+            "description": "National medical entrance exam for MBBS, BDS, AYUSH courses",
+            "category": "Medical",
+            "eligibility": "12th pass with PCB",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Biology",
+                "Zoology",
+                "Botany"
+            ],
+            "duration": "3 hours 20 minutes",
+            "conductingBody": "NTA",
+            "seats": "1,08,000+",
+            "officialWebsite": "https://neet.nta.nic.in/",
+            "relatedExams": [
+                "neet-pg",
+                "jipmer",
+                "aiims"
+            ],
+            "slug": "neet-ug",
+            "metaDescription": "NEET UG 2026 countdown timer. Track days until NEET medical entrance exam. Get exam pattern and prep tips.",
+            "keywords": [
+                "NEET UG 2026",
+                "NEET countdown",
+                "NEET exam date",
+                "medical entrance exam",
+                "MBBS admission"
+            ]
+        },
+        "bitsat-2026": {
+            "name": "BITSAT",
+            "fullName": "Birla Institute of Technology and Science Admission Test",
+            "description": "Computer-based test for admission to BITS Pilani campuses",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics",
+                "English",
+                "Logical Reasoning"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "BITS Pilani",
+            "seats": "4,000+",
+            "officialWebsite": "https://www.bitsadmission.com/",
+            "relatedExams": [
+                "jee-main",
+                "viteee",
+                "comedk"
+            ],
+            "slug": "bitsat",
+            "metaDescription": "BITSAT 2026 countdown timer. Track time until BITS admission test. Complete exam guide and preparation strategy.",
+            "keywords": [
+                "BITSAT 2026",
+                "BITS Pilani",
+                "BITSAT countdown",
+                "BITS admission test",
+                "computer based test"
+            ]
+        },
+        "cat-2026": {
+            "name": "CAT",
+            "fullName": "Common Admission Test",
+            "description": "Premier MBA entrance exam for IIMs and top B-schools",
+            "category": "Management",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "Verbal Ability",
+                "Data Interpretation",
+                "Logical Reasoning",
+                "Quantitative Ability"
+            ],
+            "duration": "2 hours",
+            "conductingBody": "IIM (Rotating)",
+            "seats": "5,000+",
+            "officialWebsite": "https://iimcat.ac.in/",
+            "relatedExams": [
+                "xat",
+                "snap",
+                "nmat",
+                "mat"
+            ],
+            "slug": "cat",
+            "metaDescription": "CAT 2026 countdown timer. Track days until Common Admission Test. IIM MBA entrance exam dates and preparation guide.",
+            "keywords": [
+                "CAT 2026",
+                "IIM CAT",
+                "MBA entrance exam",
+                "CAT countdown",
+                "Common Admission Test"
+            ]
+        },
+        "upsc-cse-2026": {
+            "name": "UPSC CSE",
+            "fullName": "Union Public Service Commission Civil Services Examination",
+            "description": "Premier civil services exam for IAS, IPS, IFS and other services",
+            "category": "Civil Services",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "General Studies",
+                "Optional Subject",
+                "Essay",
+                "CSAT"
+            ],
+            "duration": "Multi-stage exam",
+            "conductingBody": "UPSC",
+            "seats": "900+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "state-pcs",
+                "ssc-cgl",
+                "capf"
+            ],
+            "slug": "upsc-cse",
+            "metaDescription": "UPSC CSE 2026 countdown timer. Track time until Civil Services Examination. IAS, IPS exam dates and preparation strategy.",
+            "keywords": [
+                "UPSC CSE 2026",
+                "IAS exam",
+                "Civil Services",
+                "UPSC countdown",
+                "IPS exam"
+            ]
+        },
+        "gate-2026": {
+            "name": "GATE",
+            "fullName": "Graduate Aptitude Test in Engineering",
+            "description": "National exam for M.Tech admission and PSU recruitment",
+            "category": "Engineering",
+            "eligibility": "B.Tech/B.E.",
+            "subjects": [
+                "Engineering Mathematics",
+                "Technical Subject",
+                "General Aptitude"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "IIT/IISc (Rotating)",
+            "seats": "Variable",
+            "officialWebsite": "https://gate.iitm.ac.in/",
+            "relatedExams": [
+                "jee-main",
+                "ese",
+                "isro"
+            ],
+            "slug": "gate",
+            "metaDescription": "GATE 2026 countdown timer. Track days until Graduate Aptitude Test in Engineering. M.Tech admission and PSU jobs.",
+            "keywords": [
+                "GATE 2026",
+                "GATE countdown",
+                "M.Tech admission",
+                "PSU recruitment",
+                "engineering aptitude test"
+            ]
+        },
+        "ssc-cgl-2026": {
+            "name": "SSC CGL",
+            "fullName": "Staff Selection Commission Combined Graduate Level",
+            "description": "Central government jobs exam for graduate level positions",
+            "category": "Government Jobs",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "General Intelligence",
+                "General Awareness",
+                "Quantitative Aptitude",
+                "English"
+            ],
+            "duration": "Multi-tier exam",
+            "conductingBody": "SSC",
+            "seats": "8,000+",
+            "officialWebsite": "https://ssc.nic.in/",
+            "relatedExams": [
+                "ssc-chsl",
+                "upsc-cse",
+                "railway-ntpc"
+            ],
+            "slug": "ssc-cgl",
+            "metaDescription": "SSC CGL 2026 countdown timer. Track time until Staff Selection Commission exam. Central government jobs preparation.",
+            "keywords": [
+                "SSC CGL 2026",
+                "SSC countdown",
+                "government jobs",
+                "central govt jobs",
+                "SSC CGL preparation"
+            ]
+        },
+        "neet-pg-2026": {
+            "name": "NEET PG",
+            "fullName": "National Eligibility cum Entrance Test (Postgraduate)",
+            "description": "Medical entrance exam for MD/MS/Diploma courses",
+            "category": "Medical",
+            "eligibility": "MBBS degree",
+            "subjects": [
+                "Pre-clinical subjects",
+                "Para-clinical subjects",
+                "Clinical subjects"
+            ],
+            "duration": "3 hours 30 minutes",
+            "conductingBody": "NBE",
+            "seats": "50,000+",
+            "officialWebsite": "https://natboard.edu.in/",
+            "relatedExams": [
+                "neet-ug",
+                "inicet",
+                "jipmer-pg"
+            ],
+            "slug": "neet-pg",
+            "metaDescription": "NEET PG 2026 countdown timer. Track days until NEET postgraduate medical entrance exam. MD/MS admission guide.",
+            "keywords": [
+                "NEET PG 2026",
+                "NEET PG countdown",
+                "MD MS admission",
+                "postgraduate medical",
+                "NBE exam"
+            ]
+        },
+        "clat-2026": {
+            "name": "CLAT",
+            "fullName": "Common Law Admission Test",
+            "description": "National level law entrance exam for NLUs",
+            "category": "Law",
+            "eligibility": "12th pass for UG, LLB for PG",
+            "subjects": [
+                "English",
+                "Current Affairs",
+                "Legal Reasoning",
+                "Logical Reasoning",
+                "Mathematics"
+            ],
+            "duration": "2 hours",
+            "conductingBody": "Consortium of NLUs",
+            "seats": "2,500+",
+            "officialWebsite": "https://consortiumofnlus.ac.in/",
+            "relatedExams": [
+                "ailet",
+                "lsat-india",
+                "slat"
+            ],
+            "slug": "clat",
+            "metaDescription": "CLAT 2026 countdown timer. Track time until Common Law Admission Test. NLU law admission exam dates and prep guide.",
+            "keywords": [
+                "CLAT 2026",
+                "CLAT countdown",
+                "law entrance exam",
+                "NLU admission",
+                "legal reasoning"
+            ]
+        },
+        "wbjee-2026": {
+            "name": "WBJEE",
+            "fullName": "West Bengal Joint Entrance Examination",
+            "description": "State level engineering and medical entrance exam for West Bengal",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM/PCB",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics/Biology"
+            ],
+            "duration": "2 hours per paper",
+            "conductingBody": "WBJEEB",
+            "seats": "60,000+",
+            "officialWebsite": "https://wbjeeb.nic.in/",
+            "relatedExams": [
+                "jee-main",
+                "kcet",
+                "mhtcet"
+            ],
+            "slug": "wbjee",
+            "metaDescription": "WBJEE 2026 countdown timer. Track days until West Bengal Joint Entrance Examination. State engineering admission.",
+            "keywords": [
+                "WBJEE 2026",
+                "West Bengal JEE",
+                "WBJEE countdown",
+                "WB engineering admission",
+                "state engineering exam"
+            ]
+        },
+        "mhtcet-2026": {
+            "name": "MHTCET",
+            "fullName": "Maharashtra Health and Technical Common Entrance Test",
+            "description": "State level exam for engineering and medical courses in Maharashtra",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM/PCB",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics/Biology"
+            ],
+            "duration": "90 minutes per paper",
+            "conductingBody": "State CET Cell, Maharashtra",
+            "seats": "1,50,000+",
+            "officialWebsite": "https://cetcell.mahacet.org/",
+            "relatedExams": [
+                "jee-main",
+                "kcet",
+                "wbjee"
+            ],
+            "slug": "mhtcet",
+            "metaDescription": "MHTCET 2026 countdown timer. Track time until Maharashtra CET. State engineering and medical admission exam.",
+            "keywords": [
+                "MHTCET 2026",
+                "Maharashtra CET",
+                "MHTCET countdown",
+                "Maharashtra engineering",
+                "MH CET"
+            ]
+        },
+        "kcet-2026": {
+            "name": "KCET",
+            "fullName": "Karnataka Common Entrance Test",
+            "description": "State level entrance exam for Karnataka engineering colleges",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics",
+                "Biology"
+            ],
+            "duration": "80 minutes per paper",
+            "conductingBody": "KEA",
+            "seats": "80,000+",
+            "officialWebsite": "https://kea.kar.nic.in/",
+            "relatedExams": [
+                "comedk",
+                "viteee",
+                "mhtcet"
+            ],
+            "slug": "kcet",
+            "metaDescription": "KCET 2026 countdown timer. Track days until Karnataka Common Entrance Test. State engineering admission guide.",
+            "keywords": [
+                "KCET 2026",
+                "Karnataka CET",
+                "KCET countdown",
+                "Karnataka engineering",
+                "KEA exam"
+            ]
+        },
+        "comedk-2026": {
+            "name": "COMEDK UGET",
+            "fullName": "Consortium of Medical, Engineering and Dental Colleges of Karnataka",
+            "description": "Entrance exam for private engineering colleges in Karnataka",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "COMEDK",
+            "seats": "25,000+",
+            "officialWebsite": "https://www.comedk.org/",
+            "relatedExams": [
+                "kcet",
+                "bitsat",
+                "viteee"
+            ],
+            "slug": "comedk",
+            "metaDescription": "COMEDK UGET 2026 countdown timer. Track time until Karnataka private engineering admission exam.",
+            "keywords": [
+                "COMEDK 2026",
+                "COMEDK UGET",
+                "Karnataka private engineering",
+                "COMEDK countdown"
+            ]
+        },
+        "viteee-2026": {
+            "name": "VITEEE",
+            "fullName": "VIT Engineering Entrance Examination",
+            "description": "Entrance exam for VIT campuses across India",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics",
+                "English"
+            ],
+            "duration": "2.5 hours",
+            "conductingBody": "VIT University",
+            "seats": "10,000+",
+            "officialWebsite": "https://viteee.vit.ac.in/",
+            "relatedExams": [
+                "bitsat",
+                "srmjeee",
+                "comedk"
+            ],
+            "slug": "viteee",
+            "metaDescription": "VITEEE 2026 countdown timer. Track days until VIT Engineering Entrance Examination. VIT admission guide.",
+            "keywords": [
+                "VITEEE 2026",
+                "VIT entrance exam",
+                "VITEEE countdown",
+                "VIT engineering admission"
+            ]
+        },
+        "xat-2026": {
+            "name": "XAT",
+            "fullName": "Xavier Aptitude Test",
+            "description": "MBA entrance exam for XLRI and other Xavier schools",
+            "category": "Management",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "Verbal Ability",
+                "Decision Making",
+                "Quantitative Ability",
+                "Data Interpretation"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "XLRI Jamshedpur",
+            "seats": "2,000+",
+            "officialWebsite": "https://www.xatonline.in/",
+            "relatedExams": [
+                "cat",
+                "snap",
+                "iift",
+                "nmat"
+            ],
+            "slug": "xat",
+            "metaDescription": "XAT 2026 countdown timer. Track time until Xavier Aptitude Test. XLRI MBA admission exam dates and preparation.",
+            "keywords": [
+                "XAT 2026",
+                "Xavier Aptitude Test",
+                "XLRI admission",
+                "XAT countdown",
+                "MBA entrance exam"
+            ]
+        },
+        "snap-2026": {
+            "name": "SNAP",
+            "fullName": "Symbiosis National Aptitude Test",
+            "description": "MBA entrance exam for Symbiosis International University",
+            "category": "Management",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "General English",
+                "Quantitative Ability",
+                "General Awareness",
+                "Analytical Reasoning"
+            ],
+            "duration": "1 hour",
+            "conductingBody": "Symbiosis International University",
+            "seats": "1,500+",
+            "officialWebsite": "https://www.snaptest.org/",
+            "relatedExams": [
+                "cat",
+                "xat",
+                "mat",
+                "nmat"
+            ],
+            "slug": "snap",
+            "metaDescription": "SNAP 2026 countdown timer. Track days until Symbiosis National Aptitude Test. MBA admission guide.",
+            "keywords": [
+                "SNAP 2026",
+                "Symbiosis MBA",
+                "SNAP countdown",
+                "Symbiosis admission",
+                "MBA aptitude test"
+            ]
+        },
+        "nmat-2026": {
+            "name": "NMAT",
+            "fullName": "NMIMS Management Aptitude Test",
+            "description": "MBA entrance exam for NMIMS and other B-schools",
+            "category": "Management",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "Language Skills",
+                "Quantitative Skills",
+                "Logical Reasoning"
+            ],
+            "duration": "2 hours",
+            "conductingBody": "GMAC",
+            "seats": "3,000+",
+            "officialWebsite": "https://www.nmat.org.in/",
+            "relatedExams": [
+                "cat",
+                "xat",
+                "snap",
+                "cmat"
+            ],
+            "slug": "nmat",
+            "metaDescription": "NMAT 2026 countdown timer. Track time until NMIMS Management Aptitude Test. MBA admission exam guide.",
+            "keywords": [
+                "NMAT 2026",
+                "NMIMS MBA",
+                "NMAT countdown",
+                "management aptitude test",
+                "GMAC exam"
+            ]
+        },
+        "ibps-po-2026": {
+            "name": "IBPS PO",
+            "fullName": "Institute of Banking Personnel Selection Probationary Officer",
+            "description": "Banking exam for Probationary Officer positions in public sector banks",
+            "category": "Banking",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "English Language",
+                "Reasoning",
+                "Quantitative Aptitude",
+                "General Awareness",
+                "Computer"
+            ],
+            "duration": "Multi-phase exam",
+            "conductingBody": "IBPS",
+            "seats": "4,000+",
+            "officialWebsite": "https://www.ibps.in/",
+            "relatedExams": [
+                "sbi-po",
+                "ibps-clerk",
+                "rbi-grade-b"
+            ],
+            "slug": "ibps-po",
+            "metaDescription": "IBPS PO 2026 countdown timer. Track days until banking PO exam. Public sector bank officer recruitment.",
+            "keywords": [
+                "IBPS PO 2026",
+                "banking PO exam",
+                "IBPS countdown",
+                "probationary officer",
+                "bank exam"
+            ]
+        },
+        "sbi-po-2026": {
+            "name": "SBI PO",
+            "fullName": "State Bank of India Probationary Officer",
+            "description": "Premier banking exam for SBI Probationary Officer recruitment",
+            "category": "Banking",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "English Language",
+                "Reasoning",
+                "Quantitative Aptitude",
+                "General Awareness",
+                "Data Analysis"
+            ],
+            "duration": "Multi-phase exam",
+            "conductingBody": "SBI",
+            "seats": "2,000+",
+            "officialWebsite": "https://sbi.co.in/",
+            "relatedExams": [
+                "ibps-po",
+                "sbi-clerk",
+                "rbi-assistant"
+            ],
+            "slug": "sbi-po",
+            "metaDescription": "SBI PO 2026 countdown timer. Track time until State Bank of India PO exam. Banking career preparation guide.",
+            "keywords": [
+                "SBI PO 2026",
+                "State Bank PO",
+                "SBI countdown",
+                "banking officer",
+                "SBI recruitment"
+            ]
+        },
+        "railway-ntpc-2026": {
+            "name": "Railway NTPC",
+            "fullName": "Railway Non-Technical Popular Categories",
+            "description": "Railway recruitment exam for non-technical posts",
+            "category": "Railway",
+            "eligibility": "12th pass to Graduate",
+            "subjects": [
+                "General Awareness",
+                "Mathematics",
+                "General Intelligence",
+                "General Science"
+            ],
+            "duration": "90 minutes",
+            "conductingBody": "Railway Recruitment Board",
+            "seats": "35,000+",
+            "officialWebsite": "https://www.rrbcdg.gov.in/",
+            "relatedExams": [
+                "ssc-cgl",
+                "ssc-chsl",
+                "railway-group-d"
+            ],
+            "slug": "railway-ntpc",
+            "metaDescription": "Railway NTPC 2026 countdown timer. Track days until Railway non-technical exam. RRB NTPC preparation guide.",
+            "keywords": [
+                "Railway NTPC 2026",
+                "RRB NTPC",
+                "railway jobs",
+                "NTPC countdown",
+                "railway recruitment"
+            ]
+        },
+        "ugc-net-2026": {
+            "name": "UGC NET",
+            "fullName": "University Grants Commission National Eligibility Test",
+            "description": "National exam for Assistant Professor and JRF eligibility",
+            "category": "Teaching",
+            "eligibility": "Master's degree",
+            "subjects": [
+                "Paper I (Teaching & Research)",
+                "Paper II (Subject Specific)"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "NTA",
+            "seats": "Variable",
+            "officialWebsite": "https://ugcnet.nta.nic.in/",
+            "relatedExams": [
+                "csir-net",
+                "set",
+                "slet"
+            ],
+            "slug": "ugc-net",
+            "metaDescription": "UGC NET 2026 countdown timer. Track time until National Eligibility Test. Assistant Professor and JRF exam.",
+            "keywords": [
+                "UGC NET 2026",
+                "NET countdown",
+                "assistant professor",
+                "JRF exam",
+                "teaching eligibility"
+            ]
+        },
+        "csir-net-2026": {
+            "name": "CSIR NET",
+            "fullName": "Council of Scientific and Industrial Research National Eligibility Test",
+            "description": "National exam for JRF and Lectureship in Science subjects",
+            "category": "Teaching",
+            "eligibility": "Master's degree in Science",
+            "subjects": [
+                "Part A (General)",
+                "Part B (Subject Specific)",
+                "Part C (Subject Specific)"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "CSIR",
+            "seats": "Variable",
+            "officialWebsite": "https://csirnet.nta.nic.in/",
+            "relatedExams": [
+                "ugc-net",
+                "gate",
+                "iit-jam"
+            ],
+            "slug": "csir-net",
+            "metaDescription": "CSIR NET 2026 countdown timer. Track days until CSIR NET exam. Science JRF and Lectureship eligibility.",
+            "keywords": [
+                "CSIR NET 2026",
+                "CSIR countdown",
+                "science JRF",
+                "lectureship",
+                "research fellowship"
+            ]
+        },
+        "ssc-chsl-2026": {
+            "name": "SSC CHSL",
+            "fullName": "Staff Selection Commission Combined Higher Secondary Level",
+            "description": "Central government exam for 12th pass candidates",
+            "category": "Government Jobs",
+            "eligibility": "12th pass",
+            "subjects": [
+                "English Language",
+                "General Intelligence",
+                "Quantitative Aptitude",
+                "General Awareness"
+            ],
+            "duration": "Multi-tier exam",
+            "conductingBody": "SSC",
+            "seats": "4,500+",
+            "officialWebsite": "https://ssc.nic.in/",
+            "relatedExams": [
+                "ssc-cgl",
+                "ssc-mts",
+                "railway-ntpc"
+            ],
+            "slug": "ssc-chsl",
+            "metaDescription": "SSC CHSL 2026 countdown timer. Track time until SSC Combined Higher Secondary Level exam. 12th pass govt jobs.",
+            "keywords": [
+                "SSC CHSL 2026",
+                "SSC 12th pass",
+                "CHSL countdown",
+                "government jobs",
+                "SSC data entry"
+            ]
+        },
+        "bank-clerk-2026": {
+            "name": "Bank Clerk",
+            "fullName": "Banking Clerk Recruitment Examination",
+            "description": "Banking sector recruitment exam for clerical positions",
+            "category": "Banking",
+            "eligibility": "12th pass",
+            "subjects": [
+                "English Language",
+                "Reasoning",
+                "Quantitative Aptitude",
+                "General Awareness",
+                "Computer"
+            ],
+            "duration": "Multi-phase exam",
+            "conductingBody": "IBPS/SBI",
+            "seats": "15,000+",
+            "officialWebsite": "https://www.ibps.in/",
+            "relatedExams": [
+                "ibps-po",
+                "sbi-clerk",
+                "bank-po"
+            ],
+            "slug": "bank-clerk",
+            "metaDescription": "Bank Clerk 2026 countdown timer. Track days until banking clerk exam. Banking sector recruitment guide.",
+            "keywords": [
+                "Bank Clerk 2026",
+                "banking clerk exam",
+                "IBPS Clerk",
+                "SBI Clerk",
+                "bank recruitment"
+            ]
+        },
+        "nda-na-1-2026": {
+            "name": "NDA & NA (I)",
+            "fullName": "National Defence Academy & Naval Academy (I)",
+            "description": "National level entrance exam for admission to the Army, Navy, and Air Force wings of the NDA and the Indian Naval Academy (INA).",
+            "category": "Defence",
+            "eligibility": "12th Class pass of the 10+2 pattern of School Education or equivalent examination conducted by a State Education Board or a University.",
+            "subjects": [
+                "Mathematics",
+                "General Ability Test"
+            ],
+            "duration": "5 hours",
+            "conductingBody": "UPSC",
+            "seats": "400+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "nda-na-2-2026",
+                "cds-1-2026",
+                "afcat-2026"
+            ],
+            "slug": "nda-na-1",
+            "metaDescription": "NDA & NA (I) 2026 countdown timer. Track time until the National Defence Academy & Naval Academy (I) exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "NDA & NA (I) 2026",
+                "NDA countdown",
+                "NDA exam date",
+                "Defence entrance exam",
+                "UPSC NDA"
+            ]
+        },
+        "nda-na-2-2026": {
+            "name": "NDA & NA (II)",
+            "fullName": "National Defence Academy & Naval Academy (II)",
+            "description": "National level entrance exam for admission to the Army, Navy, and Air Force wings of the NDA and the Indian Naval Academy (INA).",
+            "category": "Defence",
+            "eligibility": "12th Class pass of the 10+2 pattern of School Education or equivalent examination conducted by a State Education Board or a University.",
+            "subjects": [
+                "Mathematics",
+                "General Ability Test"
+            ],
+            "duration": "5 hours",
+            "conductingBody": "UPSC",
+            "seats": "400+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "nda-na-1-2026",
+                "cds-2-2026",
+                "afcat-2026"
+            ],
+            "slug": "nda-na-2",
+            "metaDescription": "NDA & NA (II) 2026 countdown timer. Track time until the National Defence Academy & Naval Academy (II) exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "NDA & NA (II) 2026",
+                "NDA countdown",
+                "NDA exam date",
+                "Defence entrance exam",
+                "UPSC NDA"
+            ]
+        },
+        "cds-1-2026": {
+            "name": "CDS (I)",
+            "fullName": "Combined Defence Services (I)",
+            "description": "Exam for recruitment of commissioned officers in the Indian Military Academy, Officers Training Academy, Indian Naval Academy and Indian Air Force Academy.",
+            "category": "Defence",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "English",
+                "General Knowledge",
+                "Elementary Mathematics"
+            ],
+            "duration": "6 hours",
+            "conductingBody": "UPSC",
+            "seats": "350+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "cds-2-2026",
+                "afcat-2026",
+                "nda-na-1-2026"
+            ],
+            "slug": "cds-1",
+            "metaDescription": "CDS (I) 2026 countdown timer. Track time until the Combined Defence Services (I) exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "CDS (I) 2026",
+                "CDS countdown",
+                "CDS exam date",
+                "Defence entrance exam",
+                "UPSC CDS"
+            ]
+        },
+        "cds-2-2026": {
+            "name": "CDS (II)",
+            "fullName": "Combined Defence Services (II)",
+            "description": "Exam for recruitment of commissioned officers in the Indian Military Academy, Officers Training Academy, Indian Naval Academy and Indian Air Force Academy.",
+            "category": "Defence",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "English",
+                "General Knowledge",
+                "Elementary Mathematics"
+            ],
+            "duration": "6 hours",
+            "conductingBody": "UPSC",
+            "seats": "350+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "cds-1-2026",
+                "afcat-2026",
+                "nda-na-2-2026"
+            ],
+            "slug": "cds-2",
+            "metaDescription": "CDS (II) 2026 countdown timer. Track time until the Combined Defence Services (II) exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "CDS (II) 2026",
+                "CDS countdown",
+                "CDS exam date",
+                "Defence entrance exam",
+                "UPSC CDS"
+            ]
+        },
+        "afcat-2026": {
+            "name": "AFCAT",
+            "fullName": "Air Force Common Admission Test",
+            "description": "Exam for selection of officers in all branches of the Indian Air Force.",
+            "category": "Defence",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "General Awareness",
+                "Verbal Ability in English",
+                "Numerical Ability & Reasoning",
+                "Military Aptitude Test"
+            ],
+            "duration": "2 hours",
+            "conductingBody": "Indian Air Force",
+            "seats": "300+",
+            "officialWebsite": "https://afcat.cdac.in/",
+            "relatedExams": [
+                "cds-1-2026",
+                "cds-2-2026",
+                "nda-na-1-2026",
+                "nda-na-2-2026"
+            ],
+            "slug": "afcat",
+            "metaDescription": "AFCAT 2026 countdown timer. Track time until the Air Force Common Admission Test. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "AFCAT 2026",
+                "AFCAT countdown",
+                "AFCAT exam date",
+                "Air Force entrance exam",
+                "IAF AFCAT"
+            ]
+        },
+        "ib-acio-2026": {
+            "name": "IB ACIO",
+            "fullName": "Intelligence Bureau Assistant Central Intelligence Officer",
+            "description": "Exam for recruitment of Assistant Central Intelligence Officer (Grade-II/Executive) in the Intelligence Bureau.",
+            "category": "Government Jobs",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "General Awareness",
+                "Quantitative aptitude",
+                "Logical/analytical ability",
+                "English language",
+                "General studies"
+            ],
+            "duration": "1 hour",
+            "conductingBody": "Ministry of Home Affairs",
+            "seats": "2000+",
+            "officialWebsite": "https://www.mha.gov.in/",
+            "relatedExams": [
+                "ssc-cgl",
+                "upsc-cse"
+            ],
+            "slug": "ib-acio",
+            "metaDescription": "IB ACIO 2026 countdown timer. Track time until the Intelligence Bureau ACIO exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "IB ACIO 2026",
+                "IB ACIO countdown",
+                "IB ACIO exam date",
+                "Intelligence Bureau exam",
+                "MHA IB ACIO"
+            ]
+        },
+        "capf-ac-2026": {
+            "name": "CAPF (AC)",
+            "fullName": "Central Armed Police Forces (Assistant Commandants)",
+            "description": "Exam for recruitment of Assistant Commandants (Group A) in the Central Armed Police Forces (CAPF).",
+            "category": "Defence",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "General Ability and Intelligence",
+                "General Studies, Essay and Comprehension"
+            ],
+            "duration": "5 hours",
+            "conductingBody": "UPSC",
+            "seats": "300+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "cds-1-2026",
+                "cds-2-2026",
+                "upsc-cse"
+            ],
+            "slug": "capf-ac",
+            "metaDescription": "CAPF (AC) 2026 countdown timer. Track time until the Central Armed Police Forces (AC) exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "CAPF (AC) 2026",
+                "CAPF countdown",
+                "CAPF exam date",
+                "Assistant Commandant exam",
+                "UPSC CAPF"
+            ]
+        },
+        "ifs-2026": {
+            "name": "IFS",
+            "fullName": "Indian Forest Service Examination",
+            "description": "Examination for recruitment to forestry services of India.",
+            "category": "Civil Services",
+            "eligibility": "Bachelor's degree with at least one of the subjects namely Animal Husbandry & Veterinary Science, Botany, Chemistry, Geology, Mathematics, Physics, Statistics and Zoology or a Bachelor's degree in Agriculture, Forestry or in Engineering",
+            "subjects": [
+                "General Knowledge",
+                "General English",
+                "Optional Subjects"
+            ],
+            "duration": "Multi-stage exam",
+            "conductingBody": "UPSC",
+            "seats": "110+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "upsc-cse"
+            ],
+            "slug": "ifs",
+            "metaDescription": "IFS 2026 countdown timer. Track time until the Indian Forest Service Examination. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "IFS 2026",
+                "IFS countdown",
+                "IFS exam date",
+                "Indian Forest Service exam",
+                "UPSC IFS"
+            ]
+        },
+        "ese-2026": {
+            "name": "ESE",
+            "fullName": "Engineering Services Examination",
+            "description": "Examination for recruitment of engineers for engineering services of the Government of India.",
+            "category": "Engineering",
+            "eligibility": "Bachelor's degree in Engineering",
+            "subjects": [
+                "General Studies and Engineering Aptitude",
+                "Engineering Discipline"
+            ],
+            "duration": "Multi-stage exam",
+            "conductingBody": "UPSC",
+            "seats": "400+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [
+                "gate-2026",
+                "isro-2026"
+            ],
+            "slug": "ese",
+            "metaDescription": "ESE 2026 countdown timer. Track time until the Engineering Services Examination. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "ESE 2026",
+                "ESE countdown",
+                "ESE exam date",
+                "Engineering Services Examination",
+                "UPSC ESE"
+            ]
+        },
+        "geo-scientist-2026": {
+            "name": "Combined Geo-Scientist",
+            "fullName": "Combined Geo-Scientist and Geologist Examination",
+            "description": "Examination for recruitment of Geologists, Geophysicists, Chemists and Junior Hydrogeologists.",
+            "category": "Government Jobs",
+            "eligibility": "Master's degree in Geology/Applied Geology/Marine Geology/Mineral Exploration/Geophysics/Applied Geophysics/Marine Geophysics/Chemistry/Applied Chemistry/Analytical Chemistry",
+            "subjects": [
+                "General Studies",
+                "Geology/Hydrogeology/Geophysics/Chemistry"
+            ],
+            "duration": "Multi-stage exam",
+            "conductingBody": "UPSC",
+            "seats": "100+",
+            "officialWebsite": "https://www.upsc.gov.in/",
+            "relatedExams": [],
+            "slug": "geo-scientist",
+            "metaDescription": "Combined Geo-Scientist 2026 countdown timer. Track time until the Combined Geo-Scientist and Geologist Examination. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "Combined Geo-Scientist 2026",
+                "Geo-Scientist countdown",
+                "Geo-Scientist exam date",
+                "UPSC Geo-Scientist"
+            ]
+        },
+        "ibps-rrb-2026": {
+            "name": "IBPS RRB",
+            "fullName": "Institute of Banking Personnel Selection - Regional Rural Banks",
+            "description": "Exam for recruitment of Officers (Scale I, II & III) and Office Assistants (Multipurpose) in Regional Rural Banks (RRBs).",
+            "category": "Banking",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "Reasoning",
+                "Numerical Ability",
+                "English/Hindi",
+                "Computer Knowledge",
+                "General Awareness"
+            ],
+            "duration": "Multi-stage exam",
+            "conductingBody": "IBPS",
+            "seats": "8000+",
+            "officialWebsite": "https://www.ibps.in/",
+            "relatedExams": [
+                "ibps-po-2026",
+                "ibps-clerk-2026",
+                "sbi-po-2026",
+                "sbi-clerk-2026"
+            ],
+            "slug": "ibps-rrb",
+            "metaDescription": "IBPS RRB 2026 countdown timer. Track time until the IBPS RRB exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "IBPS RRB 2026",
+                "IBPS RRB countdown",
+                "IBPS RRB exam date",
+                "Regional Rural Banks exam",
+                "IBPS RRB"
+            ]
+        },
+        "ssc-gd-2026": {
+            "name": "SSC GD Constable",
+            "fullName": "Staff Selection Commission - General Duty Constable",
+            "description": "Exam for recruitment of constables (GD) in Central Armed Police Forces (CAPFs), NIA, SSF and Rifleman (GD) in Assam Rifles.",
+            "category": "Defence",
+            "eligibility": "10th pass",
+            "subjects": [
+                "General Intelligence & Reasoning",
+                "General Knowledge & General Awareness",
+                "Elementary Mathematics",
+                "English/Hindi"
+            ],
+            "duration": "90 minutes",
+            "conductingBody": "SSC",
+            "seats": "50000+",
+            "officialWebsite": "https://ssc.nic.in/",
+            "relatedExams": [
+                "ssc-chsl-2026",
+                "railway-group-d-2026"
+            ],
+            "slug": "ssc-gd",
+            "metaDescription": "SSC GD Constable 2026 countdown timer. Track time until the SSC GD Constable exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "SSC GD Constable 2026",
+                "SSC GD countdown",
+                "SSC GD exam date",
+                "Constable exam",
+                "SSC GD"
+            ]
+        },
+        "iift-2026": {
+            "name": "IIFT",
+            "fullName": "Indian Institute of Foreign Trade",
+            "description": "Entrance exam for admission to MBA (International Business) programme at Indian Institute of Foreign Trade (IIFT).",
+            "category": "Management",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "English Grammar, Vocabulary and Comprehension",
+                "General Knowledge & Current Affairs",
+                "Logical Reasoning",
+                "Data Interpretation",
+                "Quantitative Analysis"
+            ],
+            "duration": "2 hours",
+            "conductingBody": "NTA",
+            "seats": "400+",
+            "officialWebsite": "https://iift.nta.nic.in/",
+            "relatedExams": [
+                "cat-2026",
+                "xat-2026",
+                "snap-2026",
+                "nmat-2026"
+            ],
+            "slug": "iift",
+            "metaDescription": "IIFT 2026 countdown timer. Track time until the Indian Institute of Foreign Trade exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "IIFT 2026",
+                "IIFT countdown",
+                "IIFT exam date",
+                "MBA International Business",
+                "NTA IIFT"
+            ]
+        },
+        "micat-2026": {
+            "name": "MICAT",
+            "fullName": "MICA Admission Test",
+            "description": "Entrance exam for admission to Post Graduate Diploma in Management - Communications (PGDM-C) at MICA.",
+            "category": "Management",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "Psychometric Test",
+                "Descriptive Test",
+                "Divergent and Convergent Thinking",
+                "Verbal ability",
+                "Quantitative ability and Data Interpretation",
+                "General awareness"
+            ],
+            "duration": "2 hours 45 minutes",
+            "conductingBody": "MICA",
+            "seats": "200+",
+            "officialWebsite": "https://www.mica.ac.in/",
+            "relatedExams": [
+                "cat-2026",
+                "xat-2026"
+            ],
+            "slug": "micat",
+            "metaDescription": "MICAT 2026 countdown timer. Track time until the MICA Admission Test. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "MICAT 2026",
+                "MICAT countdown",
+                "MICAT exam date",
+                "MICA PGDM-C",
+                "MICA"
+            ]
+        },
+        "tissnet-2026": {
+            "name": "TISSNET",
+            "fullName": "Tata Institute of Social Sciences National Entrance Test",
+            "description": "Entrance exam for admission to MA programmes at Tata Institute of Social Sciences (TISS).",
+            "category": "Management",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "English Proficiency",
+                "Mathematical Skills",
+                "Logical Reasoning",
+                "General Awareness"
+            ],
+            "duration": "1 hour 40 minutes",
+            "conductingBody": "TISS",
+            "seats": "1000+",
+            "officialWebsite": "https://admissions.tiss.edu/",
+            "relatedExams": [],
+            "slug": "tissnet",
+            "metaDescription": "TISSNET 2026 countdown timer. Track time until the Tata Institute of Social Sciences National Entrance Test. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "TISSNET 2026",
+                "TISSNET countdown",
+                "TISSNET exam date",
+                "TISS MA",
+                "TISS"
+            ]
+        },
+        "iiser-aptitude-test-2026": {
+            "name": "IISER Aptitude Test",
+            "fullName": "Indian Institutes of Science Education and Research Aptitude Test",
+            "description": "Entrance exam for admission to 5-year BS-MS degree programs at IISERs.",
+            "category": "Science",
+            "eligibility": "12th pass with science stream",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics",
+                "Biology"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "IISERs",
+            "seats": "1500+",
+            "officialWebsite": "https://www.iiseradmission.in/",
+            "relatedExams": [
+                "nest-2026",
+                "jee-advanced-2026"
+            ],
+            "slug": "iiser-aptitude-test",
+            "metaDescription": "IISER Aptitude Test 2026 countdown timer. Track time until the IISER Aptitude Test. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "IISER Aptitude Test 2026",
+                "IISER countdown",
+                "IISER exam date",
+                "IISER BS-MS",
+                "IISER"
+            ]
+        },
+        "nest-2026": {
+            "name": "NEST",
+            "fullName": "National Entrance Screening Test",
+            "description": "Entrance exam for admission to 5-year integrated M.Sc. program in basic sciences at NISER, Bhubaneswar and UM-DAE CEBS, Mumbai.",
+            "category": "Science",
+            "eligibility": "12th pass with science stream",
+            "subjects": [
+                "Biology",
+                "Chemistry",
+                "Mathematics",
+                "Physics"
+            ],
+            "duration": "3 hours 30 minutes",
+            "conductingBody": "NISER and UM-DAE CEBS",
+            "seats": "200+",
+            "officialWebsite": "https://www.nestexam.in/",
+            "relatedExams": [
+                "iiser-aptitude-test-2026",
+                "jee-advanced-2026"
+            ],
+            "slug": "nest",
+            "metaDescription": "NEST 2026 countdown timer. Track time until the National Entrance Screening Test. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "NEST 2026",
+                "NEST countdown",
+                "NEST exam date",
+                "NISER M.Sc.",
+                "NEST"
+            ]
+        },
+        "aiims-pg-2026": {
+            "name": "AIIMS PG",
+            "fullName": "All India Institute of Medical Sciences Postgraduate",
+            "description": "Entrance exam for admission to MD/MS/M.Ch(6 years)/DM(6 years)/MDS courses at AIIMS.",
+            "category": "Medical",
+            "eligibility": "MBBS degree for MD/MS, BDS for MDS",
+            "subjects": [
+                "Pre-clinical",
+                "Clinical",
+                "Para-clinical"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "AIIMS, New Delhi",
+            "seats": "800+",
+            "officialWebsite": "https://www.aiimsexams.ac.in/",
+            "relatedExams": [
+                "neet-pg-2026",
+                "jipmer-pg-2026"
+            ],
+            "slug": "aiims-pg",
+            "metaDescription": "AIIMS PG 2026 countdown timer. Track time until the AIIMS PG exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "AIIMS PG 2026",
+                "AIIMS PG countdown",
+                "AIIMS PG exam date",
+                "AIIMS MD/MS",
+                "AIIMS"
+            ]
+        },
+        "jipmer-2026": {
+            "name": "JIPMER",
+            "fullName": "Jawaharlal Institute of Postgraduate Medical Education & Research",
+            "description": "Entrance exam for admission to MBBS course at JIPMER.",
+            "category": "Medical",
+            "eligibility": "12th pass with PCB",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Biology",
+                "English Language and Comprehension",
+                "Logical & Quantitative Reasoning"
+            ],
+            "duration": "2 hours 30 minutes",
+            "conductingBody": "JIPMER, Puducherry",
+            "seats": "200+",
+            "officialWebsite": "https://jipmer.edu.in/",
+            "relatedExams": [
+                "neet-ug-2026",
+                "aiims-mbbs-2026"
+            ],
+            "slug": "jipmer",
+            "metaDescription": "JIPMER 2026 countdown timer. Track time until the JIPMER exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "JIPMER 2026",
+                "JIPMER countdown",
+                "JIPMER exam date",
+                "JIPMER MBBS",
+                "JIPMER"
+            ]
+        },
+        "aiims-mbbs-2026": {
+            "name": "AIIMS MBBS",
+            "fullName": "All India Institute of Medical Sciences MBBS",
+            "description": "Entrance exam for admission to MBBS course at AIIMS.",
+            "category": "Medical",
+            "eligibility": "12th pass with PCB",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Biology",
+                "General Knowledge",
+                "Aptitude & Logical Thinking"
+            ],
+            "duration": "3 hours 30 minutes",
+            "conductingBody": "AIIMS, New Delhi",
+            "seats": "1200+",
+            "officialWebsite": "https://www.aiimsexams.ac.in/",
+            "relatedExams": [
+                "neet-ug-2026",
+                "jipmer-2026"
+            ],
+            "slug": "aiims-mbbs",
+            "metaDescription": "AIIMS MBBS 2026 countdown timer. Track time until the AIIMS MBBS exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "AIIMS MBBS 2026",
+                "AIIMS MBBS countdown",
+                "AIIMS MBBS exam date",
+                "AIIMS MBBS",
+                "AIIMS"
+            ]
+        },
+        "srmjee-2026": {
+            "name": "SRMJEEE",
+            "fullName": "SRM Joint Engineering Entrance Examination",
+            "description": "Entrance exam for admission to B.Tech programmes offered in SRMIST campuses.",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics",
+                "English",
+                "Aptitude"
+            ],
+            "duration": "2 hours 30 minutes",
+            "conductingBody": "SRMIST",
+            "seats": "7000+",
+            "officialWebsite": "https://www.srmist.edu.in/",
+            "relatedExams": [
+                "viteee-2026",
+                "jee-main-2026"
+            ],
+            "slug": "srmjee",
+            "metaDescription": "SRMJEEE 2026 countdown timer. Track time until the SRM Joint Engineering Entrance Examination. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "SRMJEEE 2026",
+                "SRMJEEE countdown",
+                "SRMJEEE exam date",
+                "SRM B.Tech",
+                "SRMIST"
+            ]
+        },
+        "amu-engineering-2026": {
+            "name": "AMUEEE",
+            "fullName": "Aligarh Muslim University Engineering Entrance Exam",
+            "description": "Entrance exam for admission to B.Tech/B.Arch programmes at Aligarh Muslim University.",
+            "category": "Engineering",
+            "eligibility": "12th pass with PCM",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "Aligarh Muslim University",
+            "seats": "500+",
+            "officialWebsite": "https://www.amucontrollerexams.com/",
+            "relatedExams": [
+                "jee-main-2026"
+            ],
+            "slug": "amu-engineering",
+            "metaDescription": "AMUEEE 2026 countdown timer. Track time until the Aligarh Muslim University Engineering Entrance Exam. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "AMUEEE 2026",
+                "AMUEEE countdown",
+                "AMUEEE exam date",
+                "AMU B.Tech",
+                "AMU"
+            ]
+        },
+        "jam-2026": {
+            "name": "JAM",
+            "fullName": "Joint Admission Test for M.Sc.",
+            "description": "Entrance exam for admission to M.Sc. and other post-graduate science programmes at IITs and IISc.",
+            "category": "Science",
+            "eligibility": "Bachelor's degree in Science",
+            "subjects": [
+                "Biotechnology",
+                "Chemistry",
+                "Geology",
+                "Mathematics",
+                "Mathematical Statistics",
+                "Physics"
+            ],
+            "duration": "3 hours",
+            "conductingBody": "IITs",
+            "seats": "2000+",
+            "officialWebsite": "https://jam.iitg.ac.in/",
+            "relatedExams": [
+                "gate-2026"
+            ],
+            "slug": "jam",
+            "metaDescription": "JAM 2026 countdown timer. Track time until the Joint Admission Test for M.Sc.. Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "JAM 2026",
+                "JAM countdown",
+                "JAM exam date",
+                "IIT M.Sc.",
+                "JAM"
+            ]
+        },
+        "cuet-ug-2026": {
+            "name": "CUET UG",
+            "fullName": "Central University Entrance Test (Undergraduate)",
+            "description": "Entrance exam for admission to undergraduate programs in Central Universities and other participating universities.",
+            "category": "University Entrance",
+            "eligibility": "12th pass",
+            "subjects": [
+                "Language",
+                "Domain-specific subjects",
+                "General Test"
+            ],
+            "duration": "Variable",
+            "conductingBody": "NTA",
+            "seats": "Variable",
+            "officialWebsite": "https://cuet.samarth.ac.in/",
+            "relatedExams": [],
+            "slug": "cuet-ug",
+            "metaDescription": "CUET UG 2026 countdown timer. Track time until the Central University Entrance Test (Undergraduate). Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "CUET UG 2026",
+                "CUET UG countdown",
+                "CUET UG exam date",
+                "Central University Entrance Test",
+                "NTA CUET"
+            ]
+        },
+        "cuet-pg-2026": {
+            "name": "CUET PG",
+            "fullName": "Central University Entrance Test (Postgraduate)",
+            "description": "Entrance exam for admission to postgraduate programs in Central Universities and other participating universities.",
+            "category": "University Entrance",
+            "eligibility": "Bachelor's degree",
+            "subjects": [
+                "Domain-specific subjects"
+            ],
+            "duration": "2 hours",
+            "conductingBody": "NTA",
+            "seats": "Variable",
+            "officialWebsite": "https://cuet.nta.nic.in/",
+            "relatedExams": [],
+            "slug": "cuet-pg",
+            "metaDescription": "CUET PG 2026 countdown timer. Track time until the Central University Entrance Test (Postgraduate). Get exam dates, eligibility, and preparation tips.",
+            "keywords": [
+                "CUET PG 2026",
+                "CUET PG countdown",
+                "CUET PG exam date",
+                "Central University Entrance Test",
+                "NTA CUET"
+            ]
+        },
+        "cbse-class-10-2026": {
+            "name": "CBSE Class 10",
+            "fullName": "Central Board of Secondary Education Class 10",
+            "description": "Class 10 board examination conducted by CBSE.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in CBSE affiliated schools in Class 10.",
+            "subjects": [
+                "Mathematics",
+                "Science",
+                "Social Science",
+                "English",
+                "Hindi/Sanskrit/French/etc."
+            ],
+            "duration": "3 hours per subject",
+            "conductingBody": "CBSE",
+            "seats": "N/A",
+            "officialWebsite": "https://www.cbse.gov.in/",
+            "relatedExams": [
+                "cbse-class-12-2026"
+            ],
+            "slug": "cbse-class-10",
+            "metaDescription": "CBSE Class 10 2026 countdown timer. Track time until the CBSE Class 10 board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "CBSE Class 10 2026",
+                "CBSE Class 10 countdown",
+                "CBSE Class 10 exam date",
+                "CBSE board exams",
+                "CBSE"
+            ]
+        },
+        "cbse-class-12-2026": {
+            "name": "CBSE Class 12",
+            "fullName": "Central Board of Secondary Education Class 12",
+            "description": "Class 12 board examination conducted by CBSE.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in CBSE affiliated schools in Class 12.",
+            "subjects": [
+                "Physics",
+                "Chemistry",
+                "Mathematics/Biology",
+                "English",
+                "Optional subject"
+            ],
+            "duration": "3 hours per subject",
+            "conductingBody": "CBSE",
+            "seats": "N/A",
+            "officialWebsite": "https://www.cbse.gov.in/",
+            "relatedExams": [
+                "jee-main-2026",
+                "neet-ug-2026"
+            ],
+            "slug": "cbse-class-12",
+            "metaDescription": "CBSE Class 12 2026 countdown timer. Track time until the CBSE Class 12 board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "CBSE Class 12 2026",
+                "CBSE Class 12 countdown",
+                "CBSE Class 12 exam date",
+                "CBSE board exams",
+                "CBSE"
+            ]
+        },
+        "icse-class-10-2026": {
+            "name": "ICSE Class 10",
+            "fullName": "Indian Certificate of Secondary Education Class 10",
+            "description": "Class 10 board examination conducted by CISCE.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in CISCE affiliated schools in Class 10.",
+            "subjects": [
+                "English",
+                "History, Civics & Geography",
+                "Mathematics",
+                "Science",
+                "Second Language",
+                "Group III Elective"
+            ],
+            "duration": "2-3 hours per subject",
+            "conductingBody": "CISCE",
+            "seats": "N/A",
+            "officialWebsite": "https://www.cisce.org/",
+            "relatedExams": [
+                "isc-class-12-2026"
+            ],
+            "slug": "icse-class-10",
+            "metaDescription": "ICSE Class 10 2026 countdown timer. Track time until the ICSE Class 10 board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "ICSE Class 10 2026",
+                "ICSE Class 10 countdown",
+                "ICSE Class 10 exam date",
+                "ICSE board exams",
+                "CISCE"
+            ]
+        },
+        "isc-class-12-2026": {
+            "name": "ISC Class 12",
+            "fullName": "Indian School Certificate Class 12",
+            "description": "Class 12 board examination conducted by CISCE.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in CISCE affiliated schools in Class 12.",
+            "subjects": [
+                "English",
+                "Elective Subjects"
+            ],
+            "duration": "3 hours per subject",
+            "conductingBody": "CISCE",
+            "seats": "N/A",
+            "officialWebsite": "https://www.cisce.org/",
+            "relatedExams": [
+                "jee-main-2026",
+                "neet-ug-2026"
+            ],
+            "slug": "isc-class-12",
+            "metaDescription": "ISC Class 12 2026 countdown timer. Track time until the ISC Class 12 board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "ISC Class 12 2026",
+                "ISC Class 12 countdown",
+                "ISC Class 12 exam date",
+                "ISC board exams",
+                "CISCE"
+            ]
+        },
+        "maharashtra-hsc-2026": {
+            "name": "Maharashtra HSC",
+            "fullName": "Maharashtra State Board of Secondary and Higher Secondary Education - Higher Secondary Certificate",
+            "description": "Class 12 board examination conducted by the Maharashtra board.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in Maharashtra state board affiliated schools in Class 12.",
+            "subjects": [
+                "English",
+                "Second Language",
+                "Physics",
+                "Chemistry",
+                "Mathematics/Biology",
+                "Optional Subjects"
+            ],
+            "duration": "3 hours per subject",
+            "conductingBody": "MSBSHSE",
+            "seats": "N/A",
+            "officialWebsite": "https://www.mahahsscboard.in/",
+            "relatedExams": [
+                "mhtcet-2026"
+            ],
+            "slug": "maharashtra-hsc",
+            "metaDescription": "Maharashtra HSC 2026 countdown timer. Track time until the Maharashtra HSC board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "Maharashtra HSC 2026",
+                "Maharashtra HSC countdown",
+                "Maharashtra HSC exam date",
+                "Maharashtra board exams",
+                "MSBSHSE"
+            ]
+        },
+        "maharashtra-ssc-2026": {
+            "name": "Maharashtra SSC",
+            "fullName": "Maharashtra State Board of Secondary and Higher Secondary Education - Secondary School Certificate",
+            "description": "Class 10 board examination conducted by the Maharashtra board.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in Maharashtra state board affiliated schools in Class 10.",
+            "subjects": [
+                "First Language",
+                "Second Language",
+                "Third Language",
+                "Mathematics",
+                "Science and Technology",
+                "Social Sciences"
+            ],
+            "duration": "2-3 hours per subject",
+            "conductingBody": "MSBSHSE",
+            "seats": "N/A",
+            "officialWebsite": "https://www.mahahsscboard.in/",
+            "relatedExams": [
+                "maharashtra-hsc-2026"
+            ],
+            "slug": "maharashtra-ssc",
+            "metaDescription": "Maharashtra SSC 2026 countdown timer. Track time until the Maharashtra SSC board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "Maharashtra SSC 2026",
+                "Maharashtra SSC countdown",
+                "Maharashtra SSC exam date",
+                "Maharashtra board exams",
+                "MSBSHSE"
+            ]
+        },
+        "up-board-10th-2026": {
+            "name": "UP Board 10th",
+            "fullName": "Uttar Pradesh Madhyamik Shiksha Parishad - High School Examination",
+            "description": "Class 10 board examination conducted by the UP board.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in UP board affiliated schools in Class 10.",
+            "subjects": [
+                "Hindi",
+                "English",
+                "Mathematics",
+                "Science",
+                "Social Science",
+                "Optional Subject"
+            ],
+            "duration": "3 hours 15 minutes per subject",
+            "conductingBody": "UPMSP",
+            "seats": "N/A",
+            "officialWebsite": "https://upmsp.edu.in/",
+            "relatedExams": [
+                "up-board-12th-2026"
+            ],
+            "slug": "up-board-10th",
+            "metaDescription": "UP Board 10th 2026 countdown timer. Track time until the UP Board 10th board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "UP Board 10th 2026",
+                "UP Board 10th countdown",
+                "UP Board 10th exam date",
+                "UP board exams",
+                "UPMSP"
+            ]
+        },
+        "up-board-12th-2026": {
+            "name": "UP Board 12th",
+            "fullName": "Uttar Pradesh Madhyamik Shiksha Parishad - Intermediate Examination",
+            "description": "Class 12 board examination conducted by the UP board.",
+            "category": "Board Exams",
+            "eligibility": "Students studying in UP board affiliated schools in Class 12.",
+            "subjects": [
+                "Hindi",
+                "English",
+                "Physics",
+                "Chemistry",
+                "Mathematics/Biology",
+                "Optional Subjects"
+            ],
+            "duration": "3 hours 15 minutes per subject",
+            "conductingBody": "UPMSP",
+            "seats": "N/A",
+            "officialWebsite": "https://upmsp.edu.in/",
+            "relatedExams": [],
+            "slug": "up-board-12th",
+            "metaDescription": "UP Board 12th 2026 countdown timer. Track time until the UP Board 12th board exams. Get exam dates, syllabus, and preparation tips.",
+            "keywords": [
+                "UP Board 12th 2026",
+                "UP Board 12th countdown",
+                "UP Board 12th exam date",
+                "UP board exams",
+                "UPMSP"
+            ]
+        }
+    }
+}

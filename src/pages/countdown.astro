@@ -7,13 +7,13 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
   <PictureInPictureWidget />
   <!-- Fullscreen Countdown Modal -->
   <div id="fullscreen-modal" class="fixed inset-0 z-50 hidden">
-    <div class="h-full flex flex-col items-center justify-center p-8">
+    <div class="h-full flex flex-col items-center justify-center p-8 themed-bg">
       <div class="text-center mb-8">
         <h2 id="fullscreen-title" class="text-4xl sm:text-5xl font-serif italic themed-text"></h2>
         <p id="fullscreen-description" class="themed-text-secondary mt-2 text-lg"></p>
       </div>
       
-      <div id="fullscreen-countdown" class="mb-8">
+      <div id="fullscreen-countdown" class="mb-8 themed-text">
         <!-- Fullscreen countdown numbers will be injected here -->
       </div>
       
@@ -349,8 +349,6 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
     /* Fullscreen Modal transitions */
     #fullscreen-modal {
       transition: opacity 0.3s ease, visibility 0.3s ease;
-      backdrop-filter: blur(20px);
-      background-color: var(--theme-bg-primary);
     }
     #fullscreen-modal.hidden {
       opacity: 0;
@@ -663,7 +661,7 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
                     <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 themed-bg border border-dashed themed-border rounded-md shadow-lg z-10">
                       <a href="#" @click.prevent="window.countdownManager.openEditModal('${countdown.id}'); open = false" class="block px-4 py-2 text-sm themed-text-secondary hover:themed-bg-secondary">Edit</a>
                       <a href="#" @click.prevent="window.openFullscreen('${countdown.id}')" class="block px-4 py-2 text-sm themed-text-secondary hover:themed-bg-secondary">Fullscreen</a>
-                      <a href="#" @click.prevent="window.shareCountdown('${countdown.id}')" class="block px-4 py-2 text-sm themed-text-secondary hover:themed-bg-secondary">Share</a>
+                      
                       <a href="#" @click.prevent="window.openDeleteModal('${countdown.id}'); open = false" class="block px-4 py-2 text-sm text-red-500 hover:themed-bg-secondary">Delete</a>
                     </div>
                   </div>
@@ -907,19 +905,19 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
         const html = `
           <div class="grid grid-cols-4 gap-4 sm:gap-8 text-center">
             <div>
-              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.days).padStart(2, '0')}</div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number themed-text">${String(timeRemaining.days).padStart(2, '0')}</div>
               <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Days</div>
             </div>
             <div>
-              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.hours).padStart(2, '0')}</div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number themed-text">${String(timeRemaining.hours).padStart(2, '0')}</div>
               <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Hours</div>
             </div>
             <div>
-              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.minutes).padStart(2, '0')}</div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number themed-text">${String(timeRemaining.minutes).padStart(2, '0')}</div>
               <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Minutes</div>
             </div>
             <div>
-              <div class="text-5xl sm:text-7xl font-bold countdown-number">${String(timeRemaining.seconds).padStart(2, '0')}</div>
+              <div class="text-5xl sm:text-7xl font-bold countdown-number themed-text">${String(timeRemaining.seconds).padStart(2, '0')}</div>
               <div class="text-sm sm:text-base themed-text-secondary countdown-label mt-2">Seconds</div>
             </div>
           </div>
@@ -954,26 +952,7 @@ import PictureInPictureWidget from '../components/PictureInPictureWidget.astro';
       activeFullscreenCountdownId = null;
     };
 
-    window.shareCountdown = async (id) => {
-      const countdown = countdownManager.countdowns.find(c => c.id === id);
-      if (!countdown) return;
-
-      const shareData = {
-        title: `Countdown: ${countdown.title}`,
-        text: `Check out this countdown for ${countdown.title}!`,
-        url: window.location.href 
-      };
-
-      if (navigator.share && navigator.canShare(shareData)) {
-        try {
-          await navigator.share(shareData);
-        } catch (err) {
-          console.error('Error sharing:', err);
-        }
-      } else {
-        alert('Web Share API is not supported in your browser, or you are not on a secure connection (https).');
-      }
-    };
+    
 
     window.togglePiP = async (id) => {
       const countdown = countdownManager.countdowns.find(c => c.id === id);

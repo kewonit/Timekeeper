@@ -1,31 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import examData from '../data/exams.json';
+import { getExamData, type ExamData } from '../data/exam-data';
 
-interface ExamSession {
-  session: string;
-  date: string;
-}
-
-interface ExamData {
-  id: string;
-  name: string;
-  fullName: string;
-  sessions: ExamSession[];
-  description: string;
-  category: string;
-  eligibility: string;
-  subjects: string[];
-  duration: string;
-  conductingBody: string;
-  seats: string;
-  relatedExams: string[];
-  slug: string;
-  metaDescription: string;
-  keywords: string[];
-}
-
-const indianExams: ExamData[] = examData.exams;
+const indianExams = getExamData();
 ---
 
 <Layout>

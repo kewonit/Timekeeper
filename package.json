@@ -6,9 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test-data": "node src/data/test-architecture.ts"
   },
   "dependencies": {
+    "@astrojs/alpinejs": "^0.4.8",
     "@astrojs/tailwind": "^6.0.2",
     "alpinejs": "^3.14.9",
     "astro": "^5.10.1",

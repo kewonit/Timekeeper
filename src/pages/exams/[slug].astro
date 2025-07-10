@@ -1,9 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import examData from '../../data/exams.json';
+import { getExamData, type ExamData } from '../../data/exam-data';
 
 export async function getStaticPaths() {
-  const exams = examData.exams;
+  const exams = getExamData();
   
   return exams.map((exam) => ({
     params: { slug: exam.slug },
@@ -11,32 +11,8 @@ export async function getStaticPaths() {
   }));
 }
 
-interface ExamSession {
-  session: string;
-  date: string;
-}
-
-interface ExamData {
-  id: string;
-  name: string;
-  fullName: string;
-  sessions: ExamSession[];
-  description: string;
-  category: string;
-  eligibility: string;
-  subjects: string[];
-  duration: string;
-  conductingBody: string;
-  seats: string;
-  officialWebsite?: string;
-  relatedExams: string[];
-  slug: string;
-  metaDescription: string;
-  keywords: string[];
-}
-
 const { exam } = Astro.props as { exam: ExamData };
-const allExams: ExamData[] = examData.exams;
+const allExams = getExamData();
 
 // Get related exams data
 const relatedExamsData = exam.relatedExams

@@ -1,9 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import examData from '../../data/exams.json';
+import { getExamData, type ExamData } from '../../data/exam-data';
 
 export async function getStaticPaths() {
-  const exams = examData.exams;
+  const exams = getExamData();
   const categories = [...new Set(exams.map(exam => exam.category))];
   
   return categories.map((category) => ({
@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { category, categorySlug } = Astro.props;
-const allExams = examData.exams;
+const allExams = getExamData();
 const exams = allExams.filter(exam => 
   exam.category.toLowerCase() === category.toLowerCase()
 );
