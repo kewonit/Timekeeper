@@ -17,11 +17,11 @@ const allExams = getExamData();
 // Get related exams data
 const relatedExamsData = exam.relatedExams
   .map(slug => allExams.find(e => e.slug === slug))
-  .filter(Boolean)
+  .filter((exam): exam is ExamData => !!exam)
   .slice(0, 4);
 ---
 
-<Layout title={`${exam.name} 2026 Countdown Timer | ${exam.fullName} Exam Date`} description={exam.metaDescription} keywords={exam.keywords} exam={exam}>
+<Layout exam={exam}>
   <style>
     .countdown-number {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -309,22 +309,28 @@ const relatedExamsData = exam.relatedExams
         <!-- Basic Info -->
         <div class="border border-dashed themed-border p-4 sm:p-6 rounded-lg">
           <h3 class="font-serif italic text-lg sm:text-xl mb-4 themed-text">Basic Information</h3>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between">
+          <div class="space-y-4 text-sm">
+            <!-- Duration -->
+            <div class="flex flex-col sm:flex-row sm:justify-between">
               <span class="themed-text-tertiary">Duration:</span>
-              <span class="themed-text font-medium">{exam.duration}</span>
+              <span class="themed-text font-medium sm:text-right">{exam.duration}</span>
             </div>
-            <div class="flex justify-between">
-              <span class="themed-text-tertiary">Eligibility:</span>
-              <span class="themed-text font-medium text-right max-w-32 sm:max-w-none">{exam.eligibility}</span>
+            <!-- Eligibility -->
+            <div class="flex flex-col sm:flex-row sm:justify-between">
+              <span class="themed-text-tertiary flex-shrink-0 mr-4">Eligibility:</span>
+              <span class="themed-text font-medium sm:text-right break-words">{exam.eligibility}</span>
             </div>
-            <div class="flex justify-between">
-              <span class="themed-text-tertiary">Total Seats:</span>
-              <span class="themed-text font-medium">{exam.seats}</span>
-            </div>
-            <div class="flex justify-between">
+            <!-- Total Seats -->
+            {exam.seats && exam.seats !== 'N/A' && (
+              <div class="flex flex-col sm:flex-row sm:justify-between">
+                <span class="themed-text-tertiary">Total Seats:</span>
+                <span class="themed-text font-medium sm:text-right">{exam.seats}</span>
+              </div>
+            )}
+            <!-- Sessions -->
+            <div class="flex flex-col sm:flex-row sm:justify-between">
               <span class="themed-text-tertiary">Sessions:</span>
-              <span class="themed-text font-medium">{exam.sessions.length}</span>
+              <span class="themed-text font-medium sm:text-right">{exam.sessions.length}</span>
             </div>
           </div>
         </div>
@@ -406,7 +412,6 @@ const relatedExamsData = exam.relatedExams
   <script define:vars={{ exam }}>
     let currentSessionIndex = 0;
     let countdownInterval;
-    let fullscreenInterval;
 
     function formatTimeRemaining(targetDate) {
       const now = new Date().getTime();
@@ -422,150 +427,88 @@ const relatedExamsData = exam.relatedExams
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       
-      return {
-        expired: false,
-        days,
-        hours,
-        minutes,
-        seconds
-      };
+      return { expired: false, days, hours, minutes, seconds };
     }
 
-    function updateCountdown() {
-      const currentSession = exam.sessions[currentSessionIndex];
-      const timeRemaining = formatTimeRemaining(currentSession.date);
-      const mainCountdown = document.getElementById('main-countdown');
-      
-      if (timeRemaining.expired) {
-        mainCountdown.innerHTML = `<p class="text-xl sm:text-2xl font-medium text-red-600 fade-in">${timeRemaining.text}</p>`;
-      } else {
-        // Store previous values for animation comparison
-        const prevValues = mainCountdown.dataset.prevValues ? JSON.parse(mainCountdown.dataset.prevValues) : {};
-        const currentValues = { days: timeRemaining.days, hours: timeRemaining.hours, minutes: timeRemaining.minutes, seconds: timeRemaining.seconds };
-        
-        const shouldAnimate = {
-          days: prevValues.days !== currentValues.days,
-          hours: prevValues.hours !== currentValues.hours,
-          minutes: prevValues.minutes !== currentValues.minutes,
-          seconds: prevValues.seconds !== currentValues.seconds
-        };
-        
-        mainCountdown.innerHTML = `
-          <div class="countdown-display">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              <div class="text-center">
-                <div class="countdown-number text-3xl sm:text-5xl lg:text-7xl font-bold text-black mb-2 ${shouldAnimate.days ? 'flip' : ''}" data-value="${timeRemaining.days}">${timeRemaining.days}</div>
-                <div class="countdown-label text-sm sm:text-lg text-zinc-500">Days</div>
-              </div>
-              <div class="text-center">
-                <div class="countdown-number text-3xl sm:text-5xl lg:text-7xl font-bold text-black mb-2 ${shouldAnimate.hours ? 'flip' : ''}" data-value="${timeRemaining.hours}">${timeRemaining.hours}</div>
-                <div class="countdown-label text-sm sm:text-lg text-zinc-500">Hours</div>
-              </div>
-              <div class="text-center">
-                <div class="countdown-number text-3xl sm:text-5xl lg:text-7xl font-bold text-black mb-2 ${shouldAnimate.minutes ? 'flip' : ''}" data-value="${timeRemaining.minutes}">${timeRemaining.minutes}</div>
-                <div class="countdown-label text-sm sm:text-lg text-zinc-500">Minutes</div>
-              </div>
-              <div class="text-center">
-                <div class="countdown-number text-3xl sm:text-5xl lg:text-7xl font-bold text-black mb-2 ${shouldAnimate.seconds ? 'flip' : ''}" data-value="${timeRemaining.seconds}">${timeRemaining.seconds}</div>
-                <div class="countdown-label text-sm sm:text-lg text-zinc-500">Seconds</div>
-              </div>
+    function setupCountdown(containerId, isFullscreen = false) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const sizeClasses = isFullscreen 
+        ? "text-6xl sm:text-8xl lg:text-9xl" 
+        : "text-3xl sm:text-5xl lg:text-7xl";
+      const labelSizeClasses = isFullscreen
+        ? "text-xl sm:text-2xl"
+        : "text-sm sm:text-lg";
+      const gridGap = isFullscreen ? "gap-6 sm:gap-12" : "gap-3 sm:gap-6";
+
+      container.innerHTML = `
+        <div class="grid grid-cols-2 lg:grid-cols-4 ${gridGap}">
+          ${['Days', 'Hours', 'Minutes', 'Seconds'].map(label => `
+            <div class="text-center">
+              <div class="countdown-number ${sizeClasses} font-bold themed-text mb-2" data-unit="${label.toLowerCase()}">0</div>
+              <div class="countdown-label ${labelSizeClasses} themed-text-secondary">${label}</div>
             </div>
-          </div>
-        `;
-        
-        // Store current values for next comparison
-        mainCountdown.dataset.prevValues = JSON.stringify(currentValues);
-        
-        // Remove animation classes after animation completes
-        setTimeout(() => {
-          document.querySelectorAll('.countdown-number.flip').forEach(el => {
-            el.classList.remove('flip');
-          });
-        }, 300);
-      }
+          `).join('')}
+        </div>
+      `;
     }
 
-    function updateFullscreenCountdown() {
+    function updateCountdown(containerId, timeRemaining) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      if (timeRemaining.expired) {
+        container.innerHTML = `<p class="text-xl sm:text-2xl font-medium text-red-600 fade-in">${timeRemaining.text}</p>`;
+        return;
+      }
+
+      const units = ['days', 'hours', 'minutes', 'seconds'];
+      units.forEach(unit => {
+        const element = container.querySelector(`[data-unit="${unit}"]`);
+        if (element && element.textContent !== String(timeRemaining[unit])) {
+          element.textContent = timeRemaining[unit];
+        }
+      });
+    }
+
+    function startTicking() {
       const currentSession = exam.sessions[currentSessionIndex];
       const timeRemaining = formatTimeRemaining(currentSession.date);
-      const fullscreenCountdown = document.getElementById('fullscreen-countdown');
       
-      if (timeRemaining.expired) {
-        fullscreenCountdown.innerHTML = `<p class="text-2xl sm:text-4xl font-medium text-red-400 fade-in">${timeRemaining.text}</p>`;
-      } else {
-        // Store previous values for animation comparison
-        const prevValues = fullscreenCountdown.dataset.prevValues ? JSON.parse(fullscreenCountdown.dataset.prevValues) : {};
-        const currentValues = { days: timeRemaining.days, hours: timeRemaining.hours, minutes: timeRemaining.minutes, seconds: timeRemaining.seconds };
-        
-        const shouldAnimate = {
-          days: prevValues.days !== currentValues.days,
-          hours: prevValues.hours !== currentValues.hours,
-          minutes: prevValues.minutes !== currentValues.minutes,
-          seconds: prevValues.seconds !== currentValues.seconds
-        };
-        
-        fullscreenCountdown.innerHTML = `
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-12">
-            <div class="text-center">
-              <div class="countdown-number text-6xl sm:text-8xl lg:text-9xl font-bold text-white mb-4 ${shouldAnimate.days ? 'flip' : ''}" data-value="${timeRemaining.days}">${timeRemaining.days}</div>
-              <div class="countdown-label text-xl sm:text-2xl text-gray-300">Days</div>
-            </div>
-            <div class="text-center">
-              <div class="countdown-number text-6xl sm:text-8xl lg:text-9xl font-bold text-white mb-4 ${shouldAnimate.hours ? 'flip' : ''}" data-value="${timeRemaining.hours}">${timeRemaining.hours}</div>
-              <div class="countdown-label text-xl sm:text-2xl text-gray-300">Hours</div>
-            </div>
-            <div class="text-center">
-              <div class="countdown-number text-6xl sm:text-8xl lg:text-9xl font-bold text-white mb-4 ${shouldAnimate.minutes ? 'flip' : ''}" data-value="${timeRemaining.minutes}">${timeRemaining.minutes}</div>
-              <div class="countdown-label text-xl sm:text-2xl text-gray-300">Minutes</div>
-            </div>
-            <div class="text-center">
-              <div class="countdown-number text-6xl sm:text-8xl lg:text-9xl font-bold text-white mb-4 ${shouldAnimate.seconds ? 'flip' : ''}" data-value="${timeRemaining.seconds}">${timeRemaining.seconds}</div>
-              <div class="countdown-label text-xl sm:text-2xl text-gray-300">Seconds</div>
-            </div>
-          </div>
-        `;
-        
-        // Store current values for next comparison
-        fullscreenCountdown.dataset.prevValues = JSON.stringify(currentValues);
-        
-        // Remove animation classes after animation completes
-        setTimeout(() => {
-          document.querySelectorAll('#fullscreen-countdown .countdown-number.flip').forEach(el => {
-            el.classList.remove('flip');
-          });
-        }, 300);
-      }
+      updateCountdown('main-countdown', timeRemaining);
+      updateCountdown('fullscreen-countdown', timeRemaining);
+
+      countdownInterval = setInterval(() => {
+        const session = exam.sessions[currentSessionIndex];
+        const remaining = formatTimeRemaining(session.date);
+        updateCountdown('main-countdown', remaining);
+        if (!document.getElementById('fullscreen-modal').classList.contains('hidden')) {
+          updateCountdown('fullscreen-countdown', remaining);
+        }
+        if (remaining.expired) {
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
     }
 
     function switchSession(index) {
       currentSessionIndex = index;
       const currentSession = exam.sessions[index];
       
-      // Update session info
       document.getElementById('current-session-name').textContent = currentSession.session;
       document.getElementById('current-session-date').textContent = new Date(currentSession.date).toLocaleDateString('en-IN', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        weekday: 'long'
+        year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
       });
       
-      // Update toggle buttons
       document.querySelectorAll('.session-toggle').forEach((btn, i) => {
-        if (i === index) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
+        btn.classList.toggle('active', i === index);
       });
       
-      // Update countdowns immediately
-      updateCountdown();
-      updateFullscreenCountdown();
+      if (countdownInterval) clearInterval(countdownInterval);
+      startTicking();
       
-      // Update PiP countdown if active
       if (document.pictureInPictureElement) {
-        // If PiP is currently active, restart it with the new session
         startPiPCountdown(exam, currentSession);
       }
     }
@@ -576,28 +519,18 @@ const relatedExamsData = exam.relatedExams
       
       document.getElementById('fullscreen-session-info').textContent = 
         `${currentSession.session} - ${new Date(currentSession.date).toLocaleDateString('en-IN', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          weekday: 'long'
+          year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
         })}`;
       
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
-      
-      updateFullscreenCountdown();
-      fullscreenInterval = setInterval(updateFullscreenCountdown, 1000);
+      updateCountdown('fullscreen-countdown', formatTimeRemaining(currentSession.date));
     }
 
     function closeFullscreen() {
       const modal = document.getElementById('fullscreen-modal');
       modal.classList.add('hidden');
       document.body.style.overflow = 'auto';
-      
-      if (fullscreenInterval) {
-        clearInterval(fullscreenInterval);
-        fullscreenInterval = null;
-      }
     }
 
     function shareExam() {
@@ -608,7 +541,6 @@ const relatedExamsData = exam.relatedExams
           url: window.location.href
         });
       } else {
-        // Fallback to copying URL
         navigator.clipboard.writeText(window.location.href).then(() => {
           alert('Link copied to clipboard!');
         });
@@ -617,8 +549,6 @@ const relatedExamsData = exam.relatedExams
 
     function togglePiPWidget() {
       const currentSession = exam.sessions[currentSessionIndex];
-      
-      // Start Picture-in-Picture countdown directly
       startPiPCountdown(exam, currentSession);
     }
 
@@ -635,25 +565,20 @@ const relatedExamsData = exam.relatedExams
         closeFullscreen();
       } else if (e.key === 'f' || e.key === 'F') {
         const modal = document.getElementById('fullscreen-modal');
-        if (modal.classList.contains('hidden')) {
-          enterFullscreen();
-        } else {
-          closeFullscreen();
-        }
+        modal.classList.contains('hidden') ? enterFullscreen() : closeFullscreen();
       }
     });
 
     // Initialize countdowns
     document.addEventListener('DOMContentLoaded', () => {
-      updateCountdown();
-      updateFullscreenCountdown();
-      countdownInterval = setInterval(updateCountdown, 1000);
+      setupCountdown('main-countdown', false);
+      setupCountdown('fullscreen-countdown', true);
+      startTicking();
     });
 
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => {
       if (countdownInterval) clearInterval(countdownInterval);
-      if (fullscreenInterval) clearInterval(fullscreenInterval);
     });
   </script>
 </Layout>

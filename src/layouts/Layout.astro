@@ -1,17 +1,9 @@
 ---
 export interface Props {
-  title?: string;
-  description?: string;
-  keywords?: string[];
   exam?: any;
 }
 
-const { 
-  title = "TimeKeeper - Indian Exams Countdown 2026",
-  description = "Ultimate countdown app for Indian competitive exams. Track JEE Mains, JEE Advanced, NEET, BITSAT, MHTCET, WBJEE and 25+ major Indian exams with real-time countdown timers.",
-  keywords = ["Indian exams 2026", "JEE countdown", "NEET countdown", "exam timer", "competitive exams", "entrance exams"],
-  exam
-} = Astro.props;
+const { exam } = Astro.props;
 
 
 // Import SEO and PiP Components
@@ -54,9 +46,48 @@ import FAQSchema from '../components/FAQSchema.astro';
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 		<meta name="apple-mobile-web-app-title" content="TimeKeeper" />
 		
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		<!-- Optimized Font Loading -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<style>
+			/* Playfair Display */
+			@font-face {
+				font-family: 'Playfair Display';
+				font-style: italic;
+				font-weight: 400;
+				font-display: swap;
+				src: url(https://fonts.gstatic.com/s/playfairdisplay/v36/nuFkD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDXbtM.woff2) format('woff2');
+			}
+			@font-face {
+				font-family: 'Playfair Display';
+				font-style: italic;
+				font-weight: 700;
+				font-display: swap;
+				src: url(https://fonts.gstatic.com/s/playfairdisplay/v36/nuFkD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiunDXbtM.woff2) format('woff2');
+			}
+			@font-face {
+				font-family: 'Playfair Display';
+				font-style: normal;
+				font-weight: 400;
+				font-display: swap;
+				src: url(https://fonts.gstatic.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDX.woff2) format('woff2');
+			}
+			@font-face {
+				font-family: 'Playfair Display';
+				font-style: normal;
+				font-weight: 700;
+				font-display: swap;
+				src: url(https://fonts.gstatic.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiunDX.woff2) format('woff2');
+			}
+			/* Inter */
+			@font-face {
+				font-family: 'Inter';
+				font-style: normal;
+				font-weight: 300 700;
+				font-display: swap;
+				src: url(https://fonts.gstatic.com/s/inter/v13/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2) format('woff2');
+			}
+		</style>
 
 		<!-- Google tag (gtag.js) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2J1V5S9K5"></script>

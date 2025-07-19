@@ -91,25 +91,22 @@ const generateFAQs = (context: string, exam?: any) => {
 };
 
 const faqs = generateFAQs(currentPage, exam);
----
 
-<script type="application/ld+json">
-{
+const schema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": [
-    ${faqs.map((faq, index) => `
-    ${index > 0 ? ',' : ''}{
-      "@type": "Question",
-      "name": "${faq.question}",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "${faq.answer}"
-      }
-    }`).join('')}
-  ]
-}
-</script>
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
 
 <!-- FAQ Schema for better search results -->
 <div style="display: none;" aria-hidden="true">
