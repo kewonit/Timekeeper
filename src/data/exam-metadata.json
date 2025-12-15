@@ -43,7 +43,7 @@
                 "Mathematics"
             ],
             "duration": "6 hours (2 papers)",
-            "conductingBody": "IIT (Rotating)",
+            "conductingBody": "IIT Roorkee (2026)",
             "seats": "17,000+",
             "officialWebsite": "https://jeeadv.ac.in/",
             "relatedExams": [
@@ -138,7 +138,7 @@
                 "Quantitative Ability"
             ],
             "duration": "2 hours",
-            "conductingBody": "IIM (Rotating)",
+            "conductingBody": "IIM Calcutta (2026)",
             "seats": "5,000+",
             "officialWebsite": "https://iimcat.ac.in/",
             "relatedExams": [
@@ -200,9 +200,9 @@
                 "General Aptitude"
             ],
             "duration": "3 hours",
-            "conductingBody": "IIT/IISc (Rotating)",
+            "conductingBody": "IIT Guwahati (2026)",
             "seats": "Variable",
-            "officialWebsite": "https://gate.iitm.ac.in/",
+            "officialWebsite": "https://gate2026.iitg.ac.in/",
             "relatedExams": [
                 "jee-main",
                 "ese",
@@ -1127,36 +1127,28 @@
             ]
         },
         "iift-2026": {
-            "name": "IIFT",
-            "fullName": "Indian Institute of Foreign Trade",
-            "description": "Entrance exam for admission to MBA (International Business) programme at Indian Institute of Foreign Trade (IIFT).",
+            "name": "IIFT (Cancelled)",
+            "fullName": "Indian Institute of Foreign Trade (Discontinued)",
+            "description": "Admission to IIFT MBA (IB) is now through CAT. IIFT Entrance Exam has been discontinued.",
             "category": "Management",
             "eligibility": "Bachelor's degree",
             "subjects": [
-                "English Grammar, Vocabulary and Comprehension",
-                "General Knowledge & Current Affairs",
-                "Logical Reasoning",
-                "Data Interpretation",
-                "Quantitative Analysis"
+                "See CAT"
             ],
-            "duration": "2 hours",
-            "conductingBody": "NTA",
+            "duration": "See CAT",
+            "conductingBody": "IIFT (via CAT)",
             "seats": "400+",
-            "officialWebsite": "https://iift.nta.nic.in/",
+            "officialWebsite": "https://www.iift.ac.in/",
             "relatedExams": [
-                "cat-2026",
-                "xat-2026",
-                "snap-2026",
-                "nmat-2026"
+                "cat-2026"
             ],
             "slug": "iift",
-            "metaDescription": "IIFT 2026 countdown timer. Track time until the Indian Institute of Foreign Trade exam. Get exam dates, eligibility, and preparation tips.",
+            "metaDescription": "IIFT Entrance Exam has been discontinued. Admission to IIFT 2026 is through CAT 2025. Check CAT dates.",
             "keywords": [
                 "IIFT 2026",
-                "IIFT countdown",
-                "IIFT exam date",
-                "MBA International Business",
-                "NTA IIFT"
+                "IIFT CAT",
+                "IIFT admission",
+                "MBA International Business"
             ]
         },
         "micat-2026": {
@@ -1192,30 +1184,28 @@
             ]
         },
         "tissnet-2026": {
-            "name": "TISSNET",
-            "fullName": "Tata Institute of Social Sciences National Entrance Test",
-            "description": "Entrance exam for admission to MA programmes at Tata Institute of Social Sciences (TISS).",
+            "name": "TISSNET (Cancelled)",
+            "fullName": "Tata Institute of Social Sciences National Entrance Test (Discontinued)",
+            "description": "Admission to TISS MA programmes is now through CUET PG. TISSNET has been discontinued.",
             "category": "Management",
             "eligibility": "Bachelor's degree",
             "subjects": [
-                "English Proficiency",
-                "Mathematical Skills",
-                "Logical Reasoning",
-                "General Awareness"
+                "See CUET PG"
             ],
-            "duration": "1 hour 40 minutes",
-            "conductingBody": "TISS",
+            "duration": "See CUET PG",
+            "conductingBody": "NTA (via CUET PG)",
             "seats": "1000+",
             "officialWebsite": "https://admissions.tiss.edu/",
-            "relatedExams": [],
+            "relatedExams": [
+                "cuet-pg"
+            ],
             "slug": "tissnet",
-            "metaDescription": "TISSNET 2026 countdown timer. Track time until the Tata Institute of Social Sciences National Entrance Test. Get exam dates, eligibility, and preparation tips.",
+            "metaDescription": "TISSNET 2026 has been discontinued. Admission to TISS is now through CUET PG 2026. Check CUET PG dates.",
             "keywords": [
                 "TISSNET 2026",
-                "TISSNET countdown",
-                "TISSNET exam date",
-                "TISS MA",
-                "TISS"
+                "TISS CUET PG",
+                "TISS admission",
+                "TISS MA"
             ]
         },
         "iiser-aptitude-test-2026": {
