@@ -101,15 +101,89 @@ export function getRandomAvatarUrl(): string {
 }
 
 /**
- * Preload an avatar image (returns a promise)
+ * In-memory cache for preloaded avatar images
+ * Stores Image objects to leverage browser's memory cache
  */
-export function preloadAvatar(seed: string): Promise<void> {
+const preloadedAvatars = new Map<string, HTMLImageElement>();
+
+/**
+ * Preload an avatar image into browser cache (returns a promise)
+ * Also stores the Image object in memory for instant access
+ * 
+ * @param seed - Avatar seed
+ * @param style - Avatar style
+ * @param size - Image size
+ */
+export function preloadAvatar(
+  seed: string,
+  style: typeof AVATAR_STYLES[number] = DEFAULT_STYLE,
+  size: number = 128
+): Promise<void> {
+  const cacheKey = `${seed}|${style}|${size}`;
+  
+  // Check if already preloaded
+  if (preloadedAvatars.has(cacheKey)) {
+    return Promise.resolve();
+  }
+  
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = () => reject(new Error('Failed to load avatar'));
-    img.src = getAvatarUrl(seed);
+    const url = getAvatarUrl(seed, style, size);
+    
+    img.onload = () => {
+      // Store in memory cache for instant reuse
+      preloadedAvatars.set(cacheKey, img);
+      
+      // Cleanup old entries if cache grows too large
+      if (preloadedAvatars.size > MAX_CACHE_SIZE) {
+        const oldKeys = Array.from(preloadedAvatars.keys()).slice(0, 100);
+        oldKeys.forEach(key => preloadedAvatars.delete(key));
+      }
+      
+      resolve();
+    };
+    
+    img.onerror = () => {
+      reject(new Error(`Failed to load avatar: ${seed}`));
+    };
+    
+    // Set crossOrigin to enable caching from external source
+    img.crossOrigin = 'anonymous';
+    img.src = url;
   });
+}
+
+/**
+ * Preload multiple avatars in parallel
+ * Useful for preloading all visible avatars on map
+ * 
+ * @param seeds - Array of avatar seeds to preload
+ * @param style - Avatar style
+ * @param size - Image size
+ * @returns Promise that resolves when all avatars are loaded
+ */
+export function preloadAvatars(
+  seeds: string[],
+  style: typeof AVATAR_STYLES[number] = DEFAULT_STYLE,
+  size: number = 128
+): Promise<void[]> {
+  return Promise.all(
+    seeds.map(seed => preloadAvatar(seed, style, size).catch(err => {
+      console.warn(`Failed to preload avatar for seed ${seed}:`, err);
+    }))
+  );
+}
+
+/**
+ * Check if an avatar is already preloaded
+ */
+export function isAvatarPreloaded(
+  seed: string,
+  style: typeof AVATAR_STYLES[number] = DEFAULT_STYLE,
+  size: number = 128
+): boolean {
+  const cacheKey = `${seed}|${style}|${size}`;
+  return preloadedAvatars.has(cacheKey);
 }
 
 /**
@@ -123,17 +197,24 @@ export const AVATAR_STYLE_OPTIONS = AVATAR_STYLES.map(style => ({
 
 /**
  * Clear the avatar URL cache (useful for testing or memory management)
+ * Also clears preloaded images
  */
 export function clearAvatarCache(): void {
   avatarUrlCache.clear();
+  preloadedAvatars.clear();
 }
 
 /**
  * Get cache statistics for monitoring
  */
-export function getAvatarCacheStats(): { size: number; maxSize: number } {
+export function getAvatarCacheStats(): { 
+  urlCacheSize: number; 
+  preloadedCacheSize: number;
+  maxSize: number;
+} {
   return {
-    size: avatarUrlCache.size,
+    urlCacheSize: avatarUrlCache.size,
+    preloadedCacheSize: preloadedAvatars.size,
     maxSize: MAX_CACHE_SIZE,
   };
 }

@@ -28,7 +28,7 @@ import {
   type LocationData,
 } from './supabase-client';
 
-import { getAvatarUrl } from './notion-faces';
+import { getAvatarUrl, preloadAvatars } from './notion-faces';
 
 import {
   sanitizeString,
@@ -140,6 +140,7 @@ function setConnectionStatus(status: ConnectionStatus): void {
 /**
  * Notify session listeners with converted data
  * DEMONSTRATION_ACCOUNT: Merges real sessions with demonstration sessions
+ * Preloads avatars in the background for smooth rendering
  */
 function notifySessionListeners(dbSessions: DbStudySession[]): void {
   // Cache real sessions for merging with demonstration sessions
@@ -175,6 +176,18 @@ function notifySessionListeners(dbSessions: DbStudySession[]): void {
   
   // Merge and deduplicate (real sessions take priority)
   const allPresences = [...realPresences, ...demoPresences];
+  
+  // Preload avatars in the background (don't block notifications)
+  if (typeof window !== 'undefined') {
+    const avatarSeeds = [
+      ...dbSessions.map(s => s.avatar_seed),
+      ...lastDemonstrationSessions.map(s => s.avatar_seed)
+    ];
+    
+    preloadAvatars(avatarSeeds).catch(() => {
+      // Silent fail - avatars will load on-demand if preload fails
+    });
+  }
   
   sessionListeners.forEach(cb => {
     try { cb(allPresences); } catch (e) { console.error('[Session] Listener error:', e); }
@@ -412,6 +425,7 @@ function stopHeartbeat(): void {
 /**
  * Get current active sessions
  * DEMONSTRATION_ACCOUNT: Includes demonstration sessions in the result
+ * Preloads avatars in the background for smooth rendering
  */
 export async function fetchActiveSessions(): Promise<StudyPresence[]> {
   try {
@@ -443,11 +457,28 @@ export async function fetchActiveSessions(): Promise<StudyPresence[]> {
       startedAt: s.started_at,
     }));
     
-    return [...realPresences, ...demoPresences];
+    const allPresences = [...realPresences, ...demoPresences];
+    
+    // Preload all avatars in the background (don't block return)
+    // This ensures avatars are cached for instant display
+    if (typeof window !== 'undefined') {
+      const avatarSeeds = [
+        ...sessions.map(s => s.avatar_seed),
+        ...getDemonstrationSessions().map(s => s.avatar_seed)
+      ];
+      
+      // Preload without blocking
+      preloadAvatars(avatarSeeds).catch(err => {
+        console.warn('[Session] Avatar preload failed:', err);
+      });
+    }
+    
+    return allPresences;
   } catch (err) {
     console.error('[Session] Fetch failed:', err);
     // DEMONSTRATION_ACCOUNT: Return demonstration sessions even if real fetch fails
-    return getDemonstrationSessions().map(s => ({
+    const demoSessions = getDemonstrationSessions();
+    const demoPresences = demoSessions.map(s => ({
       id: s.id,
       examSlug: s.exam_slug,
       examName: s.exam_name,
@@ -459,6 +490,13 @@ export async function fetchActiveSessions(): Promise<StudyPresence[]> {
       avatarUrl: getAvatarUrl(s.avatar_seed),
       startedAt: s.started_at,
     }));
+    
+    // Preload demo avatars too
+    if (typeof window !== 'undefined') {
+      preloadAvatars(demoSessions.map(s => s.avatar_seed)).catch(() => {});
+    }
+    
+    return demoPresences;
   }
 }
 
