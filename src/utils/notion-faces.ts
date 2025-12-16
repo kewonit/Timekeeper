@@ -1,8 +1,13 @@
 /**
- * DiceBear Avatar Generator
+ * DiceBear Avatar Generator with Caching
  * 
  * Generates professional, consistent avatar URLs using DiceBear API.
  * Each user gets a unique but deterministic avatar based on their ID/seed.
+ * 
+ * Features:
+ * - In-memory URL cache to prevent redundant URL generation
+ * - Automatic cache cleanup for memory management
+ * - Browser cache-friendly headers (SVG format)
  * 
  * Uses the "lorelei" style for professional-looking human avatars.
  * https://www.dicebear.com/styles/lorelei/
@@ -20,21 +25,55 @@ const AVATAR_STYLES = [
 // Default style for consistency
 const DEFAULT_STYLE = 'lorelei';
 
+// In-memory cache for avatar URLs
+// Key format: "seed|style|size"
+const avatarUrlCache = new Map<string, string>();
+
+// Cache size limit to prevent memory bloat
+const MAX_CACHE_SIZE = 500;
+
+// Cleanup cache when it grows too large
+function cleanupCache(): void {
+  if (avatarUrlCache.size > MAX_CACHE_SIZE) {
+    // Remove oldest 100 entries
+    const entriesToRemove = Array.from(avatarUrlCache.keys()).slice(0, 100);
+    entriesToRemove.forEach(key => avatarUrlCache.delete(key));
+  }
+}
+
 /**
- * Generate a DiceBear avatar URL from a seed string
+ * Generate a DiceBear avatar URL from a seed string (with caching)
  * 
  * @param seed - Unique identifier (user ID, session ID, etc.)
  * @param style - Avatar style (default: lorelei)
  * @param size - Image size (default: 128)
- * @returns URL to the avatar image
+ * @returns URL to the avatar image (cached if previously generated)
  */
 export function getAvatarUrl(
   seed: string, 
   style: typeof AVATAR_STYLES[number] = DEFAULT_STYLE,
   size: number = 128
 ): string {
+  // Create cache key
+  const cacheKey = `${seed}|${style}|${size}`;
+  
+  // Check cache first
+  const cached = avatarUrlCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
+  // Generate new URL
   const encodedSeed = encodeURIComponent(seed);
-  return `https://api.dicebear.com/9.x/${style}/svg?seed=${encodedSeed}&size=${size}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf&backgroundType=gradientLinear&radius=50`;
+  const url = `https://api.dicebear.com/9.x/${style}/svg?seed=${encodedSeed}&size=${size}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf&backgroundType=gradientLinear&radius=50`;
+  
+  // Store in cache
+  avatarUrlCache.set(cacheKey, url);
+  
+  // Periodic cleanup
+  cleanupCache();
+  
+  return url;
 }
 
 /**
@@ -81,4 +120,21 @@ export const AVATAR_STYLE_OPTIONS = AVATAR_STYLES.map(style => ({
   label: style.charAt(0).toUpperCase() + style.slice(1),
   preview: `https://api.dicebear.com/9.x/${style}/svg?seed=preview`,
 }));
+
+/**
+ * Clear the avatar URL cache (useful for testing or memory management)
+ */
+export function clearAvatarCache(): void {
+  avatarUrlCache.clear();
+}
+
+/**
+ * Get cache statistics for monitoring
+ */
+export function getAvatarCacheStats(): { size: number; maxSize: number } {
+  return {
+    size: avatarUrlCache.size,
+    maxSize: MAX_CACHE_SIZE,
+  };
+}
 
