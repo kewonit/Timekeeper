@@ -184,8 +184,10 @@ function notifySessionListeners(dbSessions: DbStudySession[]): void {
       ...lastDemonstrationSessions.map(s => s.avatar_seed)
     ];
     
-    preloadAvatars(avatarSeeds).catch(() => {
-      // Silent fail - avatars will load on-demand if preload fails
+    preloadAvatars(avatarSeeds).catch((err) => {
+      // Preload failure is non-critical - avatars will load on-demand from network
+      // This can fail due to network issues or CORS, but doesn't affect functionality
+      console.debug('[Session] Avatar preload failed (non-critical):', err);
     });
   }
   
@@ -467,9 +469,10 @@ export async function fetchActiveSessions(): Promise<StudyPresence[]> {
         ...getDemonstrationSessions().map(s => s.avatar_seed)
       ];
       
-      // Preload without blocking
+      // Preload avatars without blocking the return
+      // Failure is non-critical - avatars will load on-demand if preload fails
       preloadAvatars(avatarSeeds).catch(err => {
-        console.warn('[Session] Avatar preload failed:', err);
+        console.debug('[Session] Avatar preload failed (non-critical):', err);
       });
     }
     
@@ -491,9 +494,12 @@ export async function fetchActiveSessions(): Promise<StudyPresence[]> {
       startedAt: s.started_at,
     }));
     
-    // Preload demo avatars too
+    // Preload demo avatars too (best effort, non-blocking)
     if (typeof window !== 'undefined') {
-      preloadAvatars(demoSessions.map(s => s.avatar_seed)).catch(() => {});
+      // Preload failure is non-critical - avatars will load on-demand from network
+      preloadAvatars(demoSessions.map(s => s.avatar_seed)).catch(() => {
+        // Silent - already logged at higher level if needed
+      });
     }
     
     return demoPresences;

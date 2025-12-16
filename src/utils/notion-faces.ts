@@ -156,21 +156,20 @@ export function preloadAvatar(
 /**
  * Preload multiple avatars in parallel
  * Useful for preloading all visible avatars on map
+ * Uses Promise.allSettled to continue even if some avatars fail
  * 
  * @param seeds - Array of avatar seeds to preload
  * @param style - Avatar style
  * @param size - Image size
- * @returns Promise that resolves when all avatars are loaded
+ * @returns Promise that resolves when all preload attempts complete
  */
 export function preloadAvatars(
   seeds: string[],
   style: typeof AVATAR_STYLES[number] = DEFAULT_STYLE,
   size: number = 128
-): Promise<void[]> {
-  return Promise.all(
-    seeds.map(seed => preloadAvatar(seed, style, size).catch(err => {
-      console.warn(`Failed to preload avatar for seed ${seed}:`, err);
-    }))
+): Promise<PromiseSettledResult<void>[]> {
+  return Promise.allSettled(
+    seeds.map(seed => preloadAvatar(seed, style, size))
   );
 }
 
