@@ -2,7 +2,7 @@
  * Study Session Manager - Production Version
  * 
  * Manages real-time study sessions using Supabase database.
- * NO FAKE DATA - Real users only.
+ * Includes demonstration accounts for map activity during low-traffic periods.
  * 
  * Features:
  * - IP-based geolocation (no GPS prompts)
@@ -10,6 +10,7 @@
  * - Real-time subscriptions
  * - Heartbeat for session liveness
  * - Input validation and rate limiting
+ * - Demonstration accounts (DEMONSTRATION_ACCOUNT marker for removal)
  */
 
 import {
@@ -39,6 +40,15 @@ import {
   secureStorage,
 } from './api-security';
 
+// DEMONSTRATION_ACCOUNT: Import demonstration account service
+import {
+  initializeDemonstrationAccounts,
+  stopDemonstrationAccounts,
+  getDemonstrationSessions,
+  subscribeToDemonstrationSessions,
+  type DemonstrationSession,
+} from './demonstration-accounts';
+
 // Configuration
 const HEARTBEAT_INTERVAL = 25000; // 25 seconds (sessions expire at 60s)
 const SESSION_STORAGE_KEY = 'timekeeper-avatar-seed';
@@ -46,11 +56,16 @@ const SESSION_STORAGE_KEY = 'timekeeper-avatar-seed';
 // Singleton state
 let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
 let unsubscribeRealtime: (() => void) | null = null;
+// DEMONSTRATION_ACCOUNT: Track demonstration session unsubscribe
+let unsubscribeDemonstration: (() => void) | null = null;
 let currentLocation: LocationData | null = null;
 let currentAvatarSeed: string | null = null;
 let sessionListeners: Set<(sessions: StudyPresence[]) => void> = new Set();
 let connectionListeners: Set<(status: ConnectionStatus) => void> = new Set();
 let currentStatus: ConnectionStatus = 'disconnected';
+// DEMONSTRATION_ACCOUNT: Cache for merging sessions
+let lastRealSessions: DbStudySession[] = [];
+let lastDemonstrationSessions: DemonstrationSession[] = [];
 
 /**
  * Connection status
@@ -124,9 +139,14 @@ function setConnectionStatus(status: ConnectionStatus): void {
 
 /**
  * Notify session listeners with converted data
+ * DEMONSTRATION_ACCOUNT: Merges real sessions with demonstration sessions
  */
 function notifySessionListeners(dbSessions: DbStudySession[]): void {
-  const presences: StudyPresence[] = dbSessions.map(s => ({
+  // Cache real sessions for merging with demonstration sessions
+  lastRealSessions = dbSessions;
+  
+  // Convert real sessions to presence format
+  const realPresences: StudyPresence[] = dbSessions.map(s => ({
     id: s.id,
     examSlug: s.exam_slug,
     examName: s.exam_name,
@@ -139,19 +159,48 @@ function notifySessionListeners(dbSessions: DbStudySession[]): void {
     startedAt: s.started_at,
   }));
   
+  // DEMONSTRATION_ACCOUNT: Convert demonstration sessions to presence format
+  const demoPresences: StudyPresence[] = lastDemonstrationSessions.map(s => ({
+    id: s.id,
+    examSlug: s.exam_slug,
+    examName: s.exam_name,
+    subject: s.subject,
+    latitude: s.latitude,
+    longitude: s.longitude,
+    city: s.city,
+    state: s.state,
+    avatarUrl: getAvatarUrl(s.avatar_seed),
+    startedAt: s.started_at,
+  }));
+  
+  // Merge and deduplicate (real sessions take priority)
+  const allPresences = [...realPresences, ...demoPresences];
+  
   sessionListeners.forEach(cb => {
-    try { cb(presences); } catch (e) { console.error('[Session] Listener error:', e); }
+    try { cb(allPresences); } catch (e) { console.error('[Session] Listener error:', e); }
   });
+}
+
+/**
+ * DEMONSTRATION_ACCOUNT: Handle demonstration session updates
+ */
+function handleDemonstrationSessionUpdate(demoSessions: DemonstrationSession[]): void {
+  lastDemonstrationSessions = demoSessions;
+  // Re-notify listeners with merged data
+  notifySessionListeners(lastRealSessions);
 }
 
 /**
  * Initialize the session manager
  * Connects to database and sets up real-time subscriptions
+ * DEMONSTRATION_ACCOUNT: Also initializes demonstration accounts
  */
 export async function initializeSessionManager(): Promise<boolean> {
   if (!isSupabaseConfigured()) {
     console.warn('[Session] Supabase not configured');
     setConnectionStatus('error');
+    // DEMONSTRATION_ACCOUNT: Start demonstration accounts even without Supabase
+    initializeDemonstrationService();
     return false;
   }
   
@@ -163,6 +212,8 @@ export async function initializeSessionManager(): Promise<boolean> {
     if (!userId) {
       console.error('[Session] Failed to authenticate');
       setConnectionStatus('error');
+      // DEMONSTRATION_ACCOUNT: Start demonstration accounts as fallback
+      initializeDemonstrationService();
       return false;
     }
     
@@ -174,6 +225,9 @@ export async function initializeSessionManager(): Promise<boolean> {
       notifySessionListeners(sessions);
     });
     
+    // DEMONSTRATION_ACCOUNT: Initialize demonstration accounts
+    initializeDemonstrationService();
+    
     // Load initial sessions
     const sessions = await getActiveStudySessions();
     notifySessionListeners(sessions);
@@ -183,7 +237,31 @@ export async function initializeSessionManager(): Promise<boolean> {
   } catch (err) {
     console.error('[Session] Initialization failed:', err);
     setConnectionStatus('error');
+    // DEMONSTRATION_ACCOUNT: Start demonstration accounts as fallback
+    initializeDemonstrationService();
     return false;
+  }
+}
+
+/**
+ * DEMONSTRATION_ACCOUNT: Initialize demonstration service and subscribe to updates
+ */
+function initializeDemonstrationService(): void {
+  // Only initialize once
+  if (unsubscribeDemonstration) return;
+  
+  try {
+    // Start the demonstration account service
+    initializeDemonstrationAccounts();
+    
+    // Subscribe to demonstration session updates
+    unsubscribeDemonstration = subscribeToDemonstrationSessions((sessions) => {
+      handleDemonstrationSessionUpdate(sessions);
+    });
+    
+    console.log('[Session] Demonstration accounts initialized');
+  } catch (err) {
+    console.error('[Session] Failed to initialize demonstration accounts:', err);
   }
 }
 
@@ -333,11 +411,12 @@ function stopHeartbeat(): void {
 
 /**
  * Get current active sessions
+ * DEMONSTRATION_ACCOUNT: Includes demonstration sessions in the result
  */
 export async function fetchActiveSessions(): Promise<StudyPresence[]> {
   try {
     const sessions = await getActiveStudySessions();
-    return sessions.map(s => ({
+    const realPresences: StudyPresence[] = sessions.map(s => ({
       id: s.id,
       examSlug: s.exam_slug,
       examName: s.exam_name,
@@ -349,9 +428,37 @@ export async function fetchActiveSessions(): Promise<StudyPresence[]> {
       avatarUrl: getAvatarUrl(s.avatar_seed),
       startedAt: s.started_at,
     }));
+    
+    // DEMONSTRATION_ACCOUNT: Add demonstration sessions
+    const demoPresences: StudyPresence[] = getDemonstrationSessions().map(s => ({
+      id: s.id,
+      examSlug: s.exam_slug,
+      examName: s.exam_name,
+      subject: s.subject,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      city: s.city,
+      state: s.state,
+      avatarUrl: getAvatarUrl(s.avatar_seed),
+      startedAt: s.started_at,
+    }));
+    
+    return [...realPresences, ...demoPresences];
   } catch (err) {
     console.error('[Session] Fetch failed:', err);
-    return [];
+    // DEMONSTRATION_ACCOUNT: Return demonstration sessions even if real fetch fails
+    return getDemonstrationSessions().map(s => ({
+      id: s.id,
+      examSlug: s.exam_slug,
+      examName: s.exam_name,
+      subject: s.subject,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      city: s.city,
+      state: s.state,
+      avatarUrl: getAvatarUrl(s.avatar_seed),
+      startedAt: s.started_at,
+    }));
   }
 }
 
@@ -396,6 +503,7 @@ export function isSessionActive(): boolean {
 
 /**
  * Cleanup - call on page unload
+ * DEMONSTRATION_ACCOUNT: Also cleans up demonstration service
  */
 export function cleanup(): void {
   stopHeartbeat();
@@ -404,6 +512,15 @@ export function cleanup(): void {
     unsubscribeRealtime();
     unsubscribeRealtime = null;
   }
+  
+  // DEMONSTRATION_ACCOUNT: Cleanup demonstration subscription
+  if (unsubscribeDemonstration) {
+    unsubscribeDemonstration();
+    unsubscribeDemonstration = null;
+  }
+  
+  // DEMONSTRATION_ACCOUNT: Stop demonstration service
+  stopDemonstrationAccounts();
   
   // Try to end session synchronously
   endCurrentStudySession().catch(() => {});

@@ -1179,71 +1179,55 @@ const allExams = getExamData();
     border-color: #fef3c7;
   }
   
-  /* Popup Styles - Themed */
-  .leaflet-popup-content-wrapper {
-    background: var(--map-card-bg, rgba(10, 10, 10, 0.96)) !important;
+  /* Popup Styles - Ultra Minimalist & Themed */
+  .leaflet-popup-content-wrapper,
+  .minimal-popup .leaflet-popup-content-wrapper {
+    background: var(--map-card-bg, rgba(20, 20, 20, 0.92)) !important;
     color: var(--map-text, white) !important;
-    border-radius: 14px !important;
+    border-radius: 6px !important;
     padding: 0 !important;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--map-border, transparent) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--map-border, rgba(255,255,255,0.08)) !important;
+    min-width: auto !important;
   }
   
-  .leaflet-popup-tip {
-    background: var(--map-card-bg, rgba(10, 10, 10, 0.96)) !important;
+  .leaflet-popup-tip,
+  .minimal-popup .leaflet-popup-tip {
+    background: var(--map-card-bg, rgba(20, 20, 20, 0.92)) !important;
+    width: 6px !important;
+    height: 6px !important;
   }
   
-  .leaflet-popup-content {
-    margin: 16px 18px !important;
+  .leaflet-popup-content,
+  .minimal-popup .leaflet-popup-content {
+    margin: 4px 8px !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 13px !important;
-    line-height: 1.4 !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
   }
   
   .marker-popup {
     display: flex;
     align-items: center;
-    gap: 14px;
-  }
-  
-  .marker-popup img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--map-border, rgba(255, 255, 255, 0.12));
-    flex-shrink: 0;
-  }
-  
-  .popup-details {
-    min-width: 0;
+    gap: 4px;
+    white-space: nowrap;
   }
   
   .popup-exam {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-weight: 500;
+    font-size: 11px;
     color: var(--map-text, white);
   }
   
-  .popup-subject {
-    font-size: 12px;
-    color: var(--map-text-secondary, rgba(255, 255, 255, 0.6));
-    margin-bottom: 4px;
+  .popup-divider {
+    color: var(--map-text-secondary, rgba(255, 255, 255, 0.3));
+    font-size: 10px;
   }
   
   .popup-location {
-    font-size: 11px;
-    color: var(--map-text-secondary, rgba(255, 255, 255, 0.4));
-  }
-  
-  .popup-duration {
     font-size: 10px;
-    color: var(--map-text-secondary, rgba(255, 255, 255, 0.3));
-    margin-top: 4px;
+    color: var(--map-text-secondary, rgba(255, 255, 255, 0.5));
   }
 </style>
 
@@ -1395,24 +1379,20 @@ const allExams = getExamData();
     });
     
     // Build popup content
-    const examText = presence.examName || 'General Study';
-    const subjectText = presence.subject ? `${presence.subject}` : '';
-    const locationText = [presence.city, presence.state].filter(Boolean).join(', ') || 'India';
-    const durationText = formatDuration(presence.startedAt);
+    const examText = presence.examName || 'Studying';
+    const locationText = presence.city || 'India';
     
+    // Ultra-minimal popup
     marker.bindPopup(`
       <div class="marker-popup">
-        <img src="${avatarUrl}" alt="" />
-        <div class="popup-details">
-          <div class="popup-exam">${examText}</div>
-          ${subjectText ? `<div class="popup-subject">${subjectText}</div>` : ''}
-          <div class="popup-location">📍 ${locationText}</div>
-          <div class="popup-duration">${durationText}</div>
-        </div>
+        <span class="popup-exam">${examText}</span>
+        <span class="popup-divider">·</span>
+        <span class="popup-location">${locationText}</span>
       </div>
     `, { 
       offset: [0, -14],
       closeButton: false,
+      className: 'minimal-popup',
     });
 
     return marker;
@@ -1798,23 +1778,23 @@ const allExams = getExamData();
       loadingOverlay?.classList.add('hidden');
     }
     
-    // Check Supabase configuration
-    if (!isSupabaseConfigured()) {
-      console.warn('[StudyMap] Supabase not configured');
-      handleConnectionChange('error');
-      return;
-    }
-    
-    // Subscribe to updates
+    // Subscribe to updates first (works with or without Supabase)
     onConnectionChange(handleConnectionChange);
     onPresenceUpdate(handlePresenceUpdate);
     
-    // Initialize session manager
+    // Check Supabase configuration
+    if (!isSupabaseConfigured()) {
+      console.warn('[StudyMap] Supabase not configured, using demonstration accounts only');
+      handleConnectionChange('error');
+      // DEMONSTRATION_ACCOUNT: Continue to initialize - demonstration accounts will work
+    }
+    
+    // Initialize session manager (will start demonstration accounts even without Supabase)
     const initialized = await initializeSessionManager();
     
     if (!initialized) {
-      console.warn('[StudyMap] Session manager failed to initialize');
-      return;
+      console.warn('[StudyMap] Session manager failed to initialize fully, demonstration accounts may still work');
+      // DEMONSTRATION_ACCOUNT: Don't return - demonstration accounts might still be active
     }
     
     // Check if already in a session
