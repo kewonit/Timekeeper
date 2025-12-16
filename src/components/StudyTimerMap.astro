@@ -1,0 +1,2436 @@
+---
+/**
+ * StudyTimerMap Component
+ * 
+ * An integrated experience combining:
+ * - Exam countdown timer
+ * - Live study map showing students
+ * - One-click join to appear on the map while studying
+ * 
+ * This provides a much better UX than the separate components.
+ */
+
+import { getExamData, type ExamData } from '../data/exam-data';
+
+export interface Props {
+  exam?: ExamData;
+  height?: string;
+  showTimer?: boolean;
+}
+
+const { 
+  exam,
+  height = '500px',
+  showTimer = true,
+} = Astro.props;
+
+// Get all exams for the selector if no specific exam
+const allExams = getExamData();
+---
+
+<div 
+  class="study-timer-map"
+  data-exam-slug={exam?.slug || ''}
+  data-exam-name={exam?.name || ''}
+  data-exam-sessions={exam ? JSON.stringify(exam.sessions) : '[]'}
+>
+  <!-- Main Container -->
+  <div class="stm-container" style={`height: ${height};`}>
+    
+    <!-- Map Element -->
+    <div id="stm-map" class="stm-map"></div>
+    
+    <!-- Top Bar -->
+    <div class="stm-top-bar">
+      <!-- Left: Connection Status & Count -->
+      <div class="stm-top-left">
+        <div id="stm-status" class="stm-status-badge stm-status-connecting">
+          <span class="stm-status-dot"></span>
+          <span id="stm-status-text">Connecting...</span>
+        </div>
+        <div class="stm-live-count">
+          <span id="stm-count">0</span>
+          <span class="stm-count-label">studying now</span>
+        </div>
+      </div>
+      
+      <!-- Right: Actions (moved away from zoom controls) -->
+      <div class="stm-top-right">
+        <button id="stm-refresh" class="stm-icon-btn" title="Refresh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 12a9 9 0 11-3-6.7" stroke-linecap="round"/>
+            <path d="M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button id="stm-fullscreen" class="stm-icon-btn" title="Fullscreen">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Timer Overlay (Bottom Right) -->
+    {showTimer && (
+      <div class="stm-timer-overlay">
+        <div class="stm-timer-card">
+          <!-- Exam Info -->
+          <div class="stm-exam-header">
+            <div class="stm-exam-badge">COUNTDOWN</div>
+            {exam ? (
+              <h3 class="stm-exam-name">{exam.name}</h3>
+            ) : (
+              <select id="stm-exam-select" class="stm-exam-select">
+                <option value="">Select exam...</option>
+                {allExams.map(e => (
+                  <option 
+                    value={e.slug}
+                    data-name={e.name}
+                    data-sessions={JSON.stringify(e.sessions)}
+                  >
+                    {e.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          
+          <!-- Dynamic Session Selector (shows when exam has multiple sessions) -->
+          <div id="stm-session-wrapper" class={exam && exam.sessions.length > 1 ? '' : 'hidden'}>
+            <select id="stm-session-select" class="stm-session-select">
+              {exam && exam.sessions.map((s, i) => (
+                <option value={s.date} selected={i === 0}>
+                  {s.session}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <!-- Countdown Display -->
+          <div id="stm-countdown" class="stm-countdown">
+            <div class="stm-countdown-unit">
+              <span id="stm-days" class="stm-countdown-value">00</span>
+              <span class="stm-countdown-label">DAYS</span>
+            </div>
+            <span class="stm-countdown-sep">:</span>
+            <div class="stm-countdown-unit">
+              <span id="stm-hours" class="stm-countdown-value">00</span>
+              <span class="stm-countdown-label">HRS</span>
+            </div>
+            <span class="stm-countdown-sep">:</span>
+            <div class="stm-countdown-unit">
+              <span id="stm-mins" class="stm-countdown-value">00</span>
+              <span class="stm-countdown-label">MIN</span>
+            </div>
+            <span class="stm-countdown-sep">:</span>
+            <div class="stm-countdown-unit">
+              <span id="stm-secs" class="stm-countdown-value">00</span>
+              <span class="stm-countdown-label">SEC</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    
+    <!-- Join/Study Panel (Bottom Left) -->
+    <div class="stm-join-overlay">
+      <div class="stm-join-card">
+        <!-- Not Joined State -->
+        <div id="stm-not-joined" class="stm-join-state">
+          <div class="stm-join-info">
+            <div class="stm-join-icon">🎯</div>
+            <div>
+              <p class="stm-join-title">Start Study Session</p>
+              <p class="stm-join-subtitle">Join the map & track your progress</p>
+            </div>
+          </div>
+          <button id="stm-join-btn" class="stm-btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 3l14 9-14 9V3z" fill="currentColor"/>
+            </svg>
+            Start
+          </button>
+        </div>
+        
+        <!-- Joined State -->
+        <div id="stm-joined" class="stm-join-state hidden">
+          <div class="stm-user-info">
+            <img id="stm-user-avatar" src="" alt="" class="stm-user-avatar" />
+            <div>
+              <p class="stm-join-title">You're studying!</p>
+              <p class="stm-join-subtitle">
+                <span id="stm-user-location">India</span>
+                <span class="stm-separator">•</span>
+                <span id="stm-user-duration">0m</span>
+              </p>
+            </div>
+          </div>
+          <button id="stm-leave-btn" class="stm-btn-secondary">Stop</button>
+        </div>
+        
+        <!-- Error State -->
+        <div id="stm-error" class="stm-join-state hidden">
+          <div class="stm-join-info">
+            <div class="stm-join-icon">📡</div>
+            <div>
+              <p class="stm-join-title">Live Map Unavailable</p>
+              <p class="stm-join-subtitle">Check back later</p>
+            </div>
+          </div>
+          <button id="stm-retry-btn" class="stm-btn-secondary">Retry</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="stm-loading" class="stm-loading">
+      <div class="stm-loader"></div>
+      <p>Loading map...</p>
+    </div>
+    
+    <!-- Empty State -->
+    <div id="stm-empty" class="stm-empty hidden">
+      <div class="stm-empty-content">
+        <span class="stm-empty-icon">📚</span>
+        <p class="stm-empty-title">No students online</p>
+        <p class="stm-empty-subtitle">Be the first to start studying!</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fullscreen Modal -->
+  <div id="stm-fullscreen-modal" class="stm-fullscreen-modal hidden">
+    <!-- Fullscreen Map Container -->
+    <div id="stm-fullscreen-map" class="stm-fullscreen-map"></div>
+    
+    <!-- Fullscreen Top Bar -->
+    <div class="stm-fs-top-bar">
+      <div class="stm-fs-left">
+        <div id="stm-fs-status" class="stm-status-badge stm-status-connected">
+          <span class="stm-status-dot"></span>
+          <span>Live</span>
+        </div>
+        <div class="stm-live-count">
+          <span id="stm-fs-count">0</span>
+          <span class="stm-count-label">studying</span>
+        </div>
+      </div>
+      <div class="stm-fs-right">
+        <a href="/" class="stm-fs-link" title="All Exams">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span class="stm-fs-link-text">Exams</span>
+        </a>
+        <button id="stm-fs-close" class="stm-fs-close" title="Exit Fullscreen (ESC)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span class="stm-fs-close-text">ESC</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Fullscreen Countdown - Bottom Right Corner -->
+    <div class="stm-fs-countdown-panel">
+      <div class="stm-fs-countdown-header">
+        <span class="stm-fs-exam-badge">COUNTDOWN</span>
+        <h3 id="stm-fs-exam-name" class="stm-fs-exam-name">Select Exam</h3>
+      </div>
+      <div class="stm-fs-countdown">
+        <div class="stm-fs-countdown-unit">
+          <span id="stm-fs-days" class="stm-fs-countdown-value">00</span>
+          <span class="stm-fs-countdown-label">Days</span>
+        </div>
+        <span class="stm-fs-countdown-sep">:</span>
+        <div class="stm-fs-countdown-unit">
+          <span id="stm-fs-hours" class="stm-fs-countdown-value">00</span>
+          <span class="stm-fs-countdown-label">Hrs</span>
+        </div>
+        <span class="stm-fs-countdown-sep">:</span>
+        <div class="stm-fs-countdown-unit">
+          <span id="stm-fs-mins" class="stm-fs-countdown-value">00</span>
+          <span class="stm-fs-countdown-label">Min</span>
+        </div>
+        <span class="stm-fs-countdown-sep">:</span>
+        <div class="stm-fs-countdown-unit">
+          <span id="stm-fs-secs" class="stm-fs-countdown-value">00</span>
+          <span class="stm-fs-countdown-label">Sec</span>
+        </div>
+      </div>
+      <p id="stm-fs-session-info" class="stm-fs-session-info"></p>
+    </div>
+    
+    <!-- Fullscreen Join Panel - Bottom Left -->
+    <div class="stm-fs-join-panel">
+      <div id="stm-fs-not-joined" class="stm-join-state">
+        <div class="stm-join-info">
+          <div class="stm-join-icon">🎯</div>
+          <div>
+            <p class="stm-join-title">Start Studying</p>
+            <p class="stm-join-subtitle">Appear on the map</p>
+          </div>
+        </div>
+        <button id="stm-fs-join-btn" class="stm-btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 3l14 9-14 9V3z" fill="currentColor"/>
+          </svg>
+          Start
+        </button>
+      </div>
+      
+      <div id="stm-fs-joined" class="stm-join-state hidden">
+        <div class="stm-user-info">
+          <img id="stm-fs-user-avatar" src="" alt="" class="stm-user-avatar" />
+          <div>
+            <p class="stm-join-title">Studying!</p>
+            <p class="stm-join-subtitle">
+              <span id="stm-fs-user-location">India</span>
+              <span class="stm-separator">•</span>
+              <span id="stm-fs-user-duration">0m</span>
+            </p>
+          </div>
+        </div>
+        <button id="stm-fs-leave-btn" class="stm-btn-secondary">Stop</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+<style>
+  /* ===========================================
+   * THEME VARIABLES
+   * =========================================== */
+  .study-timer-map {
+    --stm-radius: 16px;
+    --stm-radius-sm: 10px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    
+    /* Light theme defaults */
+    --stm-bg: var(--bg-primary, #f8f9fa);
+    --stm-card-bg: var(--bg-secondary, rgba(255, 255, 255, 0.95));
+    --stm-text: var(--text-primary, #1a1a1a);
+    --stm-text-secondary: var(--text-secondary, #666);
+    --stm-border: var(--border-color, rgba(0, 0, 0, 0.08));
+    --stm-accent: var(--accent-primary, #10b981);
+    --stm-btn-hover: var(--bg-tertiary, rgba(0, 0, 0, 0.05));
+    --stm-invert: 0;
+  }
+  
+  :global([data-theme="dark"]) .study-timer-map {
+    --stm-bg: #1a1a1a;
+    --stm-card-bg: rgba(30, 30, 30, 0.95);
+    --stm-text: #f5f5f5;
+    --stm-text-secondary: #999;
+    --stm-border: rgba(255, 255, 255, 0.1);
+    --stm-accent: #10b981;
+    --stm-btn-hover: rgba(255, 255, 255, 0.1);
+    --stm-invert: 1;
+  }
+  
+  :global([data-theme="ocean"]) .study-timer-map {
+    --stm-bg: #0c4a6e;
+    --stm-card-bg: rgba(12, 74, 110, 0.95);
+    --stm-text: #e0f2fe;
+    --stm-text-secondary: #7dd3fc;
+    --stm-border: rgba(125, 211, 252, 0.2);
+    --stm-accent: #38bdf8;
+    --stm-btn-hover: rgba(125, 211, 252, 0.15);
+    --stm-invert: 1;
+  }
+  
+  :global([data-theme="valentine"]) .study-timer-map {
+    --stm-bg: #fdf2f8;
+    --stm-card-bg: rgba(253, 242, 248, 0.98);
+    --stm-text: #831843;
+    --stm-text-secondary: #be185d;
+    --stm-border: rgba(190, 24, 93, 0.15);
+    --stm-accent: #ec4899;
+    --stm-btn-hover: rgba(251, 207, 232, 0.5);
+    --stm-invert: 0;
+  }
+  
+  :global([data-theme="cupcake"]) .study-timer-map {
+    --stm-bg: #faf7f5;
+    --stm-card-bg: rgba(255, 255, 255, 0.98);
+    --stm-text: #291334;
+    --stm-text-secondary: #65a30d;
+    --stm-border: rgba(101, 163, 13, 0.2);
+    --stm-accent: #65a30d;
+    --stm-btn-hover: rgba(101, 163, 13, 0.1);
+    --stm-invert: 0;
+  }
+  
+  /* Container */
+  .stm-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--stm-radius);
+    background: var(--stm-bg);
+    border: 1px solid var(--stm-border);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  .stm-map {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  
+  /* Top Bar - full width with proper button positioning */
+  .stm-top-bar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 10;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  
+  .stm-top-bar > * {
+    pointer-events: auto;
+  }
+  
+  .stm-top-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  
+  /* Right side - buttons at far right edge */
+  .stm-top-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Status Badge */
+  .stm-status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--stm-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    color: var(--stm-text);
+  }
+  
+  .stm-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+  }
+  
+  .stm-status-connecting .stm-status-dot {
+    animation: stm-pulse 1.5s ease-in-out infinite;
+  }
+  
+  .stm-status-connected .stm-status-dot {
+    background: var(--stm-accent);
+  }
+  
+  .stm-status-error .stm-status-dot {
+    background: #ef4444;
+  }
+  
+  @keyframes stm-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  /* Live Count */
+  .stm-live-count {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 8px 14px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    font-size: 13px;
+    border: 1px solid var(--stm-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .stm-live-count span:first-child {
+    font-weight: 600;
+    color: var(--stm-text);
+  }
+  
+  .stm-count-label {
+    color: var(--stm-text-secondary);
+  }
+  
+  /* Icon Button */
+  .stm-icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--stm-border);
+    border-radius: var(--stm-radius-sm);
+    color: var(--stm-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+  }
+  
+  .stm-icon-btn:hover {
+    background: var(--stm-btn-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+  
+  .stm-icon-btn:active {
+    transform: translateY(0);
+  }
+  
+  /* Timer Overlay - Bottom Left for the main small map */
+  .stm-timer-overlay {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    z-index: 10;
+  }
+  
+  .stm-timer-card {
+    min-width: 300px;
+    padding: 18px 22px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(20px);
+    border-radius: var(--stm-radius);
+    border: 1px solid var(--stm-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+  
+  .stm-exam-header {
+    margin-bottom: 12px;
+  }
+  
+  .stm-exam-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--stm-accent);
+    margin-bottom: 4px;
+  }
+  
+  .stm-exam-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--stm-text);
+    margin: 0;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+  }
+  
+  .stm-exam-select,
+  .stm-session-select {
+    width: 100%;
+    padding: 10px 32px 10px 12px;
+    background-color: var(--stm-card-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    border: 1px solid var(--stm-border);
+    border-radius: 8px;
+    color: var(--stm-text);
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    margin-bottom: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  .stm-exam-select option,
+  .stm-session-select option {
+    background-color: var(--stm-card-bg, #fff);
+    color: var(--stm-text, #000);
+    padding: 8px;
+  }
+  
+  .stm-exam-select:focus,
+  .stm-session-select:focus {
+    border-color: var(--stm-accent);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+  }
+  
+  #stm-session-wrapper.hidden {
+    display: none;
+  }
+  
+  /* Countdown */
+  .stm-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 12px;
+  }
+  
+  .stm-countdown-unit {
+    text-align: center;
+    min-width: 56px;
+  }
+  
+  .stm-countdown-value {
+    display: block;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--stm-text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  
+  .stm-countdown-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--stm-text-secondary);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+  
+  .stm-countdown-sep {
+    font-size: 28px;
+    color: var(--stm-text-secondary);
+    opacity: 0.4;
+    margin: 0 2px;
+    align-self: flex-start;
+    padding-top: 4px;
+    font-weight: 300;
+  }
+  
+  /* Join Overlay - Bottom Right */
+  .stm-join-overlay {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    z-index: 10;
+  }
+  
+  .stm-join-card {
+    padding: 14px 18px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(20px);
+    border-radius: var(--stm-radius);
+    border: 1px solid var(--stm-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+  
+  .stm-join-state {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .stm-join-state.hidden {
+    display: none;
+  }
+  
+  .stm-join-info,
+  .stm-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .stm-join-icon {
+    font-size: 24px;
+  }
+  
+  .stm-user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--stm-accent);
+    background: var(--stm-bg);
+  }
+  
+  .stm-join-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--stm-text);
+    margin: 0;
+  }
+  
+  .stm-join-subtitle {
+    font-size: 12px;
+    color: var(--stm-text-secondary);
+    margin: 0;
+  }
+  
+  .stm-separator {
+    margin: 0 4px;
+    opacity: 0.5;
+  }
+  
+  .stm-text-warning {
+    color: #f59e0b;
+  }
+  
+  /* Buttons */
+  .stm-btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: var(--stm-accent);
+    color: white;
+    border: none;
+    border-radius: var(--stm-radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .stm-btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .stm-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .stm-btn-secondary {
+    padding: 8px 14px;
+    background: transparent;
+    color: var(--stm-text-secondary);
+    border: 1px solid var(--stm-border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  
+  .stm-btn-secondary:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+  }
+  
+  .stm-btn-secondary:active {
+    transform: scale(0.98);
+  }
+  
+  /* Loading */
+  .stm-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--stm-bg);
+  }
+  
+  .stm-loading.hidden {
+    display: none;
+  }
+  
+  .stm-loader {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--stm-border);
+    border-top-color: var(--stm-accent);
+    border-radius: 50%;
+    animation: stm-spin 0.7s linear infinite;
+  }
+  
+  @keyframes stm-spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .stm-loading p {
+    font-size: 13px;
+    color: var(--stm-text-secondary);
+  }
+  
+  /* Empty State */
+  .stm-empty {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  
+  .stm-empty.hidden {
+    display: none;
+  }
+  
+  .stm-empty-content {
+    text-align: center;
+    padding: 32px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: var(--stm-radius);
+    border: 1px solid var(--stm-border);
+    pointer-events: auto;
+  }
+  
+  .stm-empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  
+  .stm-empty-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--stm-text);
+    margin: 0 0 4px;
+  }
+  
+  .stm-empty-subtitle {
+    font-size: 13px;
+    color: var(--stm-text-secondary);
+    margin: 0;
+  }
+  
+  /* ===========================================
+   * FULLSCREEN MODAL STYLES
+   * =========================================== */
+  .stm-fullscreen-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--stm-bg);
+    opacity: 1;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .stm-fullscreen-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  
+  .stm-fullscreen-map {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  
+  /* Fullscreen Top Bar */
+  .stm-fs-top-bar {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  
+  .stm-fs-top-bar > * {
+    pointer-events: auto;
+  }
+  
+  .stm-fs-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .stm-fs-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .stm-fs-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--stm-border);
+    border-radius: 10px;
+    color: var(--stm-text);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  
+  .stm-fs-link:hover {
+    background: var(--stm-btn-hover);
+    transform: translateY(-1px);
+  }
+  
+  .stm-fs-close {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--stm-border);
+    border-radius: 10px;
+    color: var(--stm-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .stm-fs-close:hover {
+    background: var(--stm-btn-hover);
+    transform: translateY(-1px);
+  }
+  
+  /* Fullscreen Countdown Panel - Bottom Right */
+  .stm-fs-countdown-panel {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    z-index: 10;
+    padding: 28px 40px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--stm-border);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+    min-width: 480px;
+  }
+  
+  .stm-fs-countdown-header {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .stm-fs-exam-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--stm-accent);
+    margin-bottom: 6px;
+    display: block;
+  }
+  
+  .stm-fs-exam-name {
+    font-size: 22px;
+    font-weight: 500;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    color: var(--stm-text);
+    margin: 0;
+  }
+  
+  .stm-fs-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  
+  .stm-fs-countdown-unit {
+    text-align: center;
+    min-width: 88px;
+  }
+  
+  .stm-fs-countdown-value {
+    display: block;
+    font-size: 72px;
+    font-weight: 700;
+    color: var(--stm-text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  
+  .stm-fs-countdown-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--stm-text-secondary);
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+  
+  .stm-fs-countdown-sep {
+    font-size: 52px;
+    font-weight: 200;
+    color: var(--stm-text-secondary);
+    opacity: 0.35;
+    margin: 0 2px;
+    align-self: flex-start;
+    padding-top: 8px;
+  }
+  
+  .stm-fs-session-info {
+    font-size: 12px;
+    color: var(--stm-text-secondary);
+    margin: 14px 0 0;
+    text-align: center;
+  }
+  
+  /* Fullscreen Join Panel - Bottom Left */
+  .stm-fs-join-panel {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 10;
+    padding: 14px 16px;
+    background: var(--stm-card-bg);
+    backdrop-filter: blur(20px);
+    border-radius: var(--stm-radius);
+    border: 1px solid var(--stm-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Responsive Fullscreen */
+  @media (max-width: 768px) {
+    .stm-fs-top-bar {
+      top: 12px;
+      left: 12px;
+      right: 12px;
+    }
+    
+    .stm-fs-link-text,
+    .stm-fs-close-text {
+      display: none;
+    }
+    
+    .stm-fs-link,
+    .stm-fs-close {
+      padding: 10px;
+    }
+    
+    .stm-fs-countdown-panel {
+      bottom: 16px;
+      right: 16px;
+      left: 16px;
+      min-width: unset;
+      padding: 20px 24px;
+    }
+    
+    .stm-fs-countdown-value {
+      font-size: 52px;
+    }
+    
+    .stm-fs-countdown-unit {
+      min-width: 64px;
+    }
+    
+    .stm-fs-countdown-sep {
+      font-size: 38px;
+    }
+    
+    .stm-fs-exam-name {
+      font-size: 16px;
+    }
+    
+    .stm-fs-join-panel {
+      display: none; /* Hide on mobile to save space */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .stm-fs-countdown-value {
+      font-size: 40px;
+    }
+    
+    .stm-fs-countdown-unit {
+      min-width: 52px;
+    }
+    
+    .stm-fs-countdown-sep {
+      font-size: 28px;
+    }
+    
+    .stm-fs-countdown-label {
+      font-size: 11px;
+    }
+  }
+  
+  /* Responsive - Main Component */
+  @media (max-width: 768px) {
+    .stm-container {
+      height: 500px !important;
+    }
+    
+    .stm-top-bar {
+      top: 8px;
+      left: 8px;
+      right: 8px;
+    }
+    
+    .stm-status-badge {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 12px;
+    }
+    
+    .stm-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    
+    .stm-live-count {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 12px;
+    }
+    
+    .stm-icon-btn {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .stm-icon-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .stm-container {
+      height: 450px !important;
+    }
+    
+    .stm-timer-overlay {
+      bottom: auto;
+      top: 52px;
+      left: 8px;
+      right: 8px;
+    }
+    
+    .stm-join-overlay {
+      left: 8px;
+      bottom: 8px;
+      right: 8px;
+    }
+    
+    .stm-join-card {
+      width: 100%;
+    }
+    
+    .stm-timer-card {
+      min-width: unset;
+      padding: 14px;
+    }
+    
+    .stm-countdown-value {
+      font-size: 28px;
+    }
+    
+    .stm-countdown-unit {
+      min-width: 44px;
+    }
+    
+    .stm-countdown-sep {
+      font-size: 22px;
+    }
+    
+    .stm-count-label {
+      display: none;
+    }
+    
+    .stm-status-badge span:last-child {
+      display: none;
+    }
+    
+    /* Maintain circular bubble shape when text is hidden */
+    .stm-status-badge {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    
+    .stm-status-dot {
+      margin: 0;
+    }
+    
+    .stm-live-count {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 50%;
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .stm-container {
+      height: 420px !important;
+    }
+    
+    .stm-countdown-value {
+      font-size: 20px;
+    }
+    
+    .stm-countdown-sep {
+      font-size: 16px;
+    }
+    
+    .stm-join-info,
+    .stm-user-info {
+      gap: 8px;
+    }
+    
+    .stm-join-icon {
+      font-size: 20px;
+    }
+    
+    .stm-join-title {
+      font-size: 13px;
+    }
+    
+    .stm-join-subtitle {
+      font-size: 11px;
+    }
+    
+    .stm-btn-primary {
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    
+    /* Hide live count text on very small screens */
+    .stm-live-count {
+      padding: 6px 8px;
+    }
+  }
+  
+  /* Very small mobile screens */
+  @media (max-width: 360px) {
+    .stm-timer-overlay {
+      top: 48px;
+    }
+    
+    .stm-timer-card {
+      padding: 10px;
+    }
+    
+    .stm-countdown-value {
+      font-size: 18px;
+    }
+    
+    .stm-countdown-unit {
+      min-width: 38px;
+    }
+    
+    .stm-countdown-sep {
+      font-size: 14px;
+    }
+    
+    .stm-exam-name {
+      font-size: 12px;
+    }
+    
+    .stm-btn-primary {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Leaflet customizations for StudyTimerMap */
+  .study-timer-map .leaflet-control-attribution {
+    display: none !important;
+  }
+  
+  /* Position zoom controls on LEFT side, well below the top bar (65px offset for clear separation from status badges) */
+  .study-timer-map .leaflet-top.leaflet-left {
+    top: 65px !important;
+    left: 12px !important;
+  }
+  
+  .study-timer-map .leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12) !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    margin: 0 !important;
+  }
+  
+  .study-timer-map .leaflet-control-zoom a {
+    background: var(--stm-card-bg, rgba(255, 255, 255, 0.95)) !important;
+    color: var(--stm-text, #333) !important;
+    border: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 16px !important;
+    font-weight: 300 !important;
+    transition: background 0.15s ease !important;
+  }
+  
+  .study-timer-map .leaflet-control-zoom a:hover {
+    background: var(--stm-btn-hover, #f5f5f5) !important;
+  }
+  
+  .study-timer-map .leaflet-control-zoom a:first-child {
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: 1px solid var(--stm-border, rgba(0, 0, 0, 0.06)) !important;
+  }
+  
+  .study-timer-map .leaflet-control-zoom a:last-child {
+    border-radius: 0 0 10px 10px !important;
+  }
+  
+  /* Mobile-specific zoom control positioning */
+  @media (max-width: 640px) {
+    .study-timer-map .leaflet-top.leaflet-left {
+      top: auto !important;
+      bottom: 120px !important;
+      left: 8px !important;
+    }
+    
+    .study-timer-map .leaflet-control-zoom a {
+      width: 32px !important;
+      height: 32px !important;
+      line-height: 32px !important;
+      font-size: 14px !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .study-timer-map .leaflet-top.leaflet-left {
+      bottom: 100px !important;
+    }
+  }
+  
+  /* Map filter based on theme */
+  .study-timer-map .leaflet-tile-pane {
+    filter: grayscale(1) contrast(1.05);
+  }
+  
+  :global([data-theme="dark"]) .study-timer-map .leaflet-tile-pane,
+  :global([data-theme="ocean"]) .study-timer-map .leaflet-tile-pane {
+    filter: grayscale(1) invert(1) contrast(1.1) brightness(0.85);
+  }
+  
+  :global([data-theme="valentine"]) .study-timer-map .leaflet-tile-pane {
+    filter: grayscale(0.3) sepia(0.2) hue-rotate(300deg) saturate(1.2);
+  }
+  
+  :global([data-theme="cupcake"]) .study-timer-map .leaflet-tile-pane {
+    filter: grayscale(0.3) sepia(0.15) saturate(1.1);
+  }
+  
+  :global([data-theme="dark"]) .study-timer-map .leaflet-control-zoom a,
+  :global([data-theme="ocean"]) .study-timer-map .leaflet-control-zoom a {
+    background: rgba(30, 30, 30, 0.95) !important;
+    color: white !important;
+  }
+  
+  :global([data-theme="dark"]) .study-timer-map .leaflet-control-zoom a:first-child,
+  :global([data-theme="ocean"]) .study-timer-map .leaflet-control-zoom a:first-child {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+  
+  /* Markers */
+  .study-timer-map .stm-marker {
+    transition: transform 0.15s ease;
+  }
+  
+  .study-timer-map .stm-marker:hover {
+    transform: scale(1.1);
+    z-index: 10000 !important;
+  }
+  
+  .study-timer-map .stm-marker .marker-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .study-timer-map .stm-marker img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    background: #e5e5e5;
+    object-fit: cover;
+  }
+  
+  .study-timer-map .stm-marker .duration-badge {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  
+  .study-timer-map .stm-marker.self img {
+    border-color: var(--stm-accent, #10b981);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3), 0 3px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .study-timer-map .stm-marker.self .duration-badge {
+    background: var(--stm-accent, rgba(16, 185, 129, 0.9));
+  }
+  
+  /* Popup - Professional Design */
+  .study-timer-map .leaflet-popup-content-wrapper,
+  .stm-fullscreen-map .leaflet-popup-content-wrapper {
+    background: var(--stm-card-bg, rgba(255, 255, 255, 0.98)) !important;
+    color: var(--stm-text, #1a1a1a) !important;
+    border-radius: 20px !important;
+    padding: 0 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--stm-border, rgba(0, 0, 0, 0.06)) !important;
+    overflow: hidden;
+  }
+  
+  .study-timer-map .leaflet-popup-tip,
+  .stm-fullscreen-map .leaflet-popup-tip {
+    background: var(--stm-card-bg, rgba(255, 255, 255, 0.98)) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08) !important;
+  }
+  
+  .study-timer-map .leaflet-popup-content,
+  .stm-fullscreen-map .leaflet-popup-content {
+    margin: 0 !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    min-width: 220px !important;
+  }
+  
+  /* Custom Popup Card */
+  .stm-popup-card {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stm-popup-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+  }
+  
+  .stm-popup-body {
+    padding: 14px;
+  }
+  
+  .stm-popup-avatar-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  
+  .stm-popup-avatar-ring {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    padding: 2px;
+    border: 2.5px solid;
+    background: var(--stm-card-bg, white);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .stm-popup-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: linear-gradient(135deg, #f0f0f0, #e5e5e5);
+  }
+  
+  .stm-popup-live-dot {
+    position: absolute;
+    bottom: 2px;
+    right: calc(50% - 28px);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--stm-card-bg, white);
+    animation: stm-pulse-glow 2s ease-in-out infinite;
+  }
+  
+  @keyframes stm-pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  }
+  
+  .stm-popup-details {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  
+  .stm-popup-exam-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--stm-text, #1a1a1a);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  
+  .stm-popup-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .stm-popup-meta-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--stm-text-secondary, #666);
+  }
+  
+  .stm-popup-meta-item svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+  
+  .stm-popup-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--stm-btn-hover, rgba(0, 0, 0, 0.03));
+    border-radius: 10px;
+    margin-top: 4px;
+  }
+  
+  .stm-popup-status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: stm-pulse 1.5s ease-in-out infinite;
+  }
+  
+  .stm-popup-status-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--stm-text-secondary, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .stm-popup-you-badge {
+    padding: 4px 10px;
+    background: var(--stm-accent, #10b981);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: auto;
+  }
+  
+  /* Responsive Popup Styles */
+  @media (max-width: 480px) {
+    .study-timer-map .leaflet-popup-content,
+    .stm-fullscreen-map .leaflet-popup-content {
+      min-width: 220px !important;
+    }
+    
+    .stm-popup-body {
+      padding: 16px;
+    }
+    
+    .stm-popup-avatar-ring {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .stm-popup-exam-name {
+      font-size: 15px;
+    }
+    
+    .stm-popup-meta-item {
+      font-size: 12px;
+    }
+    
+    .stm-popup-status-bar {
+      padding: 10px 12px;
+    }
+  }
+
+  /* Fullscreen map Leaflet customizations */
+  .stm-fullscreen-map .leaflet-control-attribution {
+    display: none !important;
+  }
+  
+  /* Position fullscreen zoom controls on LEFT side, well below the top bar (75px offset for clear separation) */
+  .stm-fullscreen-map .leaflet-top.leaflet-left {
+    top: 75px !important;
+    left: 20px !important;
+  }
+  
+  .stm-fullscreen-map .leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12) !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    margin: 0 !important;
+  }
+  
+  .stm-fullscreen-map .leaflet-control-zoom a {
+    background: var(--stm-card-bg, rgba(255, 255, 255, 0.95)) !important;
+    color: var(--stm-text, #333) !important;
+    border: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 16px !important;
+    font-weight: 300 !important;
+    transition: background 0.15s ease !important;
+  }
+  
+  .stm-fullscreen-map .leaflet-control-zoom a:hover {
+    background: var(--stm-btn-hover, #f5f5f5) !important;
+  }
+  
+  .stm-fullscreen-map .leaflet-control-zoom a:first-child {
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: 1px solid var(--stm-border, rgba(0, 0, 0, 0.06)) !important;
+  }
+  
+  .stm-fullscreen-map .leaflet-control-zoom a:last-child {
+    border-radius: 0 0 10px 10px !important;
+  }
+  
+  /* Fullscreen map filter based on theme */
+  .stm-fullscreen-map .leaflet-tile-pane {
+    filter: grayscale(1) contrast(1.05);
+  }
+  
+  :global([data-theme="dark"]) .stm-fullscreen-map .leaflet-tile-pane,
+  :global([data-theme="ocean"]) .stm-fullscreen-map .leaflet-tile-pane {
+    filter: grayscale(1) invert(1) contrast(1.1) brightness(0.85);
+  }
+  
+  :global([data-theme="valentine"]) .stm-fullscreen-map .leaflet-tile-pane {
+    filter: grayscale(0.3) sepia(0.2) hue-rotate(300deg) saturate(1.2);
+  }
+  
+  :global([data-theme="cupcake"]) .stm-fullscreen-map .leaflet-tile-pane {
+    filter: grayscale(0.3) sepia(0.15) saturate(1.1);
+  }
+  
+  :global([data-theme="dark"]) .stm-fullscreen-map .leaflet-control-zoom a,
+  :global([data-theme="ocean"]) .stm-fullscreen-map .leaflet-control-zoom a {
+    background: rgba(30, 30, 30, 0.95) !important;
+    color: white !important;
+  }
+  
+  :global([data-theme="dark"]) .stm-fullscreen-map .leaflet-control-zoom a:first-child,
+  :global([data-theme="ocean"]) .stm-fullscreen-map .leaflet-control-zoom a:first-child {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+  
+  /* Fullscreen markers */
+  .stm-fullscreen-map .stm-marker {
+    transition: transform 0.15s ease;
+  }
+  
+  .stm-fullscreen-map .stm-marker:hover {
+    transform: scale(1.1);
+    z-index: 10000 !important;
+  }
+  
+  .stm-fullscreen-map .stm-marker .marker-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .stm-fullscreen-map .stm-marker img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    background: #e5e5e5;
+    object-fit: cover;
+  }
+  
+  .stm-fullscreen-map .stm-marker .duration-badge {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  
+  .stm-fullscreen-map .stm-marker.self img {
+    border-color: var(--stm-accent, #10b981);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3), 0 3px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .stm-fullscreen-map .stm-marker.self .duration-badge {
+    background: var(--stm-accent, rgba(16, 185, 129, 0.9));
+  }
+  
+  /* Fullscreen Popup */
+  .stm-fullscreen-map .leaflet-popup-content-wrapper {
+    background: var(--stm-card-bg, rgba(20, 20, 20, 0.96)) !important;
+    color: var(--stm-text, white) !important;
+    border-radius: 12px !important;
+    padding: 0 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--stm-border, transparent) !important;
+  }
+  
+  .stm-fullscreen-map .leaflet-popup-tip {
+    background: var(--stm-card-bg, rgba(20, 20, 20, 0.96)) !important;
+  }
+  
+  .stm-fullscreen-map .leaflet-popup-content {
+    margin: 14px 16px !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+</style>
+
+<script>
+  import L from 'leaflet';
+  import {
+    initializeSessionManager,
+    startStudySession,
+    endStudySession,
+    fetchActiveSessions,
+    onPresenceUpdate,
+    onConnectionChange,
+    isSessionActive,
+    getCurrentLocation,
+    type StudyPresence,
+    type ConnectionStatus,
+  } from '../utils/study-session-manager';
+  import { getAvatarUrl } from '../utils/notion-faces';
+  import { isSupabaseConfigured } from '../utils/supabase-client';
+
+  // India map config
+  const INDIA_BOUNDS: L.LatLngBoundsExpression = [[5.5, 67.0], [37.5, 98.0]];
+  const INDIA_CENTER: L.LatLngExpression = [22.5, 78.5];
+  const DEFAULT_ZOOM = 5;
+  const MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+  const LABELS_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png';
+
+  // State
+  let map: L.Map | null = null;
+  let markerLayer: L.LayerGroup | null = null;
+  let currentPresences: StudyPresence[] = [];
+  let countdownTimer: ReturnType<typeof setInterval> | null = null;
+  let durationTimer: ReturnType<typeof setInterval> | null = null;
+  let refreshTimer: ReturnType<typeof setInterval> | null = null;
+  let userAvatarSeed: string | null = null;
+  let sessionStartTime: Date | null = null;
+
+  // DOM Elements
+  const wrapper = document.querySelector('.study-timer-map') as HTMLElement;
+  const mapElement = document.getElementById('stm-map') as HTMLElement;
+  const loading = document.getElementById('stm-loading') as HTMLElement;
+  const empty = document.getElementById('stm-empty') as HTMLElement;
+  const count = document.getElementById('stm-count') as HTMLElement;
+  
+  const statusBadge = document.getElementById('stm-status') as HTMLElement;
+  const statusText = document.getElementById('stm-status-text') as HTMLElement;
+  
+  const notJoined = document.getElementById('stm-not-joined') as HTMLElement;
+  const joined = document.getElementById('stm-joined') as HTMLElement;
+  const errorState = document.getElementById('stm-error') as HTMLElement;
+  const joinBtn = document.getElementById('stm-join-btn') as HTMLButtonElement;
+  const leaveBtn = document.getElementById('stm-leave-btn') as HTMLButtonElement;
+  const retryBtn = document.getElementById('stm-retry-btn') as HTMLButtonElement;
+  const userAvatar = document.getElementById('stm-user-avatar') as HTMLImageElement;
+  const userLocation = document.getElementById('stm-user-location') as HTMLElement;
+  const userDuration = document.getElementById('stm-user-duration') as HTMLElement;
+  
+  const refreshBtn = document.getElementById('stm-refresh') as HTMLButtonElement;
+  const fullscreenBtn = document.getElementById('stm-fullscreen') as HTMLButtonElement;
+  
+  // Timer elements
+  const examSelect = document.getElementById('stm-exam-select') as HTMLSelectElement;
+  const sessionSelect = document.getElementById('stm-session-select') as HTMLSelectElement;
+  const sessionWrapper = document.getElementById('stm-session-wrapper') as HTMLElement;
+  const countdown = document.getElementById('stm-countdown') as HTMLElement;
+  const days = document.getElementById('stm-days') as HTMLElement;
+  const hours = document.getElementById('stm-hours') as HTMLElement;
+  const mins = document.getElementById('stm-mins') as HTMLElement;
+  const secs = document.getElementById('stm-secs') as HTMLElement;
+  
+  // Fullscreen elements
+  const fsModal = document.getElementById('stm-fullscreen-modal') as HTMLElement;
+  const fsMapEl = document.getElementById('stm-fullscreen-map') as HTMLElement;
+  const fsClose = document.getElementById('stm-fs-close') as HTMLButtonElement;
+  const fsCount = document.getElementById('stm-fs-count') as HTMLElement;
+  const fsExamName = document.getElementById('stm-fs-exam-name') as HTMLElement;
+  const fsSessionInfo = document.getElementById('stm-fs-session-info') as HTMLElement;
+  const fsDays = document.getElementById('stm-fs-days') as HTMLElement;
+  const fsHours = document.getElementById('stm-fs-hours') as HTMLElement;
+  const fsMins = document.getElementById('stm-fs-mins') as HTMLElement;
+  const fsSecs = document.getElementById('stm-fs-secs') as HTMLElement;
+  const fsNotJoined = document.getElementById('stm-fs-not-joined') as HTMLElement;
+  const fsJoined = document.getElementById('stm-fs-joined') as HTMLElement;
+  const fsJoinBtn = document.getElementById('stm-fs-join-btn') as HTMLButtonElement;
+  const fsLeaveBtn = document.getElementById('stm-fs-leave-btn') as HTMLButtonElement;
+  const fsUserAvatar = document.getElementById('stm-fs-user-avatar') as HTMLImageElement;
+  const fsUserLocation = document.getElementById('stm-fs-user-location') as HTMLElement;
+  const fsUserDuration = document.getElementById('stm-fs-user-duration') as HTMLElement;
+  
+  let fsMap: L.Map | null = null;
+  let fsMarkerLayer: L.LayerGroup | null = null;
+  let isFullscreen = false;
+  let currentTargetDate: string | null = null;
+  let currentExamName: string = '';
+
+  function formatDurationShort(start: Date): string {
+    const minutes = Math.floor((Date.now() - start.getTime()) / 60000);
+    if (minutes < 1) return 'now';
+    if (minutes < 60) return `${minutes}m`;
+    const h = Math.floor(minutes / 60);
+    if (h < 24) return `${h}h`;
+    return `${Math.floor(h / 24)}d`;
+  }
+
+  function formatDuration(startedAt: string): string {
+    const start = new Date(startedAt).getTime();
+    const minutes = Math.floor((Date.now() - start) / 60000);
+    if (minutes < 1) return 'Just started';
+    if (minutes < 60) return `${minutes}m`;
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    if (h < 24) return m > 0 ? `${h}h ${m}m` : `${h}h`;
+    const d = Math.floor(h / 24);
+    return `${d}d ${h % 24}h`;
+  }
+
+  function createMarker(presence: StudyPresence, isSelf: boolean): L.Marker {
+    const avatarUrl = presence.avatarUrl;
+    const durationBadge = formatDuration(presence.startedAt).split(' ')[0];
+    
+    const icon = L.divIcon({
+      className: `stm-marker ${isSelf ? 'self' : ''}`,
+      html: `
+        <div class="marker-wrapper">
+          <img src="${avatarUrl}" alt="" loading="lazy" />
+          <span class="duration-badge">${durationBadge}</span>
+        </div>
+      `,
+      iconSize: [44, 52],
+      iconAnchor: [22, 26],
+    });
+
+    const marker = L.marker([presence.latitude, presence.longitude], { 
+      icon,
+      zIndexOffset: isSelf ? 1000 : 0,
+    });
+    
+    const examText = presence.examName || 'General Study';
+    const locationText = [presence.city, presence.state].filter(Boolean).join(', ') || 'India';
+    const duration = formatDuration(presence.startedAt);
+    const durationNum = formatDurationShort(new Date(presence.startedAt));
+    const isActiveRecently = new Date(presence.startedAt).getTime() > Date.now() - 300000; // Within 5 mins
+    const statusColor = isActiveRecently ? '#22c55e' : '#f59e0b';
+    const statusLabel = isActiveRecently ? 'Active now' : 'Studying';
+    
+    marker.bindPopup(`
+      <div class="stm-popup-card">
+        <div class="stm-popup-gradient"></div>
+        <div class="stm-popup-body">
+          <div class="stm-popup-avatar-section">
+            <div class="stm-popup-avatar-ring" style="border-color: ${statusColor}">
+              <img src="${avatarUrl}" alt="" class="stm-popup-avatar" />
+            </div>
+            <span class="stm-popup-live-dot" style="background: ${statusColor}"></span>
+          </div>
+          
+          <div class="stm-popup-details">
+            <div class="stm-popup-exam-name">${examText}</div>
+            <div class="stm-popup-meta">
+              <div class="stm-popup-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>${locationText}</span>
+              </div>
+              <div class="stm-popup-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                <span>${duration}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stm-popup-status-bar">
+            <span class="stm-popup-status-indicator" style="background: ${statusColor}"></span>
+            <span class="stm-popup-status-text">${statusLabel}</span>
+            ${isSelf ? '<span class="stm-popup-you-badge">You</span>' : ''}
+          </div>
+        </div>
+      </div>
+    `, { offset: [0, -20], closeButton: false, className: 'stm-popup-wrapper' });
+
+    return marker;
+  }
+
+  /**
+   * Offset overlapping markers so they're visible when zoomed out
+   * Uses zoom-adaptive spacing for visibility at all zoom levels
+   */
+  function offsetOverlapping(presences: StudyPresence[], zoom: number = 5): StudyPresence[] {
+    // Calculate zoom-adaptive spacing - larger offset when zoomed out
+    // At zoom 5 (country view): ~0.1 degrees spacing
+    // At zoom 8 (city view): ~0.02 degrees spacing
+    const zoomFactor = Math.pow(2, 8 - zoom); // Exponential scaling
+    const baseSpacing = 0.02 * zoomFactor; // Base spacing in degrees
+    
+    // Group by approximate location based on current zoom
+    const groupPrecision = Math.max(5, Math.min(50, zoom * 5)); // Adaptive precision
+    const groups: Map<string, StudyPresence[]> = new Map();
+    presences.forEach(p => {
+      const key = `${Math.round(p.latitude * groupPrecision)},${Math.round(p.longitude * groupPrecision)}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(p);
+    });
+    
+    const result: StudyPresence[] = [];
+    
+    groups.forEach(group => {
+      if (group.length === 1) {
+        result.push(group[0]);
+      } else {
+        // Sort by start time (newest first) for consistent ordering
+        group.sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
+        
+        // Calculate center of the group
+        const centerLat = group.reduce((sum, p) => sum + p.latitude, 0) / group.length;
+        const centerLng = group.reduce((sum, p) => sum + p.longitude, 0) / group.length;
+        
+        // For small groups (2-5), spread horizontally in a row
+        // For larger groups, use hexagonal pattern
+        if (group.length <= 5) {
+          // Horizontal spread - visible as a row of avatars
+          const spacing = baseSpacing * 1.2;
+          const totalWidth = (group.length - 1) * spacing;
+          const startOffset = -totalWidth / 2;
+          
+          group.forEach((p, i) => {
+            result.push({
+              ...p,
+              latitude: centerLat,
+              longitude: centerLng + startOffset + (i * spacing),
+            });
+          });
+        } else {
+          // Hexagonal/flower pattern for larger groups
+          // Center marker first
+          result.push({ ...group[0], latitude: centerLat, longitude: centerLng });
+          
+          // Remaining markers in rings
+          let remaining = group.slice(1);
+          let ring = 1;
+          let processed = 0;
+          
+          while (processed < remaining.length) {
+            const ringCount = ring * 6; // 6, 12, 18...
+            const actualCount = Math.min(ringCount, remaining.length - processed);
+            const radius = ring * baseSpacing;
+            
+            for (let i = 0; i < actualCount; i++) {
+              const angle = (i / actualCount) * 2 * Math.PI - Math.PI / 2; // Start from top
+              result.push({
+                ...remaining[processed + i],
+                latitude: centerLat + radius * Math.sin(angle),
+                longitude: centerLng + radius * Math.cos(angle),
+              });
+            }
+            
+            processed += actualCount;
+            ring++;
+          }
+        }
+      }
+    });
+    return result;
+  }
+
+  function updateMarkers(presences: StudyPresence[]): void {
+    if (!map || !markerLayer) return;
+    markerLayer.clearLayers();
+    
+    // Get current zoom level for adaptive spacing
+    const zoom = map.getZoom();
+    const offset = offsetOverlapping(presences, zoom);
+    offset.forEach(p => {
+      const isSelf = userAvatarSeed && p.avatarUrl.includes(userAvatarSeed);
+      markerLayer!.addLayer(createMarker(p, !!isSelf));
+    });
+  }
+
+  function handlePresenceUpdate(presences: StudyPresence[]): void {
+    currentPresences = presences;
+    if (count) count.textContent = presences.length.toString();
+    if (fsCount) fsCount.textContent = presences.length.toString();
+    
+    // Dispatch global event for external count listeners (like study-map page)
+    window.dispatchEvent(new CustomEvent('studyCountUpdate', { 
+      detail: { count: presences.length } 
+    }));
+    
+    // Also update any element with id 'active-users-count' for compatibility
+    const globalCount = document.getElementById('active-users-count');
+    if (globalCount) globalCount.textContent = presences.length.toString();
+    
+    // Update hero count on study-map page
+    const heroCount = document.getElementById('hero-count');
+    if (heroCount) heroCount.textContent = presences.length.toString();
+    
+    if (empty) {
+      empty.classList.toggle('hidden', presences.length > 0);
+    }
+    
+    updateMarkers(presences);
+    
+    // Update fullscreen map markers too
+    if (isFullscreen && fsMarkerLayer) {
+      fsMarkerLayer.clearLayers();
+      const offset = offsetOverlapping(presences);
+      offset.forEach(p => {
+        const isSelf = userAvatarSeed && p.avatarUrl.includes(userAvatarSeed);
+        fsMarkerLayer!.addLayer(createMarker(p, !!isSelf));
+      });
+    }
+  }
+
+  function handleConnectionChange(status: ConnectionStatus): void {
+    if (!statusBadge || !statusText) return;
+    
+    statusBadge.className = 'stm-status-badge';
+    switch (status) {
+      case 'connecting':
+        statusBadge.classList.add('stm-status-connecting');
+        statusText.textContent = 'Connecting...';
+        break;
+      case 'connected':
+        statusBadge.classList.add('stm-status-connected');
+        statusText.textContent = 'Live';
+        break;
+      case 'disconnected':
+        statusBadge.classList.add('stm-status-connecting');
+        statusText.textContent = 'Offline';
+        break;
+      case 'error':
+        // Keep status badge showing but with "Preview" mode
+        statusBadge.classList.add('stm-status-connecting');
+        statusText.textContent = 'Preview';
+        // Don't show error state, just keep the "Start" button
+        // This allows users to still see the map even if backend isn't configured
+        break;
+    }
+  }
+
+  function updateSessionUI(): void {
+    const active = isSessionActive();
+    const location = getCurrentLocation();
+    
+    if (active && location) {
+      const seed = localStorage.getItem('timekeeper-avatar-seed') || 'user';
+      userAvatarSeed = seed;
+      
+      notJoined?.classList.add('hidden');
+      errorState?.classList.add('hidden');
+      joined?.classList.remove('hidden');
+      
+      // Update fullscreen UI too
+      fsNotJoined?.classList.add('hidden');
+      fsJoined?.classList.remove('hidden');
+      
+      if (userAvatar) userAvatar.src = getAvatarUrl(seed);
+      if (fsUserAvatar) fsUserAvatar.src = getAvatarUrl(seed);
+      
+      const locationStr = [location.city, location.state].filter(Boolean).join(', ') || 'India';
+      if (userLocation) userLocation.textContent = locationStr;
+      if (fsUserLocation) fsUserLocation.textContent = locationStr;
+      
+      // Start duration timer
+      sessionStartTime = new Date();
+      if (durationTimer) clearInterval(durationTimer);
+      durationTimer = setInterval(() => {
+        if (sessionStartTime) {
+          const dur = formatDurationShort(sessionStartTime);
+          if (userDuration) userDuration.textContent = dur;
+          if (fsUserDuration) fsUserDuration.textContent = dur;
+        }
+      }, 1000);
+    } else {
+      notJoined?.classList.remove('hidden');
+      joined?.classList.add('hidden');
+      errorState?.classList.add('hidden');
+      
+      // Update fullscreen UI too
+      fsNotJoined?.classList.remove('hidden');
+      fsJoined?.classList.add('hidden');
+      
+      if (durationTimer) {
+        clearInterval(durationTimer);
+        durationTimer = null;
+      }
+    }
+  }
+
+  async function joinSession(): Promise<void> {
+    if (joinBtn) joinBtn.disabled = true;
+    if (fsJoinBtn) fsJoinBtn.disabled = true;
+    
+    try {
+      const examSlug = wrapper?.dataset.examSlug || null;
+      const examName = wrapper?.dataset.examName || null;
+      
+      const success = await startStudySession(examSlug, examName);
+      if (success) {
+        updateSessionUI();
+        const location = getCurrentLocation();
+        if (location) {
+          // Smooth zoom to user location on the active map
+          if (isFullscreen && fsMap) {
+            fsMap.flyTo([location.latitude, location.longitude], 8, { 
+              animate: true, 
+              duration: 2.0,
+              easeLinearity: 0.15 
+            });
+          } else if (map) {
+            // Use flyTo for buttery smooth animation
+            map.flyTo([location.latitude, location.longitude], 7, { 
+              animate: true, 
+              duration: 1.8,
+              easeLinearity: 0.15 
+            });
+          }
+        }
+        await refreshSessions();
+      }
+    } catch (err) {
+      console.error('[StudyTimerMap] Join failed:', err);
+    }
+    
+    if (joinBtn) joinBtn.disabled = false;
+    if (fsJoinBtn) fsJoinBtn.disabled = false;
+  }
+
+  async function leaveSession(): Promise<void> {
+    try {
+      await endStudySession();
+      updateSessionUI();
+      await refreshSessions();
+    } catch (err) {
+      console.error('[StudyTimerMap] Leave failed:', err);
+    }
+  }
+
+  async function refreshSessions(): Promise<void> {
+    const sessions = await fetchActiveSessions();
+    handlePresenceUpdate(sessions);
+  }
+
+  function updateCountdown(targetDate: string): void {
+    const now = Date.now();
+    const target = new Date(targetDate).getTime();
+    const diff = target - now;
+    
+    if (diff <= 0) {
+      if (days) days.textContent = '00';
+      if (hours) hours.textContent = '00';
+      if (mins) mins.textContent = '00';
+      if (secs) secs.textContent = '00';
+      if (fsDays) fsDays.textContent = '00';
+      if (fsHours) fsHours.textContent = '00';
+      if (fsMins) fsMins.textContent = '00';
+      if (fsSecs) fsSecs.textContent = '00';
+      return;
+    }
+    
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    const dStr = d.toString().padStart(2, '0');
+    const hStr = h.toString().padStart(2, '0');
+    const mStr = m.toString().padStart(2, '0');
+    const sStr = s.toString().padStart(2, '0');
+    
+    if (days) days.textContent = dStr;
+    if (hours) hours.textContent = hStr;
+    if (mins) mins.textContent = mStr;
+    if (secs) secs.textContent = sStr;
+    
+    // Update fullscreen countdown too
+    if (fsDays) fsDays.textContent = dStr;
+    if (fsHours) fsHours.textContent = hStr;
+    if (fsMins) fsMins.textContent = mStr;
+    if (fsSecs) fsSecs.textContent = sStr;
+  }
+
+  function startCountdown(targetDate: string): void {
+    currentTargetDate = targetDate;
+    if (countdownTimer) clearInterval(countdownTimer);
+    updateCountdown(targetDate);
+    countdownTimer = setInterval(() => updateCountdown(targetDate), 1000);
+    
+    // Update fullscreen session info
+    if (fsSessionInfo) {
+      const dateStr = new Date(targetDate).toLocaleDateString('en-IN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      fsSessionInfo.textContent = dateStr;
+    }
+  }
+
+  async function init(): Promise<void> {
+    // Create map
+    if (mapElement) {
+      map = L.map(mapElement, {
+        center: INDIA_CENTER,
+        zoom: DEFAULT_ZOOM,
+        minZoom: 4,
+        maxZoom: 12,
+        maxBounds: INDIA_BOUNDS,
+        maxBoundsViscosity: 0.85,
+        zoomControl: false,
+        attributionControl: false,
+      });
+      
+      // Add zoom control to top-left to avoid overlap with status badges
+      L.control.zoom({ position: 'topleft' }).addTo(map);
+
+      L.tileLayer(MAP_TILE_URL, { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
+      L.tileLayer(LABELS_TILE_URL, { subdomains: 'abcd', maxZoom: 19, pane: 'overlayPane' }).addTo(map);
+      
+      markerLayer = L.layerGroup().addTo(map);
+      loading?.classList.add('hidden');
+      
+      // Re-render markers on zoom to adjust spacing
+      map.on('zoomend', () => {
+        if (currentPresences.length > 0) {
+          updateMarkers(currentPresences);
+        }
+      });
+    }
+    
+    // Initialize countdown from exam data
+    const examSessions = wrapper?.dataset.examSessions;
+    currentExamName = wrapper?.dataset.examName || '';
+    
+    if (examSessions) {
+      try {
+        const sessions = JSON.parse(examSessions);
+        if (sessions.length > 0) {
+          startCountdown(sessions[0].date);
+        }
+      } catch {}
+    }
+    
+    // Check Supabase
+    if (!isSupabaseConfigured()) {
+      handleConnectionChange('error');
+      return;
+    }
+    
+    onConnectionChange(handleConnectionChange);
+    onPresenceUpdate(handlePresenceUpdate);
+    
+    const initialized = await initializeSessionManager();
+    if (!initialized) return;
+    
+    if (isSessionActive()) updateSessionUI();
+    
+    refreshTimer = setInterval(refreshSessions, 30000);
+  }
+
+  // Event listeners
+  joinBtn?.addEventListener('click', joinSession);
+  leaveBtn?.addEventListener('click', leaveSession);
+  retryBtn?.addEventListener('click', () => location.reload());
+  refreshBtn?.addEventListener('click', refreshSessions);
+  
+  // Fullscreen modal handlers
+  function openFullscreen(): void {
+    if (!fsModal) return;
+    
+    isFullscreen = true;
+    fsModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Update fullscreen exam name
+    if (fsExamName) {
+      fsExamName.textContent = currentExamName || 'Select an Exam';
+    }
+    
+    // Initialize fullscreen map if not already
+    if (!fsMap && fsMapEl) {
+      fsMap = L.map(fsMapEl, {
+        center: INDIA_CENTER,
+        zoom: DEFAULT_ZOOM,
+        minZoom: 4,
+        maxZoom: 12,
+        maxBounds: INDIA_BOUNDS,
+        maxBoundsViscosity: 0.85,
+        zoomControl: false,
+        attributionControl: false,
+      });
+      
+      // Add zoom control to top-left to avoid overlap with panels
+      L.control.zoom({ position: 'topleft' }).addTo(fsMap);
+      
+      L.tileLayer(MAP_TILE_URL, { subdomains: 'abcd', maxZoom: 19 }).addTo(fsMap);
+      L.tileLayer(LABELS_TILE_URL, { subdomains: 'abcd', maxZoom: 19, pane: 'overlayPane' }).addTo(fsMap);
+      
+      fsMarkerLayer = L.layerGroup().addTo(fsMap);
+    }
+    
+    // Force map to recalculate size
+    setTimeout(() => {
+      fsMap?.invalidateSize();
+      
+      // Update markers
+      if (fsMarkerLayer) {
+        fsMarkerLayer.clearLayers();
+        const offset = offsetOverlapping(currentPresences);
+        offset.forEach(p => {
+          const isSelf = userAvatarSeed && p.avatarUrl.includes(userAvatarSeed);
+          fsMarkerLayer!.addLayer(createMarker(p, !!isSelf));
+        });
+      }
+    }, 100);
+  }
+  
+  function closeFullscreen(): void {
+    if (!fsModal) return;
+    
+    isFullscreen = false;
+    fsModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  
+  fullscreenBtn?.addEventListener('click', openFullscreen);
+  fsClose?.addEventListener('click', closeFullscreen);
+  
+  // ESC key to close fullscreen
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isFullscreen) {
+      closeFullscreen();
+    }
+  });
+  
+  // Fullscreen join/leave buttons
+  fsJoinBtn?.addEventListener('click', joinSession);
+  fsLeaveBtn?.addEventListener('click', leaveSession);
+  
+  examSelect?.addEventListener('change', () => {
+    const opt = examSelect.selectedOptions[0];
+    if (!opt?.value) {
+      if (countdownTimer) clearInterval(countdownTimer);
+      if (sessionWrapper) sessionWrapper.classList.add('hidden');
+      currentExamName = '';
+      return;
+    }
+    try {
+      const sessions = JSON.parse(opt.dataset.sessions || '[]');
+      currentExamName = opt.dataset.name || '';
+      
+      // Update fullscreen exam name
+      if (fsExamName) fsExamName.textContent = currentExamName;
+      
+      if (sessions.length > 0) {
+        wrapper.dataset.examSlug = opt.value;
+        wrapper.dataset.examName = currentExamName;
+        startCountdown(sessions[0].date);
+        
+        // Populate session dropdown if multiple sessions
+        if (sessions.length > 1 && sessionSelect && sessionWrapper) {
+          sessionWrapper.classList.remove('hidden');
+          sessionSelect.innerHTML = sessions.map((s: { session: string; date: string }, i: number) => 
+            `<option value="${s.date}" ${i === 0 ? 'selected' : ''}>${s.session}</option>`
+          ).join('');
+        } else if (sessionWrapper) {
+          sessionWrapper.classList.add('hidden');
+        }
+      }
+    } catch {}
+  });
+  
+  sessionSelect?.addEventListener('change', () => {
+    if (sessionSelect.value) {
+      startCountdown(sessionSelect.value);
+    }
+  });
+
+  // Initialize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Cleanup
+  window.addEventListener('beforeunload', () => {
+    if (countdownTimer) clearInterval(countdownTimer);
+    if (durationTimer) clearInterval(durationTimer);
+    if (refreshTimer) clearInterval(refreshTimer);
+  });
+</script>

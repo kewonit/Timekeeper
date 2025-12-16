@@ -11,9 +11,15 @@
   },
   "dependencies": {
     "@astrojs/alpinejs": "^0.4.8",
+    "@astrojs/check": "^0.9.6",
     "@astrojs/tailwind": "^6.0.2",
+    "@supabase/supabase-js": "^2.87.3",
+    "@types/leaflet": "^1.9.21",
     "alpinejs": "^3.14.9",
     "astro": "^5.10.1",
-    "tailwindcss": "^3.4.17"
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.3"
   }
 }

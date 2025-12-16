@@ -1,0 +1,1862 @@
+---
+/**
+ * LiveStudyMap Component - Production Version
+ * 
+ * Real-time interactive map showing students studying across India.
+ * NO FAKE DATA - only real users from Supabase.
+ * 
+ * Features:
+ * - Professional minimalist design
+ * - DiceBear avatars for users
+ * - IP-based geolocation (no GPS prompts)
+ * - Real-time database sync
+ * - Exam countdown overlay in fullscreen
+ * - Correct India map with Kashmir/Ladakh
+ */
+
+import { getExamData } from '../data/exam-data';
+
+export interface Props {
+  showJoinControls?: boolean;
+  currentExam?: { slug: string; name: string; subject?: string };
+  height?: string;
+}
+
+const { 
+  showJoinControls = true, 
+  currentExam,
+  height = '600px',
+} = Astro.props;
+
+// Get all exams for the selector
+const allExams = getExamData();
+---
+
+<div 
+  class="live-study-map-wrapper"
+  data-current-exam-slug={currentExam?.slug || ''}
+  data-current-exam-name={currentExam?.name || ''}
+  data-current-subject={currentExam?.subject || ''}
+>
+  <!-- Main Map Container -->
+  <div class="map-container" style={`height: ${height};`}>
+    
+    <!-- Map Element -->
+    <div id="study-map" class="map-element"></div>
+    
+    <!-- Top Bar -->
+    <div class="map-top-bar">
+      <div class="map-bar-left">
+        <!-- Connection Status -->
+        <div id="connection-status" class="status-badge status-connecting">
+          <span class="status-dot"></span>
+          <span class="status-text">Connecting...</span>
+        </div>
+        
+        <!-- Live Counter -->
+        <div class="live-counter">
+          <span id="active-users-count">0</span>
+          <span class="counter-label">online</span>
+        </div>
+      </div>
+      
+      <div class="map-bar-right">
+        <button id="refresh-btn" class="icon-btn" title="Refresh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 12a9 9 0 11-3-6.7" stroke-linecap="round"/>
+            <path d="M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button id="map-fullscreen-btn" class="icon-btn" title="Fullscreen">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Join Panel (Bottom) -->
+    {showJoinControls && (
+      <div class="map-bottom-bar">
+        <div id="join-panel" class="join-panel">
+          <!-- Not Joined State -->
+          <div id="not-joined-state" class="panel-state">
+            <div class="panel-info">
+              <p class="panel-title">Join Study Session</p>
+              <p class="panel-subtitle">Appear on the map with other students</p>
+            </div>
+            <button id="join-btn" class="btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8v8m-4-4h8"/>
+              </svg>
+              Join
+            </button>
+          </div>
+          
+          <!-- Joined State -->
+          <div id="joined-state" class="panel-state hidden">
+            <div class="user-info">
+              <img id="user-avatar" src="" alt="" class="user-avatar" />
+              <div>
+                <p class="panel-title">You're studying</p>
+                <p class="panel-subtitle">
+                  <span id="user-location">—</span>
+                  <span class="separator">•</span>
+                  <span id="user-subject">—</span>
+                </p>
+              </div>
+            </div>
+            <button id="leave-btn" class="btn-secondary">Leave</button>
+          </div>
+          
+          <!-- Error State -->
+          <div id="error-state" class="panel-state hidden">
+            <div class="panel-info">
+              <p class="panel-title text-amber">Not Connected</p>
+              <p class="panel-subtitle">Database not configured or offline</p>
+            </div>
+            <button id="retry-btn" class="btn-secondary">Retry</button>
+          </div>
+        </div>
+      </div>
+    )}
+    
+    <!-- Loading State -->
+    <div id="map-loading" class="loading-overlay">
+      <div class="loader"></div>
+      <p>Loading map...</p>
+    </div>
+    
+    <!-- Empty State -->
+    <div id="empty-state" class="empty-overlay hidden">
+      <div class="empty-content">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="empty-icon">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+        <p class="empty-title">No students online</p>
+        <p class="empty-subtitle">Be the first to join!</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fullscreen Mode -->
+  <div id="fullscreen-overlay" class="fullscreen-overlay hidden">
+    <div class="fullscreen-container">
+      <!-- Fullscreen Map -->
+      <div id="fullscreen-map" class="fullscreen-map"></div>
+      
+      <!-- Top Controls -->
+      <div class="fs-top-bar">
+        <div class="fs-top-left">
+          <div id="fs-status" class="status-badge-dark">
+            <span class="status-dot-bright"></span>
+            <span id="fs-active-count">0</span>
+            <span>students online</span>
+          </div>
+        </div>
+        <div class="fs-top-right">
+          <!-- Link to Exams -->
+          <a href="/" class="fs-link-btn" title="Go to Exams">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span>Exams</span>
+          </a>
+          <button id="close-fullscreen-btn" class="close-btn" title="Exit Fullscreen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Exam Timer Overlay -->
+      <div id="timer-overlay" class="timer-overlay">
+        <div class="timer-card">
+          <div class="timer-header">
+            <span class="timer-label">COUNTDOWN</span>
+          </div>
+          
+          <!-- Exam Selector -->
+          <select id="exam-selector" class="timer-select">
+            <option value="">Select exam...</option>
+            {allExams.map(exam => (
+              <option 
+                value={exam.slug} 
+                data-name={exam.name}
+                data-sessions={JSON.stringify(exam.sessions)}
+              >
+                {exam.name}
+              </option>
+            ))}
+          </select>
+          
+          <!-- Session Selector -->
+          <select id="session-selector" class="timer-select hidden">
+          </select>
+          
+          <!-- Countdown Display -->
+          <div id="countdown-display" class="countdown-display hidden">
+            <p id="countdown-exam-name" class="countdown-exam"></p>
+            <div class="countdown-grid">
+              <div class="countdown-unit">
+                <span id="cd-days" class="countdown-value">00</span>
+                <span class="countdown-label">DAYS</span>
+              </div>
+              <div class="countdown-separator">:</div>
+              <div class="countdown-unit">
+                <span id="cd-hours" class="countdown-value">00</span>
+                <span class="countdown-label">HRS</span>
+              </div>
+              <div class="countdown-separator">:</div>
+              <div class="countdown-unit">
+                <span id="cd-mins" class="countdown-value">00</span>
+                <span class="countdown-label">MIN</span>
+              </div>
+              <div class="countdown-separator">:</div>
+              <div class="countdown-unit">
+                <span id="cd-secs" class="countdown-value">00</span>
+                <span class="countdown-label">SEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Fullscreen Join Panel -->
+      <div class="fs-bottom-bar">
+        <div id="fs-join-panel" class="fs-join-panel">
+          <div id="fs-not-joined" class="fs-panel-state">
+            <span>Join the study session</span>
+            <button id="fs-join-btn" class="btn-light">Join</button>
+          </div>
+          <div id="fs-joined" class="fs-panel-state hidden">
+            <div class="fs-user-info">
+              <img id="fs-user-avatar" src="" alt="" class="fs-user-avatar" />
+              <span id="fs-user-details">Studying...</span>
+            </div>
+            <button id="fs-leave-btn" class="btn-ghost">Leave</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+<style>
+  /* ===========================================
+   * THEME VARIABLES - Defined first for all themes
+   * Supports: light, dark, ocean, valentine, cupcake
+   * =========================================== */
+  .live-study-map-wrapper {
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    
+    /* Default light theme values */
+    --map-bg: var(--bg-primary, #f8f9fa);
+    --map-card-bg: var(--bg-secondary, rgba(255, 255, 255, 0.95));
+    --map-text: var(--text-primary, #1a1a1a);
+    --map-text-secondary: var(--text-secondary, #666);
+    --map-border: var(--border-color, rgba(0, 0, 0, 0.08));
+    --map-btn-bg: var(--bg-secondary, rgba(255, 255, 255, 0.95));
+    --map-btn-hover: var(--bg-tertiary, rgba(0, 0, 0, 0.05));
+    --map-accent: var(--accent-primary, #10b981);
+    --map-invert: 0;
+  }
+  
+  /* Dark theme */
+  :global([data-theme="dark"]) .live-study-map-wrapper {
+    --map-bg: #1a1a1a;
+    --map-card-bg: rgba(30, 30, 30, 0.95);
+    --map-text: #f5f5f5;
+    --map-text-secondary: #999;
+    --map-border: rgba(255, 255, 255, 0.1);
+    --map-btn-bg: rgba(30, 30, 30, 0.95);
+    --map-btn-hover: rgba(255, 255, 255, 0.1);
+    --map-accent: #10b981;
+    --map-invert: 1;
+  }
+  
+  /* Ocean theme */
+  :global([data-theme="ocean"]) .live-study-map-wrapper {
+    --map-bg: #0c4a6e;
+    --map-card-bg: rgba(12, 74, 110, 0.95);
+    --map-text: #e0f2fe;
+    --map-text-secondary: #7dd3fc;
+    --map-border: rgba(125, 211, 252, 0.2);
+    --map-btn-bg: rgba(12, 74, 110, 0.95);
+    --map-btn-hover: rgba(125, 211, 252, 0.15);
+    --map-accent: #38bdf8;
+    --map-invert: 1;
+  }
+  
+  /* Valentine theme */
+  :global([data-theme="valentine"]) .live-study-map-wrapper {
+    --map-bg: #fdf2f8;
+    --map-card-bg: rgba(253, 242, 248, 0.98);
+    --map-text: #831843;
+    --map-text-secondary: #be185d;
+    --map-border: rgba(190, 24, 93, 0.15);
+    --map-btn-bg: rgba(255, 255, 255, 0.95);
+    --map-btn-hover: rgba(251, 207, 232, 0.5);
+    --map-accent: #ec4899;
+    --map-invert: 0;
+  }
+  
+  /* Cupcake theme */
+  :global([data-theme="cupcake"]) .live-study-map-wrapper {
+    --map-bg: #faf7f5;
+    --map-card-bg: rgba(255, 255, 255, 0.98);
+    --map-text: #291334;
+    --map-text-secondary: #65a30d;
+    --map-border: rgba(101, 163, 13, 0.2);
+    --map-btn-bg: rgba(255, 255, 255, 0.95);
+    --map-btn-hover: rgba(101, 163, 13, 0.1);
+    --map-accent: #65a30d;
+    --map-invert: 0;
+  }
+  
+  /* Base Container */
+  .map-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--map-bg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--map-border);
+  }
+  
+  .map-element {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  
+  /* Top Bar - positioned away from zoom controls */
+  .map-top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 60px; /* Leave space for zoom controls on the right */
+    z-index: 10;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    pointer-events: none;
+  }
+  
+  .map-top-bar > * {
+    pointer-events: auto;
+  }
+  
+  .map-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  
+  .map-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  
+  /* Status Badge - Themed */
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--map-card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--map-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    color: var(--map-text);
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+  }
+  
+  .status-connecting .status-dot {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  .status-connected .status-dot {
+    background: var(--map-accent);
+  }
+  
+  .status-error .status-dot {
+    background: #ef4444;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  /* Live Counter - Themed */
+  .live-counter {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 8px 14px;
+    background: var(--map-card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    font-size: 13px;
+    border: 1px solid var(--map-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .live-counter span:first-child {
+    font-weight: 600;
+    color: var(--map-text);
+  }
+  
+  .counter-label {
+    color: var(--map-text-secondary);
+    font-weight: 400;
+  }
+  
+  /* Icon Button - Themed */
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--map-card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--map-border);
+    border-radius: 10px;
+    color: var(--map-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .icon-btn:hover {
+    background: var(--map-btn-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Bottom Bar */
+  .map-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 16px;
+  }
+  
+  /* Join Panel - Themed */
+  .join-panel {
+    background: var(--map-card-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 14px;
+    padding: 16px 20px;
+    border: 1px solid var(--map-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  .panel-state {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  
+  .panel-state.hidden {
+    display: none;
+  }
+  
+  .panel-info, .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .user-info {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid var(--map-accent);
+    background: var(--map-bg);
+  }
+  
+  .panel-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--map-text);
+    margin: 0;
+  }
+  
+  .panel-subtitle {
+    font-size: 12px;
+    color: var(--map-text-secondary);
+    margin: 0;
+  }
+  
+  .separator {
+    margin: 0 4px;
+    opacity: 0.5;
+  }
+  
+  .text-amber {
+    color: #f59e0b;
+  }
+  
+  /* Buttons - Themed */
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: var(--map-accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .btn-secondary {
+    padding: 8px 16px;
+    background: transparent;
+    color: var(--map-text-secondary);
+    border: 1px solid var(--map-border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .btn-secondary:hover {
+    background: var(--map-btn-hover);
+    color: var(--map-text);
+  }
+  
+  /* Loading Overlay - Themed */
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--map-bg);
+  }
+  
+  .loading-overlay.hidden {
+    display: none;
+  }
+  
+  .loader {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--map-border);
+    border-top-color: var(--map-accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .loading-overlay p {
+    font-size: 13px;
+    color: var(--map-text-secondary);
+  }
+  
+  /* Empty State - Themed */
+  .empty-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  
+  .empty-overlay.hidden {
+    display: none;
+  }
+  
+  .empty-content {
+    text-align: center;
+    padding: 32px;
+    background: var(--map-card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid var(--map-border);
+    pointer-events: auto;
+  }
+  
+  .empty-icon {
+    color: var(--map-text-secondary);
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+  
+  .empty-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--map-text);
+    margin: 0 0 4px;
+  }
+  
+  .empty-subtitle {
+    font-size: 13px;
+    color: var(--map-text-secondary);
+    margin: 0;
+  }
+  
+  /* ======================== */
+  /* Fullscreen Mode */
+  /* ======================== */
+  
+  .fullscreen-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+  }
+  
+  .fullscreen-overlay.hidden {
+    display: none;
+  }
+  
+  .fullscreen-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #0a0a0a;
+  }
+  
+  .fullscreen-map {
+    position: absolute;
+    inset: 0;
+  }
+  
+  /* FS Top Bar */
+  .fs-top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  
+  .status-badge-dark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: rgba(20, 20, 20, 0.9);
+    backdrop-filter: blur(16px);
+    border-radius: 28px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .status-dot-bright {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    animation: glow 2s ease-in-out infinite;
+  }
+  
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.7); }
+  }
+  
+  .fs-top-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .fs-link-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: rgba(20, 20, 20, 0.9);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  
+  .fs-link-btn:hover {
+    background: rgba(40, 40, 40, 0.95);
+    color: white;
+  }
+  
+  .close-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 20, 20, 0.9);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .close-btn:hover {
+    background: rgba(40, 40, 40, 0.95);
+    color: white;
+  }
+  
+  /* Timer Overlay */
+  .timer-overlay {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10;
+  }
+  
+  .timer-card {
+    min-width: 300px;
+    padding: 20px;
+    background: rgba(15, 15, 15, 0.92);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  }
+  
+  .timer-header {
+    margin-bottom: 16px;
+  }
+  
+  .timer-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .timer-select {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    margin-bottom: 12px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  .timer-select:focus {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .timer-select.hidden {
+    display: none;
+  }
+  
+  .timer-select option {
+    background: #1a1a1a;
+    color: white;
+  }
+  
+  /* Countdown Display */
+  .countdown-display {
+    margin-top: 8px;
+  }
+  
+  .countdown-display.hidden {
+    display: none;
+  }
+  
+  .countdown-exam {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  
+  .countdown-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  
+  .countdown-unit {
+    text-align: center;
+    min-width: 52px;
+  }
+  
+  .countdown-value {
+    display: block;
+    font-size: 32px;
+    font-weight: 300;
+    color: white;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  
+  .countdown-label {
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 6px;
+  }
+  
+  .countdown-separator {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.2);
+    margin: 0 2px;
+    align-self: flex-start;
+    padding-top: 4px;
+  }
+  
+  /* FS Bottom Bar */
+  .fs-bottom-bar {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    z-index: 10;
+  }
+  
+  .fs-join-panel {
+    padding: 14px 18px;
+    background: rgba(15, 15, 15, 0.92);
+    backdrop-filter: blur(20px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  
+  .fs-panel-state {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .fs-panel-state.hidden {
+    display: none;
+  }
+  
+  .fs-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .fs-user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(16, 185, 129, 0.6);
+    background: #222;
+  }
+  
+  .btn-light {
+    padding: 8px 16px;
+    background: white;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .btn-light:hover {
+    background: #f5f5f5;
+  }
+  
+  .btn-ghost {
+    padding: 6px 12px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+  }
+</style>
+
+<style is:global>
+  /* Leaflet Customizations */
+  .leaflet-control-attribution {
+    display: none !important;
+  }
+  
+  /* Zoom controls - positioned to avoid overlap */
+  .leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    margin-top: 12px !important;
+    margin-right: 12px !important;
+  }
+  
+  .leaflet-control-zoom a {
+    background: var(--map-card-bg, rgba(255, 255, 255, 0.95)) !important;
+    color: var(--map-text, #333) !important;
+    border: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 16px !important;
+    font-weight: 300 !important;
+    transition: background 0.15s ease !important;
+  }
+  
+  .leaflet-control-zoom a:hover {
+    background: var(--map-btn-hover, #f5f5f5) !important;
+  }
+  
+  .leaflet-control-zoom a:first-child {
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: 1px solid var(--map-border, rgba(0, 0, 0, 0.06)) !important;
+  }
+  
+  .leaflet-control-zoom a:last-child {
+    border-radius: 0 0 10px 10px !important;
+  }
+  
+  /* Apply theme-based map filter */
+  .map-container .leaflet-tile-pane {
+    filter: grayscale(1) contrast(1.05);
+  }
+  
+  :global([data-theme="dark"]) .map-container .leaflet-tile-pane,
+  :global([data-theme="ocean"]) .map-container .leaflet-tile-pane {
+    filter: grayscale(1) invert(1) contrast(1.1) brightness(0.85);
+  }
+  
+  :global([data-theme="valentine"]) .map-container .leaflet-tile-pane {
+    filter: grayscale(0.3) sepia(0.2) hue-rotate(300deg) saturate(1.2);
+  }
+  
+  :global([data-theme="cupcake"]) .map-container .leaflet-tile-pane {
+    filter: grayscale(0.3) sepia(0.15) saturate(1.1);
+  }
+  
+  /* Dark theme zoom controls */
+  :global([data-theme="dark"]) .leaflet-control-zoom a,
+  :global([data-theme="ocean"]) .leaflet-control-zoom a {
+    background: rgba(30, 30, 30, 0.95) !important;
+    color: white !important;
+  }
+  
+  :global([data-theme="dark"]) .leaflet-control-zoom a:hover,
+  :global([data-theme="ocean"]) .leaflet-control-zoom a:hover {
+    background: rgba(50, 50, 50, 1) !important;
+  }
+  
+  :global([data-theme="dark"]) .leaflet-control-zoom a:first-child,
+  :global([data-theme="ocean"]) .leaflet-control-zoom a:first-child {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  /* Dark mode fullscreen map */
+  .fullscreen-map .leaflet-tile-pane {
+    filter: grayscale(1) invert(1) contrast(1.1) brightness(0.8);
+  }
+  
+  .fullscreen-map .leaflet-control-zoom a {
+    background: rgba(30, 30, 30, 0.95) !important;
+    color: white !important;
+  }
+  
+  .fullscreen-map .leaflet-control-zoom a:hover {
+    background: rgba(50, 50, 50, 1) !important;
+  }
+  
+  .fullscreen-map .leaflet-control-zoom a:first-child {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+  
+  /* ============================
+   * MARKER CLUSTER STYLES
+   * Handles overlapping users from same city
+   * ============================ */
+  .marker-cluster {
+    background: rgba(16, 185, 129, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+  }
+  
+  .marker-cluster:hover {
+    transform: scale(1.1);
+  }
+  
+  .marker-cluster-inner {
+    background: var(--map-accent, #10b981);
+    color: white;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 3px solid white;
+  }
+  
+  .marker-cluster-small {
+    background: rgba(16, 185, 129, 0.15);
+  }
+  
+  .marker-cluster-small .marker-cluster-inner {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .marker-cluster-medium {
+    background: rgba(16, 185, 129, 0.2);
+  }
+  
+  .marker-cluster-large {
+    background: rgba(16, 185, 129, 0.25);
+  }
+  
+  .marker-cluster-large .marker-cluster-inner {
+    width: 40px;
+    height: 40px;
+    font-size: 15px;
+  }
+
+  /* User Markers */
+  .study-marker {
+    transition: transform 0.15s ease;
+  }
+  
+  .study-marker:hover {
+    transform: scale(1.1);
+    z-index: 10000 !important;
+  }
+  
+  .study-marker .marker-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .study-marker img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    background: #e5e5e5;
+    object-fit: cover;
+  }
+  
+  .study-marker .duration-badge {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .study-marker.self img {
+    border-color: var(--map-accent, #10b981);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3), 0 3px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .study-marker.self .duration-badge {
+    background: var(--map-accent, rgba(16, 185, 129, 0.9));
+  }
+  
+  /* Dark theme marker styling */
+  :global([data-theme="dark"]) .study-marker img,
+  :global([data-theme="ocean"]) .study-marker img {
+    border-color: #444;
+  }
+  
+  :global([data-theme="dark"]) .study-marker.self img,
+  :global([data-theme="ocean"]) .study-marker.self img {
+    border-color: var(--map-accent, #10b981);
+  }
+  
+  :global([data-theme="valentine"]) .study-marker img {
+    border-color: #fce7f3;
+  }
+  
+  :global([data-theme="cupcake"]) .study-marker img {
+    border-color: #fef3c7;
+  }
+  
+  /* Popup Styles - Themed */
+  .leaflet-popup-content-wrapper {
+    background: var(--map-card-bg, rgba(10, 10, 10, 0.96)) !important;
+    color: var(--map-text, white) !important;
+    border-radius: 14px !important;
+    padding: 0 !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--map-border, transparent) !important;
+  }
+  
+  .leaflet-popup-tip {
+    background: var(--map-card-bg, rgba(10, 10, 10, 0.96)) !important;
+  }
+  
+  .leaflet-popup-content {
+    margin: 16px 18px !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+  
+  .marker-popup {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .marker-popup img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--map-border, rgba(255, 255, 255, 0.12));
+    flex-shrink: 0;
+  }
+  
+  .popup-details {
+    min-width: 0;
+  }
+  
+  .popup-exam {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--map-text, white);
+  }
+  
+  .popup-subject {
+    font-size: 12px;
+    color: var(--map-text-secondary, rgba(255, 255, 255, 0.6));
+    margin-bottom: 4px;
+  }
+  
+  .popup-location {
+    font-size: 11px;
+    color: var(--map-text-secondary, rgba(255, 255, 255, 0.4));
+  }
+  
+  .popup-duration {
+    font-size: 10px;
+    color: var(--map-text-secondary, rgba(255, 255, 255, 0.3));
+    margin-top: 4px;
+  }
+</style>
+
+<script>
+  import L from 'leaflet';
+  import {
+    initializeSessionManager,
+    startStudySession,
+    endStudySession,
+    fetchActiveSessions,
+    onPresenceUpdate,
+    onConnectionChange,
+    isSessionActive,
+    getCurrentLocation,
+    type StudyPresence,
+    type ConnectionStatus,
+  } from '../utils/study-session-manager';
+  import { getAvatarUrl } from '../utils/notion-faces';
+  import { isSupabaseConfigured } from '../utils/supabase-client';
+
+  // India map bounds - includes all of Kashmir including Gilgit-Baltistan
+  const INDIA_BOUNDS: L.LatLngBoundsExpression = [
+    [5.5, 67.0],   // Southwest (Kanyakumari area)
+    [37.5, 98.0],  // Northeast (includes full Kashmir, Ladakh, Arunachal)
+  ];
+  const INDIA_CENTER: L.LatLngExpression = [22.5, 78.5];
+  const DEFAULT_ZOOM = 5;
+  
+  // Map tiles - CartoDB Positron No Labels (minimalist, NO country borders)
+  const MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+  // Optional labels layer (we add city names but no country borders)
+  const LABELS_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png';
+
+  // State
+  let mainMap: L.Map | null = null;
+  let fullscreenMap: L.Map | null = null;
+  let mainMarkerLayer: L.LayerGroup | null = null;
+  let fsMarkerLayer: L.LayerGroup | null = null;
+  let currentPresences: StudyPresence[] = [];
+  let countdownTimer: ReturnType<typeof setInterval> | null = null;
+  let refreshTimer: ReturnType<typeof setInterval> | null = null;
+  let userAvatarSeed: string | null = null;
+
+  // DOM Elements
+  const wrapper = document.querySelector('.live-study-map-wrapper') as HTMLElement;
+  const mapElement = document.getElementById('study-map') as HTMLElement;
+  const loadingOverlay = document.getElementById('map-loading') as HTMLElement;
+  const emptyState = document.getElementById('empty-state') as HTMLElement;
+  const activeCount = document.getElementById('active-users-count') as HTMLElement;
+  const fsActiveCount = document.getElementById('fs-active-count') as HTMLElement;
+  
+  // Connection status
+  const connectionStatus = document.getElementById('connection-status') as HTMLElement;
+  const statusText = connectionStatus?.querySelector('.status-text') as HTMLElement;
+  
+  // Join panel elements
+  const notJoinedState = document.getElementById('not-joined-state') as HTMLElement;
+  const joinedState = document.getElementById('joined-state') as HTMLElement;
+  const errorState = document.getElementById('error-state') as HTMLElement;
+  const joinBtn = document.getElementById('join-btn') as HTMLButtonElement;
+  const leaveBtn = document.getElementById('leave-btn') as HTMLButtonElement;
+  const retryBtn = document.getElementById('retry-btn') as HTMLButtonElement;
+  const userAvatar = document.getElementById('user-avatar') as HTMLImageElement;
+  const userLocation = document.getElementById('user-location') as HTMLElement;
+  const userSubject = document.getElementById('user-subject') as HTMLElement;
+  const refreshBtn = document.getElementById('refresh-btn') as HTMLButtonElement;
+  
+  // Fullscreen elements
+  const fullscreenOverlay = document.getElementById('fullscreen-overlay') as HTMLElement;
+  const fullscreenBtn = document.getElementById('map-fullscreen-btn') as HTMLButtonElement;
+  const closeFullscreenBtn = document.getElementById('close-fullscreen-btn') as HTMLButtonElement;
+  const fsNotJoined = document.getElementById('fs-not-joined') as HTMLElement;
+  const fsJoined = document.getElementById('fs-joined') as HTMLElement;
+  const fsJoinBtn = document.getElementById('fs-join-btn') as HTMLButtonElement;
+  const fsLeaveBtn = document.getElementById('fs-leave-btn') as HTMLButtonElement;
+  const fsUserAvatar = document.getElementById('fs-user-avatar') as HTMLImageElement;
+  const fsUserDetails = document.getElementById('fs-user-details') as HTMLElement;
+  
+  // Timer elements
+  const examSelector = document.getElementById('exam-selector') as HTMLSelectElement;
+  const sessionSelector = document.getElementById('session-selector') as HTMLSelectElement;
+  const countdownDisplay = document.getElementById('countdown-display') as HTMLElement;
+  const countdownExamName = document.getElementById('countdown-exam-name') as HTMLElement;
+  const cdDays = document.getElementById('cd-days') as HTMLElement;
+  const cdHours = document.getElementById('cd-hours') as HTMLElement;
+  const cdMins = document.getElementById('cd-mins') as HTMLElement;
+  const cdSecs = document.getElementById('cd-secs') as HTMLElement;
+
+  /**
+   * Format study duration - short version for badge
+   */
+  function formatDurationShort(startedAt: string): string {
+    const start = new Date(startedAt).getTime();
+    const mins = Math.floor((Date.now() - start) / 60000);
+    
+    if (mins < 1) return 'now';
+    if (mins < 60) return `${mins}m`;
+    
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h`;
+    
+    const days = Math.floor(hours / 24);
+    return `${days}d`;
+  }
+
+  /**
+   * Format study duration - full version for popup
+   */
+  function formatDuration(startedAt: string): string {
+    const start = new Date(startedAt).getTime();
+    const mins = Math.floor((Date.now() - start) / 60000);
+    
+    if (mins < 1) return 'Just started';
+    if (mins < 60) return `${mins}m`;
+    
+    const hours = Math.floor(mins / 60);
+    const remainingMins = mins % 60;
+    
+    if (hours < 24) {
+      return remainingMins > 0 ? `${hours}h ${remainingMins}m` : `${hours}h`;
+    }
+    
+    const days = Math.floor(hours / 24);
+    return `${days}d ${hours % 24}h`;
+  }
+
+  /**
+   * Create marker for a studying user
+   */
+  function createStudyMarker(presence: StudyPresence, isSelf: boolean = false): L.Marker {
+    const avatarUrl = presence.avatarUrl;
+    const durationBadge = formatDurationShort(presence.startedAt);
+    
+    const icon = L.divIcon({
+      className: `study-marker ${isSelf ? 'self' : ''}`,
+      html: `
+        <div class="marker-wrapper">
+          <img src="${avatarUrl}" alt="" loading="lazy" onerror="this.style.visibility='hidden'" />
+          <span class="duration-badge">${durationBadge}</span>
+        </div>
+      `,
+      iconSize: [48, 56],
+      iconAnchor: [24, 28],
+    });
+
+    const marker = L.marker([presence.latitude, presence.longitude], { 
+      icon,
+      zIndexOffset: isSelf ? 1000 : 0,
+    });
+    
+    // Build popup content
+    const examText = presence.examName || 'General Study';
+    const subjectText = presence.subject ? `${presence.subject}` : '';
+    const locationText = [presence.city, presence.state].filter(Boolean).join(', ') || 'India';
+    const durationText = formatDuration(presence.startedAt);
+    
+    marker.bindPopup(`
+      <div class="marker-popup">
+        <img src="${avatarUrl}" alt="" />
+        <div class="popup-details">
+          <div class="popup-exam">${examText}</div>
+          ${subjectText ? `<div class="popup-subject">${subjectText}</div>` : ''}
+          <div class="popup-location">📍 ${locationText}</div>
+          <div class="popup-duration">${durationText}</div>
+        </div>
+      </div>
+    `, { 
+      offset: [0, -14],
+      closeButton: false,
+    });
+
+    return marker;
+  }
+
+  /**
+   * Offset overlapping markers using spiral pattern
+   * This elegantly spreads out markers from the same city
+   */
+  function offsetOverlappingMarkers(presences: StudyPresence[]): StudyPresence[] {
+    // Group by approximate location (city-level clustering)
+    const locationGroups: Map<string, StudyPresence[]> = new Map();
+    
+    presences.forEach(p => {
+      // Round to 2 decimal places (~1km precision)
+      const key = `${Math.round(p.latitude * 100) / 100},${Math.round(p.longitude * 100) / 100}`;
+      if (!locationGroups.has(key)) {
+        locationGroups.set(key, []);
+      }
+      locationGroups.get(key)!.push(p);
+    });
+    
+    // Apply spiral offset to groups with multiple markers
+    const offsetPresences: StudyPresence[] = [];
+    
+    locationGroups.forEach((group) => {
+      if (group.length === 1) {
+        offsetPresences.push(group[0]);
+      } else {
+        // Apply spiral pattern for overlapping markers
+        const spiralOffset = 0.008; // ~800m between markers
+        group.forEach((presence, index) => {
+          if (index === 0) {
+            offsetPresences.push(presence);
+          } else {
+            // Spiral pattern: angle increases with each marker
+            const angle = (index * 137.5 * Math.PI) / 180; // Golden angle
+            const radius = spiralOffset * Math.sqrt(index);
+            const offsetLat = presence.latitude + radius * Math.cos(angle);
+            const offsetLng = presence.longitude + radius * Math.sin(angle);
+            
+            offsetPresences.push({
+              ...presence,
+              latitude: offsetLat,
+              longitude: offsetLng,
+            });
+          }
+        });
+      }
+    });
+    
+    return offsetPresences;
+  }
+
+  /**
+   * Update markers on a map with elegant clustering for same-city users
+   */
+  function updateMapMarkers(
+    presences: StudyPresence[], 
+    map: L.Map, 
+    markerLayer: L.LayerGroup
+  ): void {
+    // Clear existing markers
+    markerLayer.clearLayers();
+    
+    // Apply offset to overlapping markers
+    const offsetPresences = offsetOverlappingMarkers(presences);
+    
+    // Add new markers
+    for (const presence of offsetPresences) {
+      const isSelf = userAvatarSeed && presence.avatarUrl.includes(userAvatarSeed);
+      const marker = createStudyMarker(presence, !!isSelf);
+      markerLayer.addLayer(marker);
+    }
+  }
+
+  /**
+   * Update UI based on session state
+   */
+  function updateSessionUI(): void {
+    const active = isSessionActive();
+    const location = getCurrentLocation();
+    const examSlug = wrapper?.dataset.currentExamSlug;
+    const examName = wrapper?.dataset.currentExamName;
+    const subject = wrapper?.dataset.currentSubject;
+    
+    if (active && location) {
+      // Get avatar seed from storage
+      const seed = localStorage.getItem('timekeeper-avatar-seed') || 'user';
+      userAvatarSeed = seed;
+      const avatarUrl = getAvatarUrl(seed);
+      
+      const locationText = [location.city, location.state].filter(Boolean).join(', ') || 'India';
+      const subjectText = examName || subject || 'General Study';
+      
+      // Main panel
+      notJoinedState?.classList.add('hidden');
+      errorState?.classList.add('hidden');
+      joinedState?.classList.remove('hidden');
+      if (userAvatar) userAvatar.src = avatarUrl;
+      if (userLocation) userLocation.textContent = locationText;
+      if (userSubject) userSubject.textContent = subjectText;
+      
+      // Fullscreen panel
+      fsNotJoined?.classList.add('hidden');
+      fsJoined?.classList.remove('hidden');
+      if (fsUserAvatar) fsUserAvatar.src = avatarUrl;
+      if (fsUserDetails) fsUserDetails.textContent = `${locationText} · ${subjectText}`;
+    } else {
+      // Not joined state
+      notJoinedState?.classList.remove('hidden');
+      joinedState?.classList.add('hidden');
+      errorState?.classList.add('hidden');
+      
+      fsNotJoined?.classList.remove('hidden');
+      fsJoined?.classList.add('hidden');
+    }
+  }
+
+  /**
+   * Handle connection status changes
+   */
+  function handleConnectionChange(status: ConnectionStatus): void {
+    if (!connectionStatus || !statusText) return;
+    
+    connectionStatus.className = 'status-badge';
+    
+    switch (status) {
+      case 'connecting':
+        connectionStatus.classList.add('status-connecting');
+        statusText.textContent = 'Connecting...';
+        break;
+      case 'connected':
+        connectionStatus.classList.add('status-connected');
+        statusText.textContent = 'Live';
+        break;
+      case 'disconnected':
+        connectionStatus.classList.add('status-error');
+        statusText.textContent = 'Offline';
+        break;
+      case 'error':
+        connectionStatus.classList.add('status-error');
+        statusText.textContent = 'Not connected';
+        // Show error state in panel
+        notJoinedState?.classList.add('hidden');
+        joinedState?.classList.add('hidden');
+        errorState?.classList.remove('hidden');
+        break;
+    }
+  }
+
+  /**
+   * Handle presence updates
+   */
+  function handlePresenceUpdate(presences: StudyPresence[]): void {
+    currentPresences = presences;
+    
+    const count = presences.length;
+    if (activeCount) activeCount.textContent = count.toString();
+    if (fsActiveCount) fsActiveCount.textContent = count.toString();
+    
+    // Show/hide empty state
+    if (emptyState) {
+      if (count === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+      }
+    }
+    
+    // Update markers
+    if (mainMap && mainMarkerLayer) updateMapMarkers(presences, mainMap, mainMarkerLayer);
+    if (fullscreenMap && fsMarkerLayer) updateMapMarkers(presences, fullscreenMap, fsMarkerLayer);
+  }
+
+  /**
+   * Initialize Leaflet map with no-border tiles
+   */
+  function createMap(element: HTMLElement): L.Map {
+    const map = L.map(element, {
+      center: INDIA_CENTER,
+      zoom: DEFAULT_ZOOM,
+      minZoom: 4,
+      maxZoom: 12,
+      maxBounds: INDIA_BOUNDS,
+      maxBoundsViscosity: 0.85,
+      zoomControl: true,
+      attributionControl: false,
+    });
+
+    // Base layer (no labels, no borders)
+    L.tileLayer(MAP_TILE_URL, {
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }).addTo(map);
+    
+    // Optional: Add city labels only (no country borders)
+    L.tileLayer(LABELS_TILE_URL, {
+      subdomains: 'abcd',
+      maxZoom: 19,
+      pane: 'overlayPane',
+    }).addTo(map);
+
+    return map;
+  }
+
+  /**
+   * Join study session
+   */
+  async function joinSession(): Promise<void> {
+    const btns = [joinBtn, fsJoinBtn].filter(Boolean);
+    btns.forEach(btn => { if (btn) btn.disabled = true; });
+    
+    try {
+      const examSlug = wrapper?.dataset.currentExamSlug || null;
+      const examName = wrapper?.dataset.currentExamName || null;
+      const subject = wrapper?.dataset.currentSubject || null;
+      
+      const success = await startStudySession(examSlug, examName, subject);
+      
+      if (success) {
+        updateSessionUI();
+        
+        // Center on user location
+        const location = getCurrentLocation();
+        if (location) {
+          mainMap?.setView([location.latitude, location.longitude], 7, { animate: true });
+          fullscreenMap?.setView([location.latitude, location.longitude], 7, { animate: true });
+        }
+        
+        // Refresh to see ourselves on the map
+        const sessions = await fetchActiveSessions();
+        handlePresenceUpdate(sessions);
+      }
+    } catch (err) {
+      console.error('[StudyMap] Join failed:', err);
+    }
+    
+    btns.forEach(btn => { if (btn) btn.disabled = false; });
+  }
+
+  /**
+   * Leave study session
+   */
+  async function leaveSession(): Promise<void> {
+    try {
+      await endStudySession();
+      updateSessionUI();
+      
+      // Refresh presences
+      const sessions = await fetchActiveSessions();
+      handlePresenceUpdate(sessions);
+    } catch (err) {
+      console.error('[StudyMap] Leave failed:', err);
+    }
+  }
+
+  /**
+   * Refresh active sessions
+   */
+  async function refreshSessions(): Promise<void> {
+    const sessions = await fetchActiveSessions();
+    handlePresenceUpdate(sessions);
+  }
+
+  /**
+   * Open fullscreen mode
+   */
+  function openFullscreen(): void {
+    fullscreenOverlay?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    if (!fullscreenMap) {
+      const fsMapElement = document.getElementById('fullscreen-map');
+      if (fsMapElement) {
+        fullscreenMap = createMap(fsMapElement);
+        fsMarkerLayer = L.layerGroup().addTo(fullscreenMap);
+        if (currentPresences.length > 0) {
+          updateMapMarkers(currentPresences, fullscreenMap, fsMarkerLayer);
+        }
+      }
+    }
+    
+    setTimeout(() => fullscreenMap?.invalidateSize(), 100);
+  }
+
+  /**
+   * Close fullscreen mode
+   */
+  function closeFullscreen(): void {
+    fullscreenOverlay?.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  /**
+   * Update countdown timer display
+   */
+  function updateCountdown(targetDate: string, examName: string): void {
+    const now = Date.now();
+    const target = new Date(targetDate).getTime();
+    const diff = target - now;
+    
+    if (diff <= 0) {
+      countdownDisplay?.classList.add('hidden');
+      return;
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    countdownDisplay?.classList.remove('hidden');
+    if (countdownExamName) countdownExamName.textContent = examName;
+    if (cdDays) cdDays.textContent = days.toString().padStart(2, '0');
+    if (cdHours) cdHours.textContent = hours.toString().padStart(2, '0');
+    if (cdMins) cdMins.textContent = mins.toString().padStart(2, '0');
+    if (cdSecs) cdSecs.textContent = secs.toString().padStart(2, '0');
+  }
+
+  /**
+   * Handle exam selection change
+   */
+  function handleExamChange(): void {
+    const selectedOption = examSelector?.selectedOptions[0];
+    if (!selectedOption?.value) {
+      sessionSelector?.classList.add('hidden');
+      countdownDisplay?.classList.add('hidden');
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
+      return;
+    }
+    
+    try {
+      const sessions = JSON.parse(selectedOption.dataset.sessions || '[]');
+      const examName = selectedOption.dataset.name || selectedOption.textContent || '';
+      
+      if (sessions.length === 0) return;
+      
+      // Populate session selector
+      if (sessionSelector) {
+        sessionSelector.innerHTML = sessions.map((s: { session: string; date: string }, i: number) => 
+          `<option value="${s.date}" ${i === 0 ? 'selected' : ''}>${s.session}</option>`
+        ).join('');
+        sessionSelector.classList.remove('hidden');
+      }
+      
+      // Start countdown
+      const targetDate = sessions[0].date;
+      if (countdownTimer) clearInterval(countdownTimer);
+      updateCountdown(targetDate, examName);
+      countdownTimer = setInterval(() => updateCountdown(targetDate, examName), 1000);
+    } catch (err) {
+      console.error('[StudyMap] Exam select error:', err);
+    }
+  }
+
+  /**
+   * Handle session selection change
+   */
+  function handleSessionChange(): void {
+    const examOption = examSelector?.selectedOptions[0];
+    const examName = examOption?.dataset.name || examOption?.textContent || '';
+    const targetDate = sessionSelector?.value || '';
+    
+    if (!targetDate) return;
+    
+    if (countdownTimer) clearInterval(countdownTimer);
+    updateCountdown(targetDate, examName);
+    countdownTimer = setInterval(() => updateCountdown(targetDate, examName), 1000);
+  }
+
+  /**
+   * Initialize the component
+   */
+  async function init(): Promise<void> {
+    // Initialize main map
+    if (mapElement) {
+      mainMap = createMap(mapElement);
+      mainMarkerLayer = L.layerGroup().addTo(mainMap);
+      loadingOverlay?.classList.add('hidden');
+    }
+    
+    // Check Supabase configuration
+    if (!isSupabaseConfigured()) {
+      console.warn('[StudyMap] Supabase not configured');
+      handleConnectionChange('error');
+      return;
+    }
+    
+    // Subscribe to updates
+    onConnectionChange(handleConnectionChange);
+    onPresenceUpdate(handlePresenceUpdate);
+    
+    // Initialize session manager
+    const initialized = await initializeSessionManager();
+    
+    if (!initialized) {
+      console.warn('[StudyMap] Session manager failed to initialize');
+      return;
+    }
+    
+    // Check if already in a session
+    if (isSessionActive()) {
+      updateSessionUI();
+    }
+    
+    // Periodic refresh (every 30 seconds)
+    refreshTimer = setInterval(refreshSessions, 30000);
+  }
+
+  // Event listeners
+  joinBtn?.addEventListener('click', joinSession);
+  leaveBtn?.addEventListener('click', leaveSession);
+  retryBtn?.addEventListener('click', () => {
+    location.reload();
+  });
+  fsJoinBtn?.addEventListener('click', joinSession);
+  fsLeaveBtn?.addEventListener('click', leaveSession);
+  fullscreenBtn?.addEventListener('click', openFullscreen);
+  closeFullscreenBtn?.addEventListener('click', closeFullscreen);
+  refreshBtn?.addEventListener('click', refreshSessions);
+  examSelector?.addEventListener('change', handleExamChange);
+  sessionSelector?.addEventListener('change', handleSessionChange);
+  
+  // ESC to close fullscreen
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !fullscreenOverlay?.classList.contains('hidden')) {
+      closeFullscreen();
+    }
+  });
+
+  // Initialize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    if (countdownTimer) clearInterval(countdownTimer);
+    if (refreshTimer) clearInterval(refreshTimer);
+  });
+</script>

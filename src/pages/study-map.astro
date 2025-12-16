@@ -1,0 +1,297 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StudyTimerMap from '../components/StudyTimerMap.astro';
+---
+
+<Layout>
+  <div class="min-h-screen flex themed-bg relative">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 themed-bg border-r border-dashed themed-border h-screen fixed transition-transform duration-300 ease-in-out z-30 lg:translate-x-0 -translate-x-full">
+      <div class="p-4 sm:p-6">
+        <div class="mb-6 sm:mb-8">
+          <h1 class="font-serif italic text-2xl sm:text-3xl themed-text">TimeKeeper</h1>
+          <p class="font-serif italic text-xs sm:text-sm themed-text-secondary">Live Study Map</p>
+          <div class="border-b border-dashed themed-border mt-3 sm:mt-4"></div>
+        </div>
+        <nav class="space-y-2">
+          <a 
+            href="/"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span>All Exams</span>
+          </a>
+          <a 
+            href="/countdown"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-text-secondary hover:themed-bg-secondary"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Custom Countdown</span>
+          </a>
+          <a 
+            href="/study-map"
+            class="nav-btn flex items-center space-x-2 px-4 py-2 w-full text-left rounded-md themed-bg-tertiary"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            <span class="themed-text">Live Study Map</span>
+          </a>
+        </nav>
+        
+        <!-- Theme Toggle Section -->
+        <div class="mt-8 pt-6 border-t border-dashed themed-border">
+          <div class="mb-3">
+            <h3 class="text-sm font-medium themed-text mb-3">Theme</h3>
+            <div class="flex items-center justify-between gap-2">
+              <button 
+                class="theme-circle"
+                data-theme="light"
+                onclick="window.setTheme('light')"
+                title="Light Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="dark"
+                onclick="window.setTheme('dark')"
+                title="Dark Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="ocean"
+                onclick="window.setTheme('ocean')"
+                title="Ocean Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="valentine"
+                onclick="window.setTheme('valentine')"
+                title="Valentine Theme"
+              ></button>
+              <button 
+                class="theme-circle"
+                data-theme="cupcake"
+                onclick="window.setTheme('cupcake')"
+                title="Cupcake Theme"
+              ></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="mt-8 pt-6 border-t border-dashed themed-border">
+          <div class="themed-bg-secondary rounded-lg p-4">
+            <h4 class="font-serif italic text-sm themed-text mb-2">🗺️ About the Map</h4>
+            <p class="text-xs themed-text-secondary leading-relaxed">
+              See students studying across India in real-time. Join the session to appear on the map and motivate others!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full lg:ml-64 flex-1">
+      <!-- Top Navigation -->
+      <nav class="border-b border-dashed themed-border themed-bg sticky top-0 z-20">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 w-full">
+          <div class="flex items-center justify-between h-14 sm:h-16">
+            <div class="flex items-center gap-2 sm:gap-4">
+              <button
+                id="mobile-menu-btn"
+                class="lg:hidden p-2 -ml-2 rounded-md hover:themed-bg-secondary"
+                onclick="window.toggleMobileMenu()"
+              >
+                <svg class="w-6 h-6 themed-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                <h1 class="font-serif italic text-lg sm:text-xl themed-text flex items-center gap-2">
+                  <span>🗺️</span>
+                  <span>Live Study Map</span>
+                </h1>
+                <div class="flex items-center gap-2 mt-1 sm:mt-0">
+                  <span class="hidden sm:block h-px w-4 themed-bg-tertiary"></span>
+                  <span class="text-xs sm:text-sm themed-text-secondary">
+                    Students across India
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <a 
+                href="/"
+                class="px-3 py-1.5 text-xs sm:text-sm themed-text-secondary border border-dashed themed-border rounded-md hover:themed-bg-secondary transition-colors"
+              >
+                ← Back to Exams
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Map Content -->
+      <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6">
+        <!-- Introduction -->
+        <div class="mb-6 themed-bg-secondary rounded-lg p-4 sm:p-6 border border-dashed themed-border">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div class="flex-shrink-0">
+              <div class="w-16 h-16 rounded-full themed-bg-tertiary flex items-center justify-center text-3xl">
+                🎯
+              </div>
+            </div>
+            <div class="flex-1">
+              <h2 class="font-serif italic text-xl themed-text mb-2">Study Together, Across India</h2>
+              <p class="text-sm themed-text-secondary leading-relaxed">
+                See fellow students preparing for competitive exams across the country. 
+                <strong>Select an exam</strong>, start your countdown, and <strong>join the live map</strong> to share your study session. 
+                Your exact location is never shared – we only show your city for privacy.
+              </p>
+            </div>
+            <div class="flex-shrink-0 hidden lg:block">
+              <div class="text-center">
+                <div id="hero-count" class="text-4xl font-serif themed-text">0</div>
+                <div class="text-xs themed-text-secondary">studying now</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Integrated Map + Timer -->
+        <StudyTimerMap height="calc(100vh - 320px)" showTimer={true} />
+
+        <!-- Features Grid -->
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="themed-bg-secondary rounded-lg p-4 border border-dashed themed-border">
+            <div class="text-2xl mb-2">🔒</div>
+            <h3 class="font-medium themed-text text-sm mb-1">Privacy First</h3>
+            <p class="text-xs themed-text-secondary">
+              Your location is randomized within 5km for privacy. Only city names are shown.
+            </p>
+          </div>
+          
+          <div class="themed-bg-secondary rounded-lg p-4 border border-dashed themed-border">
+            <div class="text-2xl mb-2">⚡</div>
+            <h3 class="font-medium themed-text text-sm mb-1">Real-time Updates</h3>
+            <p class="text-xs themed-text-secondary">
+              See students join and leave in real-time. Updates every 30 seconds.
+            </p>
+          </div>
+          
+          <div class="themed-bg-secondary rounded-lg p-4 border border-dashed themed-border sm:col-span-2 lg:col-span-1">
+            <div class="text-2xl mb-2">🎯</div>
+            <h3 class="font-medium themed-text text-sm mb-1">Integrated Timer</h3>
+            <p class="text-xs themed-text-secondary">
+              Select your exam and track the countdown while studying with others on the map.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div 
+      id="mobile-overlay" 
+      class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden hidden"
+      onclick="window.toggleMobileMenu()"
+    ></div>
+  </div>
+</Layout>
+
+<style>
+  /* Theme circles */
+  .theme-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .theme-circle:hover {
+    transform: scale(1.1);
+  }
+
+  .theme-circle.active {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--accent-primary);
+  }
+
+  .theme-circle[data-theme="light"] {
+    background: linear-gradient(135deg, #ffffff, #f1f5f9);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .theme-circle[data-theme="dark"] {
+    background: linear-gradient(135deg, #171717, #000000);
+  }
+
+  .theme-circle[data-theme="ocean"] {
+    background: linear-gradient(135deg, #f0f9ff, #0ea5e9);
+  }
+
+  .theme-circle[data-theme="valentine"] {
+    background: linear-gradient(135deg, #fff1f2, #ec4899);
+  }
+
+  .theme-circle[data-theme="cupcake"] {
+    background: linear-gradient(135deg, #fdf2f8, #a855f7);
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  (window as any).toggleMobileMenu = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+    
+    if (sidebar && overlay) {
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    }
+  };
+
+  // Update hero count periodically
+  function updateHeroCount() {
+    const heroCount = document.getElementById('hero-count');
+    const activeCount = document.getElementById('active-users-count');
+    
+    if (heroCount && activeCount) {
+      heroCount.textContent = activeCount.textContent || '0';
+    }
+  }
+
+  // Update count every second
+  setInterval(updateHeroCount, 1000);
+
+  // Initialize theme circles
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentTheme = localStorage.getItem('timekeeper-theme') || 'light';
+    const circles = document.querySelectorAll('.theme-circle');
+    
+    circles.forEach(circle => {
+      if (circle.getAttribute('data-theme') === currentTheme) {
+        circle.classList.add('active');
+      }
+    });
+  });
+
+  // Listen for theme changes
+  window.addEventListener('themeChanged', (e: CustomEvent) => {
+    const circles = document.querySelectorAll('.theme-circle');
+    circles.forEach(circle => {
+      circle.classList.remove('active');
+      if (circle.getAttribute('data-theme') === e.detail.theme) {
+        circle.classList.add('active');
+      }
+    });
+  });
+</script>

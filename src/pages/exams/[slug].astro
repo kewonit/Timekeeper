@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getExamData, type ExamData } from '../../data/exam-data';
+import StudyTimerMap from '../../components/StudyTimerMap.astro';
 
 export async function getStaticPaths() {
   const exams = getExamData();
@@ -369,6 +370,11 @@ const relatedExamsData = exam.relatedExams
             </button>
           </div>
         </div>
+      </div>
+
+      <!-- Live Study Map -->
+      <div class="mb-8">
+        <StudyTimerMap exam={exam} height="400px" showTimer={false} />
       </div>
 
       <!-- Related Exams -->

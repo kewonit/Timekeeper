@@ -1,0 +1,422 @@
+/**
+ * Study Session Manager - Production Version
+ * 
+ * Manages real-time study sessions using Supabase database.
+ * NO FAKE DATA - Real users only.
+ * 
+ * Features:
+ * - IP-based geolocation (no GPS prompts)
+ * - Real database persistence
+ * - Real-time subscriptions
+ * - Heartbeat for session liveness
+ * - Input validation and rate limiting
+ */
+
+import {
+  getSupabaseClient,
+  ensureAnonymousSession,
+  getCurrentUserId,
+  getLocationFromIP,
+  getActiveStudySessions,
+  upsertStudySession,
+  endCurrentStudySession,
+  heartbeatSession,
+  subscribeToStudySessions,
+  isSupabaseConfigured,
+  type StudySession as DbStudySession,
+  type LocationData,
+} from './supabase-client';
+
+import { getAvatarUrl } from './notion-faces';
+
+import {
+  sanitizeString,
+  sanitizeSlug,
+  validateIndianCoordinates,
+  validateAvatarSeed,
+  withRateLimit,
+  safeAsync,
+  secureStorage,
+} from './api-security';
+
+// Configuration
+const HEARTBEAT_INTERVAL = 25000; // 25 seconds (sessions expire at 60s)
+const SESSION_STORAGE_KEY = 'timekeeper-avatar-seed';
+
+// Singleton state
+let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+let unsubscribeRealtime: (() => void) | null = null;
+let currentLocation: LocationData | null = null;
+let currentAvatarSeed: string | null = null;
+let sessionListeners: Set<(sessions: StudyPresence[]) => void> = new Set();
+let connectionListeners: Set<(status: ConnectionStatus) => void> = new Set();
+let currentStatus: ConnectionStatus = 'disconnected';
+
+/**
+ * Connection status
+ */
+export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
+
+/**
+ * Study presence data for map display
+ */
+export interface StudyPresence {
+  id: string;
+  examSlug: string | null;
+  examName: string | null;
+  subject: string | null;
+  latitude: number;
+  longitude: number;
+  city: string | null;
+  state: string | null;
+  avatarUrl: string;
+  startedAt: string;
+}
+
+/**
+ * Current session info
+ */
+export interface CurrentSession {
+  examSlug: string | null;
+  examName: string | null;
+  subject: string | null;
+  city: string | null;
+  state: string | null;
+}
+
+/**
+ * Get or create avatar seed for consistent appearance
+ * Uses secure storage with validation
+ */
+function getOrCreateAvatarSeed(): string {
+  if (currentAvatarSeed) return currentAvatarSeed;
+  
+  // Try to get from secure storage
+  const saved = secureStorage.get<string>('avatar_seed', '');
+  const validated = validateAvatarSeed(saved);
+  
+  if (validated) {
+    currentAvatarSeed = validated;
+    return validated;
+  }
+  
+  // Generate new seed
+  const seed = crypto.randomUUID ? crypto.randomUUID() : 
+    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  
+  currentAvatarSeed = seed;
+  secureStorage.set('avatar_seed', seed);
+  
+  return seed;
+}
+
+/**
+ * Update connection status and notify listeners
+ */
+function setConnectionStatus(status: ConnectionStatus): void {
+  if (currentStatus === status) return;
+  currentStatus = status;
+  
+  connectionListeners.forEach(cb => {
+    try { cb(status); } catch (e) { console.error('[Session] Listener error:', e); }
+  });
+}
+
+/**
+ * Notify session listeners with converted data
+ */
+function notifySessionListeners(dbSessions: DbStudySession[]): void {
+  const presences: StudyPresence[] = dbSessions.map(s => ({
+    id: s.id,
+    examSlug: s.exam_slug,
+    examName: s.exam_name,
+    subject: s.subject,
+    latitude: s.latitude,
+    longitude: s.longitude,
+    city: s.city,
+    state: s.state,
+    avatarUrl: getAvatarUrl(s.avatar_seed),
+    startedAt: s.started_at,
+  }));
+  
+  sessionListeners.forEach(cb => {
+    try { cb(presences); } catch (e) { console.error('[Session] Listener error:', e); }
+  });
+}
+
+/**
+ * Initialize the session manager
+ * Connects to database and sets up real-time subscriptions
+ */
+export async function initializeSessionManager(): Promise<boolean> {
+  if (!isSupabaseConfigured()) {
+    console.warn('[Session] Supabase not configured');
+    setConnectionStatus('error');
+    return false;
+  }
+  
+  setConnectionStatus('connecting');
+  
+  try {
+    // Sign in anonymously
+    const userId = await ensureAnonymousSession();
+    if (!userId) {
+      console.error('[Session] Failed to authenticate');
+      setConnectionStatus('error');
+      return false;
+    }
+    
+    // Get location from IP (no GPS prompt)
+    currentLocation = await getLocationFromIP();
+    
+    // Set up real-time subscription
+    unsubscribeRealtime = subscribeToStudySessions((sessions) => {
+      notifySessionListeners(sessions);
+    });
+    
+    // Load initial sessions
+    const sessions = await getActiveStudySessions();
+    notifySessionListeners(sessions);
+    
+    setConnectionStatus('connected');
+    return true;
+  } catch (err) {
+    console.error('[Session] Initialization failed:', err);
+    setConnectionStatus('error');
+    return false;
+  }
+}
+
+/**
+ * Start or update a study session
+ * Includes rate limiting and input validation
+ */
+export async function startStudySession(
+  examSlug?: string | null,
+  examName?: string | null,
+  subject?: string | null
+): Promise<boolean> {
+  if (!isSupabaseConfigured()) {
+    console.warn('[Session] Supabase not configured');
+    return false;
+  }
+  
+  // Rate limit: max 5 session starts per minute, return false if rate limited
+  return withRateLimit('session_start', async () => {
+    try {
+      // Ensure we have a user session
+      const userId = await getCurrentUserId();
+      if (!userId) {
+        const newUserId = await ensureAnonymousSession();
+        if (!newUserId) {
+          console.error('[Session] Could not authenticate');
+          return false;
+        }
+      }
+      
+      // Get location if not already cached
+      if (!currentLocation) {
+        currentLocation = await getLocationFromIP();
+      }
+      
+      // Validate location is within India
+      const validatedCoords = validateIndianCoordinates(
+        currentLocation?.latitude ?? null,
+        currentLocation?.longitude ?? null
+      );
+      
+      // Sanitize input strings
+      const sanitizedSlug = sanitizeSlug(examSlug);
+      const sanitizedName = sanitizeString(examName, 100);
+      const sanitizedSubject = sanitizeString(subject, 100);
+      
+      // Upsert session to database
+      const sessionId = await upsertStudySession({
+        examSlug: sanitizedSlug,
+        examName: sanitizedName,
+        subject: sanitizedSubject,
+        latitude: validatedCoords?.latitude ?? currentLocation?.latitude,
+        longitude: validatedCoords?.longitude ?? currentLocation?.longitude,
+        city: sanitizeString(currentLocation?.city, 50),
+        state: sanitizeString(currentLocation?.state, 50),
+        avatarSeed: getOrCreateAvatarSeed(),
+      });
+    
+      if (!sessionId) {
+        console.error('[Session] Failed to create session');
+        return false;
+      }
+      
+      // Start heartbeat
+      startHeartbeat();
+      
+      setConnectionStatus('connected');
+      return true;
+    } catch (err) {
+      console.error('[Session] Start failed:', err);
+      return false;
+    }
+  }, 5, 60000, false); // 5 requests per minute, return false if rate limited
+}
+
+/**
+ * Update the current exam/subject
+ * Includes input sanitization
+ */
+export async function updateStudyExam(
+  examSlug: string | null,
+  examName: string | null,
+  subject?: string | null
+): Promise<void> {
+  return safeAsync(async () => {
+    // Validate location
+    const validatedCoords = validateIndianCoordinates(
+      currentLocation?.latitude ?? null,
+      currentLocation?.longitude ?? null
+    );
+    
+    await upsertStudySession({
+      examSlug: sanitizeSlug(examSlug),
+      examName: sanitizeString(examName, 100),
+      subject: sanitizeString(subject, 100),
+      latitude: validatedCoords?.latitude ?? currentLocation?.latitude,
+      longitude: validatedCoords?.longitude ?? currentLocation?.longitude,
+      city: sanitizeString(currentLocation?.city, 50),
+      state: sanitizeString(currentLocation?.state, 50),
+      avatarSeed: getOrCreateAvatarSeed(),
+    });
+  }, undefined, 'Session');
+}
+
+/**
+ * End the current study session
+ */
+export async function endStudySession(): Promise<void> {
+  stopHeartbeat();
+  
+  try {
+    await endCurrentStudySession();
+  } catch (err) {
+    console.error('[Session] End session failed:', err);
+  }
+  
+  setConnectionStatus('disconnected');
+}
+
+/**
+ * Start the heartbeat timer
+ */
+function startHeartbeat(): void {
+  stopHeartbeat();
+  
+  heartbeatTimer = setInterval(async () => {
+    try {
+      const success = await heartbeatSession();
+      if (!success) {
+        console.warn('[Session] Heartbeat failed');
+      }
+    } catch (err) {
+      console.error('[Session] Heartbeat error:', err);
+    }
+  }, HEARTBEAT_INTERVAL);
+}
+
+/**
+ * Stop the heartbeat timer
+ */
+function stopHeartbeat(): void {
+  if (heartbeatTimer) {
+    clearInterval(heartbeatTimer);
+    heartbeatTimer = null;
+  }
+}
+
+/**
+ * Get current active sessions
+ */
+export async function fetchActiveSessions(): Promise<StudyPresence[]> {
+  try {
+    const sessions = await getActiveStudySessions();
+    return sessions.map(s => ({
+      id: s.id,
+      examSlug: s.exam_slug,
+      examName: s.exam_name,
+      subject: s.subject,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      city: s.city,
+      state: s.state,
+      avatarUrl: getAvatarUrl(s.avatar_seed),
+      startedAt: s.started_at,
+    }));
+  } catch (err) {
+    console.error('[Session] Fetch failed:', err);
+    return [];
+  }
+}
+
+/**
+ * Subscribe to session updates
+ */
+export function onPresenceUpdate(callback: (presences: StudyPresence[]) => void): () => void {
+  sessionListeners.add(callback);
+  return () => sessionListeners.delete(callback);
+}
+
+/**
+ * Subscribe to connection status changes
+ */
+export function onConnectionChange(callback: (status: ConnectionStatus) => void): () => void {
+  connectionListeners.add(callback);
+  // Immediately notify with current status
+  callback(currentStatus);
+  return () => connectionListeners.delete(callback);
+}
+
+/**
+ * Get current connection status
+ */
+export function getConnectionStatus(): ConnectionStatus {
+  return currentStatus;
+}
+
+/**
+ * Get current location (from IP)
+ */
+export function getCurrentLocation(): LocationData | null {
+  return currentLocation;
+}
+
+/**
+ * Check if session manager is ready
+ */
+export function isSessionActive(): boolean {
+  return currentStatus === 'connected' && heartbeatTimer !== null;
+}
+
+/**
+ * Cleanup - call on page unload
+ */
+export function cleanup(): void {
+  stopHeartbeat();
+  
+  if (unsubscribeRealtime) {
+    unsubscribeRealtime();
+    unsubscribeRealtime = null;
+  }
+  
+  // Try to end session synchronously
+  endCurrentStudySession().catch(() => {});
+}
+
+// Page lifecycle handlers
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', cleanup);
+  
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      // Send final heartbeat before hiding
+      heartbeatSession().catch(() => {});
+    }
+  });
+}
