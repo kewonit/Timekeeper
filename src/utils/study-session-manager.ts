@@ -28,7 +28,7 @@ import {
   type LocationData,
 } from './supabase-client';
 
-import { getAvatarUrl } from './notion-faces';
+import { getAvatarUrl, preloadAvatars } from './notion-faces';
 
 import {
   sanitizeString,
@@ -140,6 +140,7 @@ function setConnectionStatus(status: ConnectionStatus): void {
 /**
  * Notify session listeners with converted data
  * DEMONSTRATION_ACCOUNT: Merges real sessions with demonstration sessions
+ * Preloads avatars in the background for smooth rendering
  */
 function notifySessionListeners(dbSessions: DbStudySession[]): void {
   // Cache real sessions for merging with demonstration sessions
@@ -175,6 +176,20 @@ function notifySessionListeners(dbSessions: DbStudySession[]): void {
   
   // Merge and deduplicate (real sessions take priority)
   const allPresences = [...realPresences, ...demoPresences];
+  
+  // Preload avatars in the background (don't block notifications)
+  if (typeof window !== 'undefined') {
+    const avatarSeeds = [
+      ...dbSessions.map(s => s.avatar_seed),
+      ...lastDemonstrationSessions.map(s => s.avatar_seed)
+    ];
+    
+    preloadAvatars(avatarSeeds).catch((err) => {
+      // Preload failure is non-critical - avatars will load on-demand from network
+      // This can fail due to network issues or CORS, but doesn't affect functionality
+      console.debug('[Session] Avatar preload failed (non-critical):', err);
+    });
+  }
   
   sessionListeners.forEach(cb => {
     try { cb(allPresences); } catch (e) { console.error('[Session] Listener error:', e); }
@@ -412,6 +427,7 @@ function stopHeartbeat(): void {
 /**
  * Get current active sessions
  * DEMONSTRATION_ACCOUNT: Includes demonstration sessions in the result
+ * Preloads avatars in the background for smooth rendering
  */
 export async function fetchActiveSessions(): Promise<StudyPresence[]> {
   try {
@@ -443,11 +459,29 @@ export async function fetchActiveSessions(): Promise<StudyPresence[]> {
       startedAt: s.started_at,
     }));
     
-    return [...realPresences, ...demoPresences];
+    const allPresences = [...realPresences, ...demoPresences];
+    
+    // Preload all avatars in the background (don't block return)
+    // This ensures avatars are cached for instant display
+    if (typeof window !== 'undefined') {
+      const avatarSeeds = [
+        ...sessions.map(s => s.avatar_seed),
+        ...getDemonstrationSessions().map(s => s.avatar_seed)
+      ];
+      
+      // Preload avatars without blocking the return
+      // Failure is non-critical - avatars will load on-demand if preload fails
+      preloadAvatars(avatarSeeds).catch(err => {
+        console.debug('[Session] Avatar preload failed (non-critical):', err);
+      });
+    }
+    
+    return allPresences;
   } catch (err) {
     console.error('[Session] Fetch failed:', err);
     // DEMONSTRATION_ACCOUNT: Return demonstration sessions even if real fetch fails
-    return getDemonstrationSessions().map(s => ({
+    const demoSessions = getDemonstrationSessions();
+    const demoPresences = demoSessions.map(s => ({
       id: s.id,
       examSlug: s.exam_slug,
       examName: s.exam_name,
@@ -459,6 +493,16 @@ export async function fetchActiveSessions(): Promise<StudyPresence[]> {
       avatarUrl: getAvatarUrl(s.avatar_seed),
       startedAt: s.started_at,
     }));
+    
+    // Preload demo avatars too (best effort, non-blocking)
+    if (typeof window !== 'undefined') {
+      // Preload failure is non-critical - avatars will load on-demand from network
+      preloadAvatars(demoSessions.map(s => s.avatar_seed)).catch(() => {
+        // Silent - already logged at higher level if needed
+      });
+    }
+    
+    return demoPresences;
   }
 }
 
