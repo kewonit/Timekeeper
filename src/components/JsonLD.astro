@@ -81,6 +81,7 @@ if (type === 'website') {
   const examUrl = `${baseUrl}/exams/${exam.slug}`;
   const currentSession = exam.sessions?.[0];
   const examDate = currentSession?.date || exam.date;
+  const examYear = new Date(examDate).getFullYear();
   
   structuredData = {
     "@context": "https://schema.org",
@@ -122,7 +123,7 @@ if (type === 'website') {
         "@type": "WebPage",
         "@id": `${examUrl}/#webpage`,
         "url": examUrl,
-        "name": `${exam.name} 2026 Countdown Timer | ${exam.fullName}`,
+        "name": `${exam.name} ${examYear} Countdown Timer | ${exam.fullName}`,
         "description": exam.metaDescription,
         "isPartOf": {
           "@id": `${baseUrl}/#website`

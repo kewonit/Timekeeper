@@ -5,14 +5,15 @@ interface Props {
 }
 
 const { currentPage = 'home', exam } = Astro.props;
+const examYear = exam?.sessions?.[0]?.date ? new Date(exam.sessions[0].date).getFullYear() : 2026;
 
 // Generate FAQ data based on context
 const generateFAQs = (context: string, exam?: any) => {
   if (context === 'exam' && exam) {
     return [
       {
-        question: `When is ${exam.name} 2026 exam?`,
-        answer: `${exam.fullName} 2026 is scheduled for ${new Date(exam.sessions?.[0]?.date || exam.date).toLocaleDateString('en-IN', { 
+        question: `When is ${exam.name} ${examYear} exam?`,
+        answer: `${exam.fullName} ${examYear} is scheduled for ${new Date(exam.sessions?.[0]?.date || exam.date).toLocaleDateString('en-IN', { 
           day: 'numeric', 
           month: 'long', 
           year: 'numeric' 
@@ -32,7 +33,7 @@ const generateFAQs = (context: string, exam?: any) => {
       },
       {
         question: `Does the countdown timer work offline?`,
-        answer: `Yes, our countdown timer works offline once loaded. The timer continues to run even without internet connection, ensuring you never lose track of time until ${exam.name} 2026.`
+        answer: `Yes, our countdown timer works offline once loaded. The timer continues to run even without internet connection, ensuring you never lose track of time until ${exam.name} ${examYear}.`
       },
       {
         question: `What subjects are covered in ${exam.name}?`,
