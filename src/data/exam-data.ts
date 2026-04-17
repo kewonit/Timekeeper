@@ -70,6 +70,8 @@ function shiftISODate(date: string, years: number): string {
     const [year, month, day] = date.split('-').map(Number);
     const shiftedDate = new Date(Date.UTC(year + years, month - 1, day));
 
+    // Clamp overflowed dates (for example, February 29 in a non-leap year) to
+    // the last valid day of the intended month instead of spilling into March.
     if (shiftedDate.getUTCMonth() !== month - 1) {
         shiftedDate.setUTCDate(0);
     }
@@ -78,6 +80,8 @@ function shiftISODate(date: string, years: number): string {
 }
 
 function predictFutureSessions(sessions: ExamSession[], now: number): ExamSession[] {
+    let lastPredictedSessions = sessions;
+
     for (let yearsToAdvance = 1; yearsToAdvance <= MAX_PREDICTION_YEARS; yearsToAdvance++) {
         const predictedSessions = sessions.map(session => ({
             ...session,
@@ -88,13 +92,14 @@ function predictFutureSessions(sessions: ExamSession[], now: number): ExamSessio
                 ? `${session.note} (predicted next cycle from the latest published schedule)`
                 : 'Predicted next cycle from the latest published schedule'
         }));
+        lastPredictedSessions = predictedSessions;
 
         if (predictedSessions.some(session => getSessionEndTime(session) >= now)) {
             return predictedSessions;
         }
     }
 
-    return sessions;
+    return lastPredictedSessions;
 }
 
 function normalizeSessionsForDisplay(sessions: ExamSession[]): ExamSession[] {
