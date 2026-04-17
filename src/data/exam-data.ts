@@ -70,8 +70,8 @@ function shiftISODate(date: string, years: number): string {
     const [year, month, day] = date.split('-').map(Number);
     const shiftedDate = new Date(Date.UTC(year + years, month - 1, day));
 
-    // Clamp overflowed dates (for example, February 29 in a non-leap year) to
-    // the last valid day of the intended month instead of spilling into March.
+    // Clamp any overflowed date (for example, February 29 in a non-leap year)
+    // to the last valid day of the intended month instead of spilling over.
     if (shiftedDate.getUTCMonth() !== month - 1) {
         shiftedDate.setUTCDate(0);
     }
@@ -244,7 +244,7 @@ function calculateSingleTime(targetDate: string, now: number, endDate?: string) 
     const start = new Date(targetDate).getTime();
     const end = new Date(endDate || targetDate).getTime();
     // Count down to the start date until the window begins, then count down to
-    // the end of the active exam window so ongoing sessions do not show expired.
+    // the end of the active exam window so ongoing sessions are not shown as expired.
     const target = now < start ? start : end;
     const distance = target - now;
 
