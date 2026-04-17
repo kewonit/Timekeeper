@@ -36,6 +36,7 @@ export interface ExamData extends ExamMetadata {
 let examDataCache: ExamData[] | null = null;
 let metadataLookup: Map<string, ExamMetadata> | null = null;
 let sessionsLookup: Map<string, ExamSession[]> | null = null;
+const MAX_PREDICTION_YEARS = 5;
 
 /**
  * Initialize lookup maps for O(1) access
@@ -67,11 +68,17 @@ function getSessionEndTime(session: ExamSession): number {
 
 function shiftISODate(date: string, years: number): string {
     const [year, month, day] = date.split('-').map(Number);
-    return new Date(Date.UTC(year + years, month - 1, day)).toISOString().split('T')[0];
+    const shiftedDate = new Date(Date.UTC(year + years, month - 1, day));
+
+    if (shiftedDate.getUTCMonth() !== month - 1) {
+        shiftedDate.setUTCDate(0);
+    }
+
+    return shiftedDate.toISOString().split('T')[0];
 }
 
 function predictFutureSessions(sessions: ExamSession[], now: number): ExamSession[] {
-    for (let yearsToAdvance = 1; yearsToAdvance <= 5; yearsToAdvance++) {
+    for (let yearsToAdvance = 1; yearsToAdvance <= MAX_PREDICTION_YEARS; yearsToAdvance++) {
         const predictedSessions = sessions.map(session => ({
             ...session,
             date: shiftISODate(session.date, yearsToAdvance),
@@ -231,6 +238,8 @@ export function calculateTimeRemaining(exam: ExamData): {
 function calculateSingleTime(targetDate: string, now: number, endDate?: string) {
     const start = new Date(targetDate).getTime();
     const end = new Date(endDate || targetDate).getTime();
+    // Count down to the start date until the window begins, then count down to
+    // the end of the active exam window so ongoing sessions do not show expired.
     const target = now < start ? start : end;
     const distance = target - now;
 
