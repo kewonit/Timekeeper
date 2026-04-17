@@ -5,6 +5,9 @@ import metadataData from './exam-metadata.json';
 export interface ExamSession {
     session: string;
     date: string;
+    endDate?: string;
+    note?: string;
+    predicted?: boolean;
 }
 
 export interface ExamMetadata {
@@ -33,6 +36,7 @@ export interface ExamData extends ExamMetadata {
 let examDataCache: ExamData[] | null = null;
 let metadataLookup: Map<string, ExamMetadata> | null = null;
 let sessionsLookup: Map<string, ExamSession[]> | null = null;
+const MAX_PREDICTION_YEARS = 5;
 
 /**
  * Initialize lookup maps for O(1) access
@@ -54,6 +58,64 @@ function initializeLookups(): void {
     });
 }
 
+function getSessionStartTime(session: ExamSession): number {
+    return new Date(session.date).getTime();
+}
+
+function getSessionEndTime(session: ExamSession): number {
+    return new Date(session.endDate || session.date).getTime();
+}
+
+function shiftISODate(date: string, years: number): string {
+    const [year, month, day] = date.split('-').map(Number);
+    const shiftedDate = new Date(Date.UTC(year + years, month - 1, day));
+
+    // Clamp any overflowed date (for example, February 29 in a non-leap year)
+    // to the last valid day of the intended month instead of spilling over.
+    if (shiftedDate.getUTCMonth() !== month - 1) {
+        shiftedDate.setUTCDate(0);
+    }
+
+    return shiftedDate.toISOString().split('T')[0];
+}
+
+function predictFutureSessions(sessions: ExamSession[], now: number): ExamSession[] {
+    let lastPredictedSessions = sessions;
+
+    for (let yearsToAdvance = 1; yearsToAdvance <= MAX_PREDICTION_YEARS; yearsToAdvance++) {
+        const predictedSessions = sessions.map(session => ({
+            ...session,
+            date: shiftISODate(session.date, yearsToAdvance),
+            endDate: session.endDate ? shiftISODate(session.endDate, yearsToAdvance) : undefined,
+            predicted: true,
+            note: session.note
+                ? `${session.note} (predicted next cycle from the latest published schedule)`
+                : 'Predicted next cycle from the latest published schedule'
+        }));
+        lastPredictedSessions = predictedSessions;
+
+        if (predictedSessions.some(session => getSessionEndTime(session) >= now)) {
+            return predictedSessions;
+        }
+    }
+
+    return lastPredictedSessions;
+}
+
+function normalizeSessionsForDisplay(sessions: ExamSession[]): ExamSession[] {
+    if (sessions.length === 0) return [];
+
+    const now = Date.now();
+    const sortedSessions = [...sessions].sort((a, b) => getSessionStartTime(a) - getSessionStartTime(b));
+    const upcomingOrOngoingSessions = sortedSessions.filter(session => getSessionEndTime(session) >= now);
+
+    if (upcomingOrOngoingSessions.length > 0) {
+        return upcomingOrOngoingSessions;
+    }
+
+    return predictFutureSessions(sortedSessions, now);
+}
+
 /**
  * Get combined exam data with intelligent caching
  */
@@ -69,7 +131,7 @@ export function getExamData(): ExamData[] {
         examDataCache!.push({
             id,
             ...metadata,
-            sessions
+            sessions: normalizeSessionsForDisplay(sessions)
         });
     });
 
@@ -85,7 +147,7 @@ export function getExamById(id: string): ExamData | undefined {
     const metadata = metadataLookup!.get(id);
     if (!metadata) return undefined;
 
-    const sessions = sessionsLookup!.get(id) || [];
+    const sessions = normalizeSessionsForDisplay(sessionsLookup!.get(id) || []);
     return {
         id,
         ...metadata,
@@ -161,7 +223,7 @@ export function calculateTimeRemaining(exam: ExamData): {
     // Calculate time for all sessions
     const allSessions = exam.sessions.map(session => ({
         session,
-        timeRemaining: calculateSingleTime(session.date, now)
+        timeRemaining: calculateSingleTime(session.date, now, session.endDate)
     }));
 
     // Find next upcoming session
@@ -178,8 +240,12 @@ export function calculateTimeRemaining(exam: ExamData): {
 /**
  * Calculate time for a single date
  */
-function calculateSingleTime(targetDate: string, now: number) {
-    const target = new Date(targetDate).getTime();
+function calculateSingleTime(targetDate: string, now: number, endDate?: string) {
+    const start = new Date(targetDate).getTime();
+    const end = new Date(endDate || targetDate).getTime();
+    // Count down to the start date until the window begins, then count down to
+    // the end of the active exam window so ongoing sessions are not shown as expired.
+    const target = now < start ? start : end;
     const distance = target - now;
 
     if (distance < 0) {
@@ -199,25 +265,27 @@ function calculateSingleTime(targetDate: string, now: number) {
  */
 export function generateExamPageTitle(exam: ExamData): string {
     const timeData = calculateTimeRemaining(exam);
+    const sessionYear = new Date(timeData.nextSession?.date || exam.sessions[0]?.date || Date.now()).getFullYear();
 
     if (timeData.nextSession && !timeData.timeRemaining.expired) {
         const { days, hours } = timeData.timeRemaining;
         const timeString = days > 0 ? `${days} Days ${hours}h Left` : `${hours}h Left`;
         const sessionInfo = exam.sessions.length > 1 ? ` (${timeData.nextSession.session})` : '';
-        return `${exam.name} Countdown Timer - ${timeString}${sessionInfo} | ${exam.fullName} 2026`;
+        return `${exam.name} Countdown Timer - ${timeString}${sessionInfo} | ${exam.fullName} ${sessionYear}`;
     }
 
-    return `${exam.name} 2026 Countdown Timer | ${exam.fullName} Exam Date - TimeKeeper`;
+    return `${exam.name} ${sessionYear} Countdown Timer | ${exam.fullName} Exam Date - TimeKeeper`;
 }
 
 export function generateExamMetaDescription(exam: ExamData): string {
     const timeData = calculateTimeRemaining(exam);
+    const sessionYear = new Date(timeData.nextSession?.date || exam.sessions[0]?.date || Date.now()).getFullYear();
 
     if (timeData.nextSession && !timeData.timeRemaining.expired) {
         const { days, hours, minutes } = timeData.timeRemaining;
         const timeString = `${days} days, ${hours} hours, ${minutes} minutes remaining`;
         const sessionInfo = exam.sessions.length > 1 ? ` for ${timeData.nextSession.session}` : '';
-        return `${exam.fullName} countdown timer - ${timeString}${sessionInfo}. Track exact time until ${exam.name} 2026 exam. Real-time countdown with precision timing.`;
+        return `${exam.fullName} countdown timer - ${timeString}${sessionInfo}. Track exact time until ${exam.name} ${sessionYear} exam. Real-time countdown with precision timing.`;
     }
 
     return exam.metaDescription;

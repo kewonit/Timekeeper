@@ -7,13 +7,13 @@
                     "session": "Session 1",
                     "date": "2026-01-21",
                     "endDate": "2026-01-30",
-                    "note": "Official NTA dates confirmed"
+                    "note": "Official NTA schedule"
                 },
                 {
                     "session": "Session 2",
-                    "date": "2026-04-02",
-                    "endDate": "2026-04-09",
-                    "note": "Official NTA dates confirmed"
+                    "date": "2026-04-01",
+                    "endDate": "2026-04-10",
+                    "note": "Official NTA schedule"
                 }
             ]
         },
@@ -33,7 +33,7 @@
                 {
                     "session": "Single Session",
                     "date": "2026-05-03",
-                    "note": "Expected first Sunday of May - NTA notification awaited"
+                    "note": "Official NTA public notice"
                 }
             ]
         },
@@ -43,14 +43,14 @@
                 {
                     "session": "Session 1",
                     "date": "2026-04-15",
-                    "endDate": "2026-04-17",
-                    "note": "Official BITSAT dates"
+                    "endDate": "2026-04-16",
+                    "note": "Official BITSAT schedule"
                 },
                 {
                     "session": "Session 2",
                     "date": "2026-05-24",
                     "endDate": "2026-05-26",
-                    "note": "Official BITSAT dates"
+                    "note": "Official BITSAT schedule"
                 }
             ]
         },
@@ -69,13 +69,13 @@
             "sessions": [
                 {
                     "session": "Preliminary",
-                    "date": "2026-05-31",
-                    "note": "Expected last Sunday of May - UPSC calendar awaited"
+                    "date": "2026-05-24",
+                    "note": "Official UPSC annual calendar 2026"
                 },
                 {
                     "session": "Main",
-                    "date": "2026-09-18",
-                    "note": "Expected mid-September - UPSC calendar awaited"
+                    "date": "2026-08-21",
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -136,7 +136,7 @@
                 {
                     "session": "Single Session",
                     "date": "2025-12-07",
-                    "note": "Expected first Sunday of December 2025 for 2026 Admission"
+                    "note": "Official Consortium of NLUs schedule for CLAT 2026"
                 }
             ]
         },
@@ -145,8 +145,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-04-26",
-                    "note": "Expected late April - WBJEEB notification awaited"
+                    "date": "2026-05-24",
+                    "note": "Official WBJEEB schedule"
                 }
             ]
         },
@@ -156,14 +156,14 @@
                 {
                     "session": "PCM",
                     "date": "2026-04-11",
-                    "endDate": "2026-04-19",
-                    "note": "Official MHT CET dates"
+                    "endDate": "2026-04-20",
+                    "note": "Official Maharashtra CET Cell schedule"
                 },
                 {
                     "session": "PCB",
                     "date": "2026-04-21",
                     "endDate": "2026-04-26",
-                    "note": "Official MHT CET dates"
+                    "note": "Official Maharashtra CET Cell schedule"
                 }
             ]
         },
@@ -171,10 +171,19 @@
             "id": "kcet-2026",
             "sessions": [
                 {
-                    "session": "Single Session",
-                    "date": "2026-04-18",
-                    "endDate": "2026-04-19",
-                    "note": "Expected mid-April - KEA notification awaited"
+                    "session": "Kannada Language Test",
+                    "date": "2026-04-22",
+                    "note": "Official KEA schedule"
+                },
+                {
+                    "session": "Paper 1",
+                    "date": "2026-04-23",
+                    "note": "Official KEA schedule"
+                },
+                {
+                    "session": "Paper 2",
+                    "date": "2026-04-24",
+                    "note": "Official KEA schedule"
                 }
             ]
         },
@@ -183,8 +192,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-05-10",
-                    "note": "Expected second Sunday of May - COMEDK notification awaited"
+                    "date": "2026-05-09",
+                    "note": "Official COMEDK notification"
                 }
             ]
         },
@@ -234,9 +243,9 @@
             "sessions": [
                 {
                     "session": "Testing Window",
-                    "date": "2025-11-05",
-                    "endDate": "2025-12-19",
-                    "note": "Official NMAT dates"
+                    "date": "2025-09-18",
+                    "endDate": "2026-01-31",
+                    "note": "Official GMAC NMAT testing window"
                 }
             ]
         },
@@ -245,14 +254,14 @@
             "sessions": [
                 {
                     "session": "Preliminary",
-                    "date": "2026-10-03",
-                    "endDate": "2026-10-10",
-                    "note": "Expected October - IBPS calendar awaited"
+                    "date": "2026-08-22",
+                    "endDate": "2026-08-23",
+                    "note": "Official IBPS calendar 2026-27"
                 },
                 {
                     "session": "Main",
-                    "date": "2026-11-28",
-                    "note": "Expected November - IBPS calendar awaited"
+                    "date": "2026-10-04",
+                    "note": "Official IBPS calendar 2026-27"
                 }
             ]
         },
@@ -340,14 +349,14 @@
             "sessions": [
                 {
                     "session": "Preliminary",
-                    "date": "2026-08-22",
-                    "endDate": "2026-08-29",
-                    "note": "Expected August - IBPS calendar awaited"
+                    "date": "2026-10-10",
+                    "endDate": "2026-10-11",
+                    "note": "Official IBPS CSA calendar 2026-27"
                 },
                 {
                     "session": "Main",
-                    "date": "2026-10-03",
-                    "note": "Expected October - IBPS calendar awaited"
+                    "date": "2026-12-27",
+                    "note": "Official IBPS CSA calendar 2026-27"
                 }
             ]
         },
@@ -356,8 +365,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-04-19",
-                    "note": "Expected third Sunday of April - UPSC calendar awaited"
+                    "date": "2026-04-12",
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -367,7 +376,7 @@
                 {
                     "session": "Single Session",
                     "date": "2026-04-12",
-                    "note": "Expected April - UPSC calendar awaited"
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -376,13 +385,13 @@
             "sessions": [
                 {
                     "session": "Preliminary",
-                    "date": "2026-05-31",
-                    "note": "Combined with UPSC CSE Prelims - UPSC calendar awaited"
+                    "date": "2026-05-24",
+                    "note": "Official UPSC annual calendar 2026"
                 },
                 {
                     "session": "Main",
                     "date": "2026-11-22",
-                    "note": "Expected November - UPSC calendar awaited"
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -391,13 +400,13 @@
             "sessions": [
                 {
                     "session": "Preliminary",
-                    "date": "2026-02-15",
-                    "note": "Expected February - UPSC calendar awaited"
+                    "date": "2026-02-08",
+                    "note": "Official UPSC annual calendar 2026"
                 },
                 {
                     "session": "Main",
                     "date": "2026-06-21",
-                    "note": "Expected June - UPSC calendar awaited"
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -406,8 +415,13 @@
             "sessions": [
                 {
                     "session": "Preliminary",
-                    "date": "2026-02-15",
-                    "note": "Combined with ESE - UPSC calendar awaited"
+                    "date": "2026-02-08",
+                    "note": "Official UPSC annual calendar 2026"
+                },
+                {
+                    "session": "Main",
+                    "date": "2026-06-20",
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -416,18 +430,25 @@
             "sessions": [
                 {
                     "session": "Officer Scale I Prelims",
-                    "date": "2026-08-08",
-                    "note": "Expected August - IBPS calendar awaited"
+                    "date": "2026-11-21",
+                    "endDate": "2026-11-22",
+                    "note": "Official IBPS RRB calendar 2026-27"
+                },
+                {
+                    "session": "Officer Scale I Main",
+                    "date": "2026-12-20",
+                    "note": "Official IBPS RRB calendar 2026-27"
                 },
                 {
                     "session": "Office Assistant Prelims",
-                    "date": "2026-08-15",
-                    "note": "Expected August - IBPS calendar awaited"
+                    "date": "2026-12-06",
+                    "endDate": "2026-12-13",
+                    "note": "Official IBPS RRB calendar 2026-27"
                 },
                 {
-                    "session": "Mains",
-                    "date": "2026-09-26",
-                    "note": "Expected September - IBPS calendar awaited"
+                    "session": "Office Assistant Main",
+                    "date": "2027-01-30",
+                    "note": "Official IBPS RRB calendar 2026-27"
                 }
             ]
         },
@@ -484,7 +505,7 @@
                 {
                     "session": "Single Session",
                     "date": "2026-06-07",
-                    "note": "Expected first Sunday of June - IISER notification awaited"
+                    "note": "Official IISER Admissions schedule"
                 }
             ]
         },
@@ -493,8 +514,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-06-14",
-                    "note": "Expected mid-June - NISER notification awaited"
+                    "date": "2026-06-06",
+                    "note": "Official NEST 2026 schedule"
                 }
             ]
         },
@@ -503,13 +524,13 @@
             "sessions": [
                 {
                     "session": "INI CET January",
-                    "date": "2026-01-11",
-                    "note": "Expected second Sunday of January - AIIMS notification awaited"
+                    "date": "2025-11-09",
+                    "note": "Official AIIMS exam calendar"
                 },
                 {
                     "session": "INI CET July",
-                    "date": "2026-07-12",
-                    "note": "Expected second Sunday of July - AIIMS notification awaited"
+                    "date": "2026-05-16",
+                    "note": "Official AIIMS exam calendar"
                 }
             ]
         },
@@ -538,15 +559,14 @@
             "sessions": [
                 {
                     "session": "AFCAT 1",
-                    "date": "2026-02-21",
-                    "endDate": "2026-02-23",
-                    "note": "Expected Feb 2026 - IAF notification awaited"
+                    "date": "2026-01-31",
+                    "note": "Official AFCAT 01/2026 notification"
                 },
                 {
                     "session": "AFCAT 2",
                     "date": "2026-08-22",
                     "endDate": "2026-08-24",
-                    "note": "Expected Aug 2026 - IAF notification awaited"
+                    "note": "Official AFCAT 2 2026 date not announced yet; existing placeholder retained"
                 }
             ]
         },
@@ -570,8 +590,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-08-02",
-                    "note": "Expected first Sunday of August - UPSC notification awaited"
+                    "date": "2026-07-19",
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -580,8 +600,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-09-06",
-                    "note": "Expected first Sunday of September - UPSC notification awaited"
+                    "date": "2026-09-13",
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -590,8 +610,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-11-08",
-                    "note": "Expected November 2026 - UPSC notification awaited"
+                    "date": "2026-09-13",
+                    "note": "Official UPSC annual calendar 2026"
                 }
             ]
         },
@@ -600,21 +620,21 @@
             "sessions": [
                 {
                     "session": "Phase 1",
-                    "date": "2026-04-23",
-                    "endDate": "2026-04-28",
-                    "note": "Official SRMJEE dates"
+                    "date": "2026-04-24",
+                    "endDate": "2026-04-29",
+                    "note": "Official SRMIST schedule"
                 },
                 {
                     "session": "Phase 2",
                     "date": "2026-06-10",
                     "endDate": "2026-06-15",
-                    "note": "Official SRMJEE dates"
+                    "note": "Official SRMIST schedule"
                 },
                 {
                     "session": "Phase 3",
                     "date": "2026-07-04",
                     "endDate": "2026-07-05",
-                    "note": "Official SRMJEE dates"
+                    "note": "Official SRMIST schedule"
                 }
             ]
         },
@@ -623,9 +643,8 @@
             "sessions": [
                 {
                     "session": "Single Session",
-                    "date": "2026-05-15",
-                    "endDate": "2026-05-20",
-                    "note": "Expected mid-May - AMU notification awaited"
+                    "date": "2026-04-19",
+                    "note": "Official AMU Controller of Examinations schedule"
                 }
             ]
         },
@@ -643,16 +662,14 @@
             "id": "cuet-ug-2026",
             "sessions": [
                 {
-                    "session": "Phase 1",
-                    "date": "2026-05-15",
-                    "endDate": "2026-05-31",
-                    "note": "Expected mid-May to end-May - NTA notification awaited"
+                    "session": "Exam Window Starts",
+                    "date": "2026-05-11",
+                    "note": "Official NTA exam window"
                 },
                 {
-                    "session": "Phase 2",
-                    "date": "2026-06-01",
-                    "endDate": "2026-06-15",
-                    "note": "Expected early June - NTA notification awaited"
+                    "session": "Exam Window Ends",
+                    "date": "2026-05-31",
+                    "note": "Official NTA exam window"
                 }
             ]
         },
@@ -660,10 +677,14 @@
             "id": "cuet-pg-2026",
             "sessions": [
                 {
-                    "session": "Single Session",
-                    "date": "2026-03-10",
-                    "endDate": "2026-03-28",
-                    "note": "Official CUET PG dates"
+                    "session": "Exam Window Starts",
+                    "date": "2026-03-06",
+                    "note": "Official NTA subject-wise schedule"
+                },
+                {
+                    "session": "Exam Window Ends",
+                    "date": "2026-03-27",
+                    "note": "Official NTA subject-wise schedule"
                 }
             ]
         },
@@ -672,13 +693,13 @@
             "sessions": [
                 {
                     "session": "Main Exam Start",
-                    "date": "2026-02-15",
-                    "note": "Expected mid-February - CBSE datesheet awaited"
+                    "date": "2026-02-17",
+                    "note": "Official CBSE date sheet"
                 },
                 {
                     "session": "Main Exam End",
-                    "date": "2026-03-20",
-                    "note": "Expected mid-March - CBSE datesheet awaited"
+                    "date": "2026-03-10",
+                    "note": "Official CBSE date sheet"
                 }
             ]
         },
@@ -687,13 +708,13 @@
             "sessions": [
                 {
                     "session": "Main Exam Start",
-                    "date": "2026-02-15",
-                    "note": "Expected mid-February - CBSE datesheet awaited"
+                    "date": "2026-02-17",
+                    "note": "Official CBSE date sheet"
                 },
                 {
                     "session": "Main Exam End",
-                    "date": "2026-04-15",
-                    "note": "Expected mid-April - CBSE datesheet awaited"
+                    "date": "2026-04-09",
+                    "note": "Official CBSE date sheet"
                 }
             ]
         },
@@ -702,13 +723,13 @@
             "sessions": [
                 {
                     "session": "Main Exam Start",
-                    "date": "2026-02-20",
-                    "note": "Expected late February - CISCE datesheet awaited"
+                    "date": "2026-02-17",
+                    "note": "Official CISCE date sheet"
                 },
                 {
                     "session": "Main Exam End",
                     "date": "2026-03-30",
-                    "note": "Expected late March - CISCE datesheet awaited"
+                    "note": "Official CISCE date sheet"
                 }
             ]
         },
@@ -718,12 +739,12 @@
                 {
                     "session": "Main Exam Start",
                     "date": "2026-02-12",
-                    "note": "Expected mid-February - CISCE datesheet awaited"
+                    "note": "Official CISCE date sheet"
                 },
                 {
                     "session": "Main Exam End",
-                    "date": "2026-04-10",
-                    "note": "Expected early April - CISCE datesheet awaited"
+                    "date": "2026-04-06",
+                    "note": "Official CISCE date sheet"
                 }
             ]
         },
@@ -732,13 +753,13 @@
             "sessions": [
                 {
                     "session": "Main Exam Start",
-                    "date": "2026-02-21",
-                    "note": "Expected late February - Maharashtra Board datesheet awaited"
+                    "date": "2026-02-10",
+                    "note": "Official Maharashtra Board timetable"
                 },
                 {
                     "session": "Main Exam End",
-                    "date": "2026-03-20",
-                    "note": "Expected mid-March - Maharashtra Board datesheet awaited"
+                    "date": "2026-03-11",
+                    "note": "Official Maharashtra Board timetable"
                 }
             ]
         },
@@ -747,13 +768,13 @@
             "sessions": [
                 {
                     "session": "Main Exam Start",
-                    "date": "2026-03-02",
-                    "note": "Expected early March - Maharashtra Board datesheet awaited"
+                    "date": "2026-02-20",
+                    "note": "Official Maharashtra Board timetable"
                 },
                 {
                     "session": "Main Exam End",
-                    "date": "2026-03-25",
-                    "note": "Expected late March - Maharashtra Board datesheet awaited"
+                    "date": "2026-03-18",
+                    "note": "Official Maharashtra Board timetable"
                 }
             ]
         },
@@ -763,12 +784,12 @@
                 {
                     "session": "Main Exam Start",
                     "date": "2026-02-18",
-                    "note": "Expected mid-February - UP Board datesheet awaited"
+                    "note": "Official UPMSP timetable"
                 },
                 {
                     "session": "Main Exam End",
-                    "date": "2026-03-10",
-                    "note": "Expected early March - UP Board datesheet awaited"
+                    "date": "2026-03-12",
+                    "note": "Official UPMSP timetable"
                 }
             ]
         },
@@ -778,12 +799,12 @@
                 {
                     "session": "Main Exam Start",
                     "date": "2026-02-18",
-                    "note": "Expected mid-February - UP Board datesheet awaited"
+                    "note": "Official UPMSP timetable"
                 },
                 {
                     "session": "Main Exam End",
-                    "date": "2026-03-20",
-                    "note": "Expected mid-March - UP Board datesheet awaited"
+                    "date": "2026-03-12",
+                    "note": "Official UPMSP timetable"
                 }
             ]
         }

@@ -6,14 +6,18 @@ interface Props {
 
 const { exam, currentUrl = Astro.url.href } = Astro.props;
 const baseUrl = 'https://timekeeper.edbn.me';
+const sessionYear = exam?.sessions?.[0]?.date ? new Date(exam.sessions[0].date).getFullYear() : 2026;
 
 // Helper to calculate time left
-function calculateTimeLeft(targetDate: string) {
-  if (!targetDate) {
+function calculateTimeLeft(session?: { date?: string; endDate?: string }) {
+  if (!session?.date) {
     return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
   }
+
   const now = new Date().getTime();
-  const target = new Date(targetDate).getTime();
+  const start = new Date(session.date).getTime();
+  const end = new Date(session.endDate || session.date).getTime();
+  const target = now < start ? start : end;
   const distance = target - now;
   
   if (distance < 0) {
@@ -31,16 +35,16 @@ function calculateTimeLeft(targetDate: string) {
 // Generate dynamic title
 function generateDynamicTitle(exam?: any): string {
   if (exam) {
-    const timeLeft = calculateTimeLeft(exam.sessions?.[0]?.date || exam.date);
+    const timeLeft = calculateTimeLeft(exam.sessions?.[0] || (exam.date ? { date: exam.date } : undefined));
     if (timeLeft.expired) {
-      return `${exam.name} 2026 Exam Date & Results - TimeKeeper`;
+      return `${exam.name} ${sessionYear} Exam Date & Results - TimeKeeper`;
     }
     
     const timeString = timeLeft.days > 0 ? 
       `${timeLeft.days} Days ${timeLeft.hours}h` :
       `${timeLeft.hours}h ${timeLeft.minutes}m`;
     
-    return `[${timeString} Left] ${exam.name} Countdown Timer 2026 | Live Exam Date Tracker`;
+    return `[${timeString} Left] ${exam.name} Countdown Timer ${sessionYear} | Live Exam Date Tracker`;
   }
   
   return 'TimeKeeper - Live Countdown Timer for Indian Exams 2026 | JEE, NEET, CAT';
@@ -49,11 +53,11 @@ function generateDynamicTitle(exam?: any): string {
 // Generate dynamic meta description
 function generateDynamicDescription(exam?: any): string {
   if (exam) {
-    const timeLeft = calculateTimeLeft(exam.sessions?.[0]?.date || exam.date);
+    const timeLeft = calculateTimeLeft(exam.sessions?.[0] || (exam.date ? { date: exam.date } : undefined));
     const timeString = timeLeft.expired ? 'The exam date has passed. Check for result updates.' : 
       `Only ${timeLeft.days} days, ${timeLeft.hours} hours left!`;
     
-    return `⏰ ${timeString} Track the ${exam.name} 2026 countdown LIVE. Our real-time timer shows you the exact time until the ${exam.fullName}. Features Picture-in-Picture mode, multiple session tracking, and shareable links. Free, no sign-up required.`;
+    return `⏰ ${timeString} Track the ${exam.name} ${sessionYear} countdown LIVE. Our real-time timer shows you the exact time until the ${exam.fullName}. Features Picture-in-Picture mode, multiple session tracking, and shareable links. Free, no sign-up required.`;
   }
   
   return '🏆 Ultimate real-time countdown timer for all major Indian competitive exams 2026. Track JEE Mains, JEE Advanced, NEET, CAT, UPSC, and 50+ other exams. Features live countdowns, PiP mode, and shareable links. Free forever!';
@@ -77,7 +81,7 @@ function generateDynamicKeywords(exam?: any): string[] {
     const examSpecificKeywords = [
       `${exam.name} countdown`,
       `${exam.name} timer`,
-      `${exam.name} 2026`,
+      `${exam.name} ${sessionYear}`,
       `${exam.name} exam date`,
       `${exam.name} countdown timer`,
       `${exam.fullName} countdown`,
