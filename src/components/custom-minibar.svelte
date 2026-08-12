@@ -1,8 +1,8 @@
 <script>
     import { onMount } from 'svelte';
-    import examsData from '../data/2025.json';
+    import examsData from '../data/2026.json';
     
-    let year = 2025; 
+    let year = 2026;
     let { exams } = examsData;
     let countdowns = [];
     let showAddForm = false;
@@ -38,7 +38,7 @@
       if (savedYear) {
         year = parseInt(savedYear);
       } else {
-        year = 2025;
+        year = 2026;
       }
     
       if (savedCountdowns && savedAvailableExams) {
